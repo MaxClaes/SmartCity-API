@@ -29,45 +29,41 @@ module.exports.getProduit = async (req, res) => {
 }
 
 module.exports.postProduit = async (req, res) => {
-    const client = await pool.connect();
     const body = req.body;
-    const {id, nom, prix} = body;
-    const reponse = await ProduitModele.postProduit(id, nom, prix);
-    
-    if (reponse) {
+    const {nom, prix} = body;
+    const client = await pool.connect();
+    try{
+        await ProduitModele.postProduit(nom, prix, client);
         res.sendStatus(201);
-    
-    } else {
+    } catch (error){
         res.sendStatus(500);
+    } finally {
+        client.release();
     }
-
-    client.release();
 }
 
 module.exports.updateProduit = async (req, res) => {
+    const {id, prix} = req.body;
     const client = await pool.connect();
-    const {id} = req.body;
-    const reponse = await ProduitModele.deleteProduit(id);
-
-    if (reponse) {
+    try{
+        await ProduitModele.updatePrix(id, prix, client);
         res.sendStatus(204);
-    } else {
+    } catch (error){
         res.sendStatus(500);
+    } finally {
+        client.release();
     }
-
-    client.release();
 }
 
 module.exports.deleteProduit = async (req, res) => {
-    const client = await pool.connect();
     const {id} = req.body;
-    const reponse = await ProduitModele.deleteProduit(id);
-
-    if (reponse) {
+    const client = await pool.connect();
+    try{
+        await ProduitModele.deleteProduit(id, client);
         res.sendStatus(204);
-    } else {
+    } catch (error){
         res.sendStatus(500);
+    } finally {
+        client.release();
     }
-
-    client.release();
 }
