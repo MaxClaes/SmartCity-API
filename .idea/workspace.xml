@@ -21,13 +21,18 @@
   <component name="ChangeListManager">
     <list default="true" id="084b7899-cb0a-4e00-98be-82cfd2e99716" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controleur/produit.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modele/produit.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -55,7 +60,7 @@
       <option name="presentableId" value="Default" />
       <updated>1605722240808</updated>
       <workItem from="1605722241968" duration="565000" />
-      <workItem from="1605722965081" duration="6652000" />
+      <workItem from="1605722965081" duration="7881000" />
     </task>
     <servers />
   </component>
@@ -74,6 +79,10 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
+    <state x="447" y="173" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1605732686110">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="447" y="173" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1605732686110" />
     <state x="392" y="115" width="581" height="498" key="find.popup" timestamp="1605729907511">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
