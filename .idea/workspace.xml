@@ -1,13 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="084b7899-cb0a-4e00-98be-82cfd2e99716" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controleur/produitDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/controleur/produitDB.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controleur/clientDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/controleur/clientDB.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modele/clientDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/modele/clientDB.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modele/database.js" beforeDir="false" afterPath="$PROJECT_DIR$/modele/database.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modele/produitDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/modele/produitDB.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modele/managerDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/modele/managerDB.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/produit/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/route/achat.js" beforeDir="false" afterPath="$PROJECT_DIR$/route/achat.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/route/client.js" beforeDir="false" afterPath="$PROJECT_DIR$/route/client.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/route/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/route/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/route/produit.js" beforeDir="false" afterPath="$PROJECT_DIR$/route/produit.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/SQL/createDB.sql" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/SQL/createDB.sql" afterDir="false" />
@@ -43,11 +64,28 @@
       <option name="presentableId" value="Default" />
       <updated>1605722240808</updated>
       <workItem from="1605722241968" duration="565000" />
-      <workItem from="1605722965081" duration="2839000" />
+      <workItem from="1605722965081" duration="4747000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="392" y="115" width="581" height="498" key="find.popup" timestamp="1605729907511">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="392" y="115" width="581" height="498" key="find.popup/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1605729907511" />
   </component>
 </project>
