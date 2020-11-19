@@ -1,5 +1,5 @@
 module.exports.mustBeAdministrator = (req, res, next) => {
-    if (req.session && req.session.authLevel === "administrator") {
+    if (req.session && req.session.authLevel === "ADMINISTRATOR") {
         next();
     } else {
         res.sendStatus(403);
@@ -7,7 +7,7 @@ module.exports.mustBeAdministrator = (req, res, next) => {
 }
 
 module.exports.mustBeModerator = (req, res, next) => {
-    if (req.session && req.session.authLevel === "moderator") {
+    if (req.session && req.session.authLevel === "MODERATOR") {
         next();
     } else {
         res.sendStatus(403);
@@ -15,7 +15,8 @@ module.exports.mustBeModerator = (req, res, next) => {
 }
 
 module.exports.mustBeManager = (req, res, next) => {
-    if (req.session && (req.session.authLevel === "administrator" || req.session.authLevel === "moderator")) {
+    console.log(req.session.authLevel);
+    if (req.session && (req.session.authLevel === "ADMINISTRATOR" || req.session.authLevel === "MODERATOR")) {
         next();
     } else {
         res.sendStatus(403);
@@ -26,10 +27,16 @@ module.exports.mustBeCreator = (req, res, next) => {
     if (req.session) {
         const {label, prcAlcool, quantite, id} = req.body;
         const clientObj = req.session;
-
-        if (id === clientObj.id) {
+        console.log(id);
+        console.log(clientObj.id);
+        if (id === undefined) {
+            console.log("true");
+        }
+        if (id !== undefined && id === clientObj.id) {
+            console.log("ici");
             next();
         } else {
+            console.log("error");
             res.sendStatus(403);
         }
     } else {
@@ -39,6 +46,7 @@ module.exports.mustBeCreator = (req, res, next) => {
 
 module.exports.mustBeManagerOrCreator = (req, res, next) => {
     if (req.session && (this.mustBeManager(req, res, next) || this.mustBeCreator(req, res, next))) {
+        console.log("mustBeManagerOrCreator");
         next();
     } else {
         res.sendStatus(403);

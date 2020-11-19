@@ -21,9 +21,15 @@
   <component name="ChangeListManager">
     <list default="true" id="084b7899-cb0a-4e00-98be-82cfd2e99716" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controleur/boissonDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/controleur/drinkDB.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controleur/userDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/controleur/userDB.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware/Authorization.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/Authorization.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware/IdentificationJWT.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/IdentificationJWT.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modele/boissonDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/modele/drinkDB.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modele/userDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/modele/userDB.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/JS/initDB.JS" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/JS/initDB.JS" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/route/boisson.js" beforeDir="false" afterPath="$PROJECT_DIR$/route/drink.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/SQL/createDB.sql" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/SQL/createDB.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/SQL/fillDB.sql" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/SQL/fillDB.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,7 +69,7 @@
       <option name="presentableId" value="Default" />
       <updated>1605722240808</updated>
       <workItem from="1605722241968" duration="565000" />
-      <workItem from="1605722965081" duration="22531000" />
+      <workItem from="1605722965081" duration="27301000" />
     </task>
     <servers />
   </component>
@@ -89,9 +95,9 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="447" y="173" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1605732686110" />
-    <state x="392" y="115" width="581" height="556" key="find.popup" timestamp="1605798887075">
+    <state x="392" y="115" width="581" height="556" key="find.popup" timestamp="1605810648600">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="392" y="115" width="581" height="556" key="find.popup/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1605798887075" />
+    <state x="392" y="115" width="581" height="556" key="find.popup/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1605810648600" />
   </component>
 </project>

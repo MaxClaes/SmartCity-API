@@ -54,7 +54,7 @@ module.exports.getDrinksByName = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        const {rows: drinks} = await DrinkModele.getDrinksByName(client, label);
+        const {rows: drinks} = await DrinkModele.getDrinksByName(client, label.toLowerCase());
         const drink = drinks[0];
 
         if(drink !== undefined){
@@ -70,7 +70,8 @@ module.exports.getDrinksByName = async (req, res) => {
 }
 
 module.exports.getDrinksByUserId = async (req, res) => {
-    const userId = req.params.userId;
+    const {userId} = req.body;
+    const client = await pool.connect();
 
     try {
         const {rows: drinks} = await DrinkModele.getDrinksByUserId(client, userId);

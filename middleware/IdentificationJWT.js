@@ -17,6 +17,7 @@ module.exports.identification = async (req, res, next) => {
             res.sendStatus(400);
         }
     } else {
+        console.log("Non auth");
         res.sendStatus(401);
     }
 };

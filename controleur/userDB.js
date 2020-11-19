@@ -17,10 +17,10 @@ module.exports.login = async (req, res) => {
             const result = await userDB.getUser(client, email, password);
             const {userType, value} = result;
 
-            if (userType === "inconnu") {
+            if (userType === "INCONNU") {
                 res.sendStatus(404);
 
-            } else if (userType === "administrator") {
+            } else if (userType === "ADMINISTRATOR") {
                 const {id, nom} = value;
                 const payload = {status: userType, value: {id, nom}};
                 const token = jwt.sign(
@@ -30,7 +30,7 @@ module.exports.login = async (req, res) => {
                 );
                 res.json(token);
 
-            } else if (userType === "moderator") {
+            } else if (userType === "MODERATOR") {
                 const {id, nom} = value;
                 const payload = {status: userType, value: {id, nom}};
                 const token = jwt.sign(
