@@ -1,13 +1,13 @@
-const BoissonModele = require("../modele/boissonDB");
+const DrinkModele = require("../modele/drinkDB");
 const pool = require("../modele/database");
 
-module.exports.createBoisson = async (req, res) => {
+module.exports.createDrink = async (req, res) => {
     const body = req.body;
-    const {label, prcAlcool, quantite} = body;
+    const {label, prcAlcohol, quantity} = body;
     const client = await pool.connect();
 
     try {
-        await BoissonModele.createBoisson(client, label, prcAlcool, quantite);
+        await DrinkModele.createDrink(client, label, prcAlcohol, quantity);
         res.sendStatus(201);
     } catch (error){
         res.sendStatus(500);
@@ -16,12 +16,12 @@ module.exports.createBoisson = async (req, res) => {
     }
 }
 
-module.exports.updateBoisson = async (req, res) => {
-    const {label, prcAlcool, quantite, id} = req.body;
+module.exports.updateDrink = async (req, res) => {
+    const {label, prcAlcohol, quantity, id} = req.body;
     const client = await pool.connect();
 
     try {
-        await BoissonModele.updateBoisson(label, prcAlcool, quantite, id);
+        await DrinkModele.updateDrink(label, prcAlcohol, quantity, id);
         res.sendStatus(204);
     } catch (error){
         res.sendStatus(500);
@@ -30,15 +30,15 @@ module.exports.updateBoisson = async (req, res) => {
     }
 }
 
-module.exports.getAllBoissons = async (req, res) => {
+module.exports.getAllDrinks = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        const {rows: boissons} = await BoissonModele.getAllBoissons(client);
-        const boisson = boissons[0];
+        const {rows: drinks} = await DrinkModele.getAllDrinks(client);
+        const drink = drinks[0];
 
-        if(boisson !== undefined){
-            res.json(boissons);
+        if(drink !== undefined){
+            res.json(drinks);
         } else {
             res.sendStatus(404);
         }
@@ -49,16 +49,16 @@ module.exports.getAllBoissons = async (req, res) => {
     }
 }
 
-module.exports.getBoissonsByName = async (req, res) => {
+module.exports.getDrinksByName = async (req, res) => {
     const label = req.params.label;
     const client = await pool.connect();
 
     try {
-        const {rows: boissons} = await BoissonModele.getBoissonsByName(client, label);
-        const boisson = boissons[0];
+        const {rows: drinks} = await DrinkModele.getDrinksByName(client, label);
+        const drink = drinks[0];
 
-        if(boisson !== undefined){
-            res.json(boissons);
+        if(drink !== undefined){
+            res.json(drinks);
         } else {
             res.sendStatus(404);
         }
@@ -69,15 +69,15 @@ module.exports.getBoissonsByName = async (req, res) => {
     }
 }
 
-module.exports.getBoissonsByUserId = async (req, res) => {
+module.exports.getDrinksByUserId = async (req, res) => {
     const userId = req.params.userId;
 
     try {
-        const {rows: boissons} = await BoissonModele.getBoissonsByUserId(client, userId);
-        const boisson = boissons[0];
+        const {rows: drinks} = await DrinkModele.getDrinksByUserId(client, userId);
+        const drink = drinks[0];
 
-        if(boisson !== undefined){
-            res.json(boissons);
+        if(drink !== undefined){
+            res.json(drinks);
         } else {
             res.sendStatus(404);
         }
@@ -88,12 +88,12 @@ module.exports.getBoissonsByUserId = async (req, res) => {
     }
 }
 
-module.exports.deleteBoisson = async (req, res) => {
+module.exports.deleteDrink = async (req, res) => {
     const id = req.body;
     const client = await pool.connect();
 
     try {
-        await BoissonModele.deleteBoisson(client, id);
+        await DrinkModele.deleteDrink(client, id);
         res.sendStatus(204);
     } catch (error){
         res.sendStatus(500);

@@ -1,15 +1,15 @@
 const AuthoMiddleware = require("../middleware/Authorization");
 const JWTMiddleWare = require("../middleware/IdentificationJWT");
-const BoissonControleur = require("../controleur/boissonDB");
+const DrinkControleur = require("../controleur/drinkDB");
 
 const Router = require("express-promise-router");
 const router = new Router;
 
-router.get('/', BoissonControleur.getAllBoissons);
-router.get('/:label', BoissonControleur.getBoissonsByName);
-router.get('/:userId', JWTMiddleWare.identification, AuthoMiddleware.mustBeManagerOrCreator, BoissonControleur.getBoissonsByUserId);
-router.post('/', JWTMiddleWare.identification, BoissonControleur.createBoisson);
-router.patch('/', JWTMiddleWare.identification, AuthoMiddleware.mustBeManagerOrCreator, BoissonControleur.updateBoisson);
-router.delete('/', JWTMiddleWare.identification, AuthoMiddleware.mustBeManagerOrCreator, BoissonControleur.deleteBoisson);
+router.get('/', DrinkControleur.getAllDrinks);
+router.get('/:label', DrinkControleur.getDrinksByName);
+router.get('/:userId', JWTMiddleWare.identification, AuthoMiddleware.mustBeManagerOrCreator, DrinkControleur.getDrinksByUserId);
+router.post('/', JWTMiddleWare.identification, DrinkControleur.createDrink);
+router.patch('/', JWTMiddleWare.identification, AuthoMiddleware.mustBeManagerOrCreator, DrinkControleur.updateDrink);
+router.delete('/', JWTMiddleWare.identification, AuthoMiddleware.mustBeManagerOrCreator, DrinkControleur.deleteDrink);
 
 module.exports = router;

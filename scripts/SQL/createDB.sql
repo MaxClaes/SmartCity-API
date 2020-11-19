@@ -1,3 +1,13 @@
+DROP TABLE IF EXISTS drink CASCADE;
+CREATE TABLE produit (
+    id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    nom varchar,
+    prix float
+);
+
+
+
+
 DROP TABLE IF EXISTS produit CASCADE;
 CREATE TABLE produit (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,

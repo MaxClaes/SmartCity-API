@@ -24,6 +24,9 @@
       <change beforePath="$PROJECT_DIR$/controleur/boissonDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/controleur/boissonDB.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modele/boissonDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/modele/boissonDB.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/route/boisson.js" beforeDir="false" afterPath="$PROJECT_DIR$/route/boisson.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/route/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/route/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/route/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/route/user.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/SQL/createDB.sql" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/SQL/createDB.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,12 +66,15 @@
       <option name="presentableId" value="Default" />
       <updated>1605722240808</updated>
       <workItem from="1605722241968" duration="565000" />
-      <workItem from="1605722965081" duration="15425000" />
+      <workItem from="1605722965081" duration="16241000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.sql" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -86,9 +92,9 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="447" y="173" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1605732686110" />
-    <state x="392" y="115" width="581" height="498" key="find.popup" timestamp="1605798247083">
+    <state x="392" y="115" width="581" height="556" key="find.popup" timestamp="1605798887075">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="392" y="115" width="581" height="498" key="find.popup/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1605798247083" />
+    <state x="392" y="115" width="581" height="556" key="find.popup/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1605798887075" />
   </component>
 </project>
