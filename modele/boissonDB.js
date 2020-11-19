@@ -8,13 +8,20 @@ module.exports.createBoisson = async (client, label, prcAlcool, quantite) => {
     );
 };
 
-module.exports.updateBoisson = async (client, label, prcAlcool, quantite, nbSignalements, id) => {
+/*
+ On ne permet pas de passer nbSignalement car ce sera trop risqué qu'un utilisateur puisse modifier cette variable comme il le souhaite
+ */
+module.exports.updateBoisson = async (client, label, prcAlcool, quantite, id) => {
      return await client.query(`
         UPDATE boisson SET label = $1, prcAlcool = $2, quantite = $3, nbSignalements = $4
         WHERE id = $5;
         `, [label, prcAlcool, quantite, nbSignalements, id]
      );
 };
+
+module.exports.getAllBoissons = async (client) => {
+    return await client.query(`SELECT * FROM boisson;`);
+}
 
 module.exports.getBoissonByName = async (client, label) => {
     return await client.query(`
