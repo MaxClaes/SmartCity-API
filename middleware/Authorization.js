@@ -1,5 +1,21 @@
+module.exports.mustBeAdministrator = (req, res, next) => {
+    if (req.session && req.session.authLevel === "administrator") {
+        next();
+    } else {
+        res.sendStatus(403);
+    }
+}
+
+module.exports.mustBeModerator = (req, res, next) => {
+    if (req.session && req.session.authLevel === "moderator") {
+        next();
+    } else {
+        res.sendStatus(403);
+    }
+}
+
 module.exports.mustBeManager = (req, res, next) => {
-    if (req.session && req.session.authLevel === "manager") {
+    if (req.session && (req.session.authLevel === "administrator" || req.session.authLevel === "moderator")) {
         next();
     } else {
         res.sendStatus(403);

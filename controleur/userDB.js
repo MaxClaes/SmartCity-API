@@ -19,7 +19,18 @@ module.exports.login = async (req, res) => {
 
             if (userType === "inconnu") {
                 res.sendStatus(404);
-            } else if (userType === "manager") {
+
+            } else if (userType === "administrator") {
+                const {id, nom} = value;
+                const payload = {status: userType, value: {id, nom}};
+                const token = jwt.sign(
+                    payload,
+                    process.env.SECRET_TOKEN,
+                    {expiresIn: '1d'}
+                );
+                res.json(token);
+
+            } else if (userType === "moderator") {
                 const {id, nom} = value;
                 const payload = {status: userType, value: {id, nom}};
                 const token = jwt.sign(
@@ -38,6 +49,7 @@ module.exports.login = async (req, res) => {
                     {expiresIn: '1d'}   //Peut etre modifier
                 );
                 res.json(token);
+
             }
         } catch (e) {
             console.log(e);
