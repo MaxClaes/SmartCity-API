@@ -23,17 +23,17 @@ module.exports.getAllBoissons = async (client) => {
     return await client.query(`SELECT * FROM boisson;`);
 }
 
-module.exports.getBoissonByName = async (client, label) => {
+module.exports.getBoissonsByName = async (client, label) => {
     return await client.query(`
         SELECT * FROM boisson WHERE label = $1;
         `, [label]
     );
 };
 
-module.exports.getBoissonByUserId = async (client, id) => {
+module.exports.getBoissonsByUserId = async (client, userId) => {
     return await client.query(`
         SELECT * FROM boisson WHERE createBy = $1;
-        `, [id]
+        `, [userId]
     );
 };
 

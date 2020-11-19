@@ -49,12 +49,12 @@ module.exports.getAllBoissons = async (req, res) => {
     }
 }
 
-module.exports.getBoissonByName = async (req, res) => {
-    const client = await pool.connect();
+module.exports.getBoissonsByName = async (req, res) => {
     const label = req.params.label;
+    const client = await pool.connect();
 
     try {
-        const {rows: boissons} = await BoissonModele.getBoissonByName(client, label);
+        const {rows: boissons} = await BoissonModele.getBoissonsByName(client, label);
         const boisson = boissons[0];
 
         if(boisson !== undefined){
@@ -69,12 +69,27 @@ module.exports.getBoissonByName = async (req, res) => {
     }
 }
 
+module.exports.getBoissonsByUserId = async (req, res) => {
+    const userId = req.params.userId;
 
-//getBoissonByUserId à créer !
+    try {
+        const {rows: boissons} = await BoissonModele.getBoissonsByUserId(client, userId);
+        const boisson = boissons[0];
 
+        if(boisson !== undefined){
+            res.json(boissons);
+        } else {
+            res.sendStatus(404);
+        }
+    } catch (error){
+        res.sendStatus(500);
+    } finally {
+        client.release();
+    }
+}
 
 module.exports.deleteBoisson = async (req, res) => {
-    const {id} = req.body;
+    const id = req.body;
     const client = await pool.connect();
 
     try {
