@@ -1,21 +1,21 @@
-module.exports.createDrink = async (client, label, prcAlcool, quantite) => {
-    const nbReportsInitial = 0; //Faire dans le fichier sql de création de table pour que cette variable soit initialisée à 0
+module.exports.createDrink = async (client, label, prcAlcohol, quantity, created_by) => {
+    const nbReportsInitial = 0;
 
     return await client.query(`
-        INSERT INTO drink(label, prc_alcool, quantite, nb_reports) 
-        VALUES ($1, $2, $3, $4);
-        `, [label, prcAlcool, quantite, nbReportsInitial]
+        INSERT INTO drink(label, prc_alcohol, quantity, created_by, nb_reports) 
+        VALUES ($1, $2, $3, $4, $5);
+        `, [label, prcAlcohol, quantity, created_by, nbReportsInitial]
     );
 };
 
 /*
  On ne permet pas de passer nbSignalement car ce sera trop risqué qu'un utilisateur puisse modifier cette variable comme il le souhaite
  */
-module.exports.updateDrink = async (client, label, prcAlcool, quantite, id) => {
+module.exports.updateDrink = async (client, label, prcAlcohol, quantity, id) => {
      return await client.query(`
-        UPDATE drink SET label = $1, prc_alcool = $2, quantite = $3, nb_reports = $4
-        WHERE id = $5;
-        `, [label, prcAlcool, quantite, nbReports, id]
+        UPDATE drink SET label = $1, prc_alcohol = $2, quantity = $3
+        WHERE id = $4;
+        `, [label, prcAlcohol, quantity, id]
      );
 };
 
@@ -24,9 +24,11 @@ module.exports.getAllDrinks = async (client) => {
 }
 
 module.exports.getDrinksByName = async (client, label) => {
+    const labelUpperCase = label.toUpperCase();
+
     return await client.query(`
-        SELECT * FROM drink WHERE label = $1;
-        `, [label]
+        SELECT * FROM drink WHERE UPPER(label) = $1;
+        `, [labelUpperCase]
     );
 };
 
@@ -38,6 +40,14 @@ module.exports.getDrinksByUserId = async (client, userId) => {
 };
 
 module.exports.deleteDrink = async (client, id) => {
+    return await client.query(`
+        DELETE from drink WHERE id = $1;
+        `, [id]
+    );
+}
+
+// A FAIRE
+module.exports.updateReport = async (client, id) => {
     return await client.query(`
         DELETE from drink WHERE id = $1;
         `, [id]

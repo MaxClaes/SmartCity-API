@@ -2,12 +2,12 @@ const DrinkModele = require("../modele/drinkDB");
 const pool = require("../modele/database");
 
 module.exports.createDrink = async (req, res) => {
-    const body = req.body;
-    const {label, prcAlcohol, quantity} = body;
+    const {label, prcAlcohol, quantity} = req.body;
+    const created_by = req.session.id;
     const client = await pool.connect();
 
     try {
-        await DrinkModele.createDrink(client, label, prcAlcohol, quantity);
+        await DrinkModele.createDrink(client, label, prcAlcohol, quantity, created_by);
         res.sendStatus(201);
     } catch (error){
         res.sendStatus(500);
@@ -21,7 +21,7 @@ module.exports.updateDrink = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        await DrinkModele.updateDrink(label, prcAlcohol, quantity, id);
+        await DrinkModele.updateDrink(client, label, prcAlcohol, quantity, id);
         res.sendStatus(204);
     } catch (error){
         res.sendStatus(500);
@@ -50,11 +50,12 @@ module.exports.getAllDrinks = async (req, res) => {
 }
 
 module.exports.getDrinksByName = async (req, res) => {
-    const label = req.params.label;
+    const {label} = req.body;
+    const labelWithoutSpace = label.trim();
     const client = await pool.connect();
 
     try {
-        const {rows: drinks} = await DrinkModele.getDrinksByName(client, label.toLowerCase());
+        const {rows: drinks} = await DrinkModele.getDrinksByName(client, labelWithoutSpace);
         const drink = drinks[0];
 
         if(drink !== undefined){
@@ -90,7 +91,7 @@ module.exports.getDrinksByUserId = async (req, res) => {
 }
 
 module.exports.deleteDrink = async (req, res) => {
-    const id = req.body;
+    const {id} = req.body;
     const client = await pool.connect();
 
     try {

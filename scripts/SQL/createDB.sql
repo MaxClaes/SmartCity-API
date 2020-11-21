@@ -12,16 +12,16 @@ CREATE TABLE address (
 DROP TABLE IF EXISTS client CASCADE;
 CREATE TABLE client (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    nom varchar,
-    prenom varchar,
-    date_naissance date,
+    name varchar,
+    firstname varchar,
+    birthdate date,
     email varchar UNIQUE,
     password varchar,
-    date_inscription date,
-    taille integer,
-    poids float,
-    gsm integer,
-    role varchar,
+    registration_date date,
+    height integer,
+    weight float,
+    gsm varchar,
+    access varchar,
     address integer REFERENCES address(id) DEFERRABLE INITIALLY IMMEDIATE
 );
 
@@ -29,8 +29,8 @@ DROP TABLE IF EXISTS drink CASCADE;
 CREATE TABLE drink (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     label varchar,
-    prc_alcool float,
-    quantite float,
+    prc_alcohol float,
+    quantity float,
     nb_reports integer default 0,
     created_by integer REFERENCES client(id) DEFERRABLE INITIALLY IMMEDIATE
 );
@@ -46,9 +46,9 @@ DROP TABLE IF EXISTS client_band CASCADE;
 CREATE TABLE client_band (
     client_id integer REFERENCES client(id) DEFERRABLE INITIALLY IMMEDIATE,
     band_id integer REFERENCES band(id) DEFERRABLE INITIALLY IMMEDIATE,
-    date_of_demand date,
+    creation_date date,
     join_date date,
-    role varchar,
+    access varchar,
     PRIMARY KEY(client_id, band_id)
 );
 
