@@ -32,6 +32,7 @@ CREATE TABLE drink (
     prc_alcohol float,
     quantity float,
     nb_reports integer default 0,
+    popularity integer default 0,
     created_by integer REFERENCES client(id) DEFERRABLE INITIALLY IMMEDIATE
 );
 

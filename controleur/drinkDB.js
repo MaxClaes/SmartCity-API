@@ -3,11 +3,11 @@ const pool = require("../modele/database");
 
 module.exports.createDrink = async (req, res) => {
     const {label, prcAlcohol, quantity} = req.body;
-    const created_by = req.session.id;
+    const createdBy = req.session.id;
     const client = await pool.connect();
 
     try {
-        await DrinkModele.createDrink(client, label, prcAlcohol, quantity, created_by);
+        await DrinkModele.createDrink(client, label, prcAlcohol, quantity, createdBy);
         res.sendStatus(201);
     } catch (error){
         res.sendStatus(500);

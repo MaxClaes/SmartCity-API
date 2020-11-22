@@ -1,10 +1,8 @@
-module.exports.createDrink = async (client, label, prcAlcohol, quantity, created_by) => {
-    const nbReportsInitial = 0;
-
+module.exports.createDrink = async (client, label, prcAlcohol, quantity, createdBy) => {
     return await client.query(`
-        INSERT INTO drink(label, prc_alcohol, quantity, created_by, nb_reports) 
+        INSERT INTO drink(label, prc_alcohol, quantity, created_by) 
         VALUES ($1, $2, $3, $4, $5);
-        `, [label, prcAlcohol, quantity, created_by, nbReportsInitial]
+        `, [label, prcAlcohol, quantity, createdBy]
     );
 };
 
