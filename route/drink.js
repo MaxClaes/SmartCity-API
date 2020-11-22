@@ -6,10 +6,10 @@ const Router = require("express-promise-router");
 const router = new Router;
 
 router.get('/', DrinkControleur.getAllDrinks);
-router.get('/name', DrinkControleur.getDrinksByName);
-router.get('/user', JWTMiddleWare.identification, AuthoMiddleware.mustBeManagerOrCreator, DrinkControleur.getDrinksByUserId);
+router.get('/name/:label', DrinkControleur.getDrinksByName);
+router.get('/user/:id', JWTMiddleWare.identification, AuthoMiddleware.mustBeManagerOrCreator, DrinkControleur.getDrinksByCreatedBy);
 router.post('/', JWTMiddleWare.identification, DrinkControleur.createDrink);
 router.patch('/', JWTMiddleWare.identification, AuthoMiddleware.mustBeManagerOrCreator, DrinkControleur.updateDrink);
-router.delete('/', JWTMiddleWare.identification, AuthoMiddleware.mustBeManagerOrCreator, DrinkControleur.deleteDrink);
+router.delete('/:id', JWTMiddleWare.identification, AuthoMiddleware.canDelete, DrinkControleur.deleteDrink);
 
 module.exports = router;

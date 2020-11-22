@@ -28,8 +28,8 @@ module.exports.getUser = async (client, email, password) => {
     const clientRow = values[0].rows[0];
 
     if(clientRow !== undefined && await compareHash(password, clientRow.password)){
-        return {userType: clientRow.role, value: clientRow};
+        return {userType: clientRow.access, value: clientRow};
     } else {
-        return {userType: "INCONNU", value: null}
+        return {userType: null, value: null}
     }
 };

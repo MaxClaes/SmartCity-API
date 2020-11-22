@@ -50,7 +50,7 @@ module.exports.getAllDrinks = async (req, res) => {
 }
 
 module.exports.getDrinksByName = async (req, res) => {
-    const {label} = req.body;
+    const label = req.params.label;
     const labelWithoutSpace = label.trim();
     const client = await pool.connect();
 
@@ -70,18 +70,23 @@ module.exports.getDrinksByName = async (req, res) => {
     }
 }
 
-module.exports.getDrinksByUserId = async (req, res) => {
-    const {userId} = req.body;
+module.exports.getDrinksByCreatedBy = async (req, res) => {
+    const idTexte = req.params.id;
+    const createdBy = parseInt(idTexte);
     const client = await pool.connect();
 
     try {
-        const {rows: drinks} = await DrinkModele.getDrinksByUserId(client, userId);
-        const drink = drinks[0];
-
-        if(drink !== undefined){
-            res.json(drinks);
+        if (isNaN(createdBy)) {
+            res.sendStatus(400);
         } else {
-            res.sendStatus(404);
+            const {rows: drinks} = await DrinkModele.getDrinksByCreatedBy(client, createdBy);
+            const drink = drinks[0];
+
+            if (drink !== undefined) {
+                res.json(drinks);
+            } else {
+                res.sendStatus(404);
+            }
         }
     } catch (error){
         res.sendStatus(500);
@@ -91,12 +96,42 @@ module.exports.getDrinksByUserId = async (req, res) => {
 }
 
 module.exports.deleteDrink = async (req, res) => {
-    const {id} = req.body;
+    const idTexte = req.params.id;
+    const id = parseInt(idTexte);
     const client = await pool.connect();
 
     try {
-        await DrinkModele.deleteDrink(client, id);
-        res.sendStatus(204);
+        if (isNaN(id)) {
+            res.sendStatus(400);
+        } else {
+            await DrinkModele.deleteDrink(client, id);
+            res.sendStatus(204);
+        }
+    } catch (error){
+        res.sendStatus(500);
+    } finally {
+        client.release();
+    }
+}
+
+module.exports.getDrinkById = async (req, res) => {
+    const idTexte = req.params.id;
+    const id = parseInt(idTexte);
+    const client = await pool.connect();
+
+    try{
+        if(isNaN(id)){
+            res.sendStatus(400);
+        } else {
+            const {rows: drinks} = await DrinkModele.getDrinkById(client, id);
+            const drink = drinks[0];
+
+            if(drink !== undefined){
+                res.json(drinks);
+            } else {
+                res.sendStatus(404);
+            }
+        }
     } catch (error){
         res.sendStatus(500);
     } finally {

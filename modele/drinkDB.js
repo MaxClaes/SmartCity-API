@@ -32,10 +32,10 @@ module.exports.getDrinksByName = async (client, label) => {
     );
 };
 
-module.exports.getDrinksByUserId = async (client, userId) => {
+module.exports.getDrinksByCreatedBy = async (client, createdBy) => {
     return await client.query(`
         SELECT * FROM drink WHERE created_by = $1;
-        `, [userId]
+        `, [createdBy]
     );
 };
 
@@ -50,6 +50,13 @@ module.exports.deleteDrink = async (client, id) => {
 module.exports.updateReport = async (client, id) => {
     return await client.query(`
         DELETE from drink WHERE id = $1;
+        `, [id]
+    );
+}
+
+module.exports.getDrinkById = async (client, id) => {
+    return await client.query(`
+        SELECT * from drink WHERE id = $1;
         `, [id]
     );
 }
