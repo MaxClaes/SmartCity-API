@@ -1,7 +1,15 @@
+const AuthoMiddleware = require("../middleware/Authorization");
+const JWTMiddleWare = require("../middleware/IdentificationJWT");
+const UserController = require('../controleur/userDB');
+
 const Router = require("express-promise-router");
 const router = new Router;
-const userController = require('../controleur/userDB');
 
-router.post('/login', userController.login);
+router.post('/login', UserController.login);
+router.post('/registration', UserController.createUser);
+router.get('/', JWTMiddleWare.identification, AuthoMiddleware.mustBeManager, UserController.getAllUsers);
+router.get('/:id', JWTMiddleWare.identification, AuthoMiddleware.mustBeManagerOrCreator, UserController.getUser);
+router.patch('/', JWTMiddleWare.identification, AuthoMiddleware.mustBeManagerOrCreator, UserController.updateUser);
+//Route pour faire un modify du password uniquement si on demande le password de la personne connecté
 
 module.exports = router;

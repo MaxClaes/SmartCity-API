@@ -59,46 +59,8 @@ module.exports.mustBeManagerOrCreator = (req, res, next) => {
             }
         }
     } else {
-        res.sendStatus(403);
+        res.sendStatus(403);    //401 plutôt ??
     }
-
-
-    // if (req.session) {
-    //     if (req.session.authLevel === "ADMINISTRATOR" || req.session.authLevel === "MODERATOR") {
-    //         next();
-    //     } else if (this.mustBeCreator(req, res, next)) {
-    //         next();
-    //     } else {
-    //         res.sendStatus(403);
-    //     }
-    // } else {
-    //     res.sendStatus(403);
-    // }
-
-    // if (req.session) {
-    //     if (this.mustBeManager(req, res) || this.mustBeCreator(req, res)) {
-    //         console.log("manager ou createur");
-    //         next();
-    //     } else {
-    //         console.log("ni modo ni createur");
-    //         res.sendStatus(403);
-    //     }
-    // } else {
-    //     res.sendStatus(403);
-    // }
-
-    // if (req.session) {
-    //     if (this.mustBeManager(req, res, next)) {
-    //         console.log("salut");
-    //     } else if (this.mustBeCreator(req, res, next)) {
-    //         console.log("coucou");
-    //     } else {
-    //         res.sendStatus(403);
-    //     }
-    // } else {
-    //     res.sendStatus(403);
-    // }
-
 }
 
 module.exports.canDelete = async (req, res, next) => {

@@ -46,14 +46,6 @@ module.exports.deleteDrink = async (client, id) => {
     );
 }
 
-// A FAIRE
-module.exports.updateReport = async (client, id) => {
-    return await client.query(`
-        DELETE from drink WHERE id = $1;
-        `, [id]
-    );
-}
-
 module.exports.getDrinkById = async (client, id) => {
     return await client.query(`
         SELECT * from drink WHERE id = $1;
