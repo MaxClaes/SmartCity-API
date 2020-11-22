@@ -119,7 +119,6 @@ module.exports.canDelete = async (req, res, next) => {
 
                     if(drink !== undefined){
                         if (parseInt(drink.created_by) === req.session.id) {
-                            console.log("ici");
                             next();
                         } else {
                             res.sendStatus(403);
