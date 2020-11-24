@@ -12,6 +12,5 @@ router.get('/:id', JWTMiddleWare.identification, AuthoMiddleware.mustBeManagerOr
 router.patch('/update', JWTMiddleWare.identification, UserController.updateUser);
 router.patch('/role', JWTMiddleWare.identification, AuthoMiddleware.canChangeRole, UserController.changeRole)
 //Route pour faire un modify du password uniquement si on demande le password de la personne connecté
-//Change roleLevel
 
 module.exports = router;
