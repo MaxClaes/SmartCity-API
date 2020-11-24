@@ -76,43 +76,24 @@ module.exports.createUser = async (req, res) => {
 
 module.exports.updateUser = async (req, res) => {
     if(req.session) {
-        const clientObj = req.session;
-        const toUpdate = req.body;
-        const newData = {};
-        let doUpdate = false;
+        const {name, firstname, birthdate, email, password, height, weight, gsm} = req.body;
 
-        if (toUpdate.name !== undefined || toUpdate.firstname !== undefined || toUpdate.birthdate !== undefined || toUpdate.email !== undefined ||
-            toUpdate.password !== undefined || toUpdate.height !== undefined || toUpdate.weight !== undefined || toUpdate.gsm !== undefined ||
-            toUpdate.country !== undefined || toUpdate.postalCode !== undefined || toUpdate.city !== undefined ||
-            toUpdate.street !== undefined || toUpdate.number !== undefined) {
-
+        if(name === undefined && firstname === undefined && birthdate === undefined && email === undefined &&
+            password === undefined && height === undefined && weight === undefined && gsm === undefined) {
+            res.sendStatus(400);
+        } else {
             const client = await pool.connect();
 
-            try{
-                await ClientDB.updateClient(
-                    client,
-                    toUpdate.name,
-                    toUpdate.firstname,
-                    toUpdate.birthdate,
-                    toUpdate.email,
-                    toUpdate.password,
-                    toUpdate.height,
-                    toUpdate.weight,
-                    toUpdate.gsm,
-
-                );
+            try {
+                await UserModele.updateUser(client, name, firstname, birthdate, email, password, height, weight, gsm, req.session.id);
                 res.sendStatus(204);
-            }
-            catch (e) {
+            } catch (e) {
                 console.log(e);
                 res.sendStatus(500);
             } finally {
                 client.release();
             }
-        } else {
-            res.sendStatus(400);
         }
-
     } else {
         res.sendStatus(401);
     }
@@ -125,8 +106,29 @@ module.exports.getAllUsers = async (req, res) => {
         const {rows: users} = await UserModele.getAllUsers(client);
         const user = users[0];
 
+        const usersFormated = [];
+        users.forEach(function(u) {
+            console.log(u.id);
+            usersFormated.push(JSON.parse({
+                "id":u.id,
+                "name":u.name,
+                "address":{
+                    "id":u.address.id
+                }
+            }));
+        });
+
+        // for (const i = 0 ; i < users.length ; i++) {
+        //     t += JSON.parse('');
+        // }
+
         if(user !== undefined){
-            res.json(users);
+            // res.json({
+            //     id: user.id,
+            //     name: user.name,
+            //     first: user.firstname
+            // });
+            res.json(usersFormated);
         } else {
             res.sendStatus(404);
         }
@@ -139,9 +141,11 @@ module.exports.getAllUsers = async (req, res) => {
 
 module.exports.getUser = async (req, res) => {
     const client = await pool.connect();
+    const idTexte = req.params.id;
+    const id = parseInt(idTexte);
 
     try {
-        const {rows: users} = await UserModele.getUser(client, req.session.id);
+        const {rows: users} = await UserModele.getUser(client, id);
         const user = users[0];
 
         if(user !== undefined){
@@ -153,5 +157,25 @@ module.exports.getUser = async (req, res) => {
         res.sendStatus(500);
     } finally {
         client.release();
+    }
+}
+
+module.exports.changeAccess = async (req, res) => {
+    const {targetIdUser, newAccess} = req.body;
+
+    if(targetIdUser === undefined || newAccess === undefined || isNaN(targetIdUser)){
+        res.sendStatus(400);
+    } else {
+        const client = await pool.connect();
+
+        try {
+            await UserModele.changeAccess(client, newAccess.toUpperCase(), targetIdUser);
+            res.sendStatus(204);
+        } catch (e) {
+            console.log(e);
+            res.sendStatus(500);
+        } finally {
+            client.release();
+        }
     }
 }

@@ -1,5 +1,7 @@
 const DrinkModele = require("../modele/drinkDB");
 const pool = require("../modele/database");
+const UserModele = require('../modele/userDB');
+const Constants = require('../utils/constant');
 
 module.exports.mustBeAdministrator = (req, res, next) => {
     if (req.session && req.session.authLevel === "ADMINISTRATOR") {
@@ -79,7 +81,7 @@ module.exports.canDelete = async (req, res, next) => {
                     const {rows: drinks} = await DrinkModele.getDrinkById(client, id);
                     const drink = drinks[0];
 
-                    if(drink !== undefined){
+                    if(drink !== undefined) {
                         if (parseInt(drink.created_by) === req.session.id) {
                             next();
                         } else {
@@ -91,6 +93,51 @@ module.exports.canDelete = async (req, res, next) => {
                 }
             }
         } catch (error){
+            res.sendStatus(500);
+        } finally {
+            client.release();
+        }
+    } else {
+        res.sendStatus(403);
+    }
+}
+
+module.exports.canChangeAccess = async (req, res, next) => {
+    if (req.session && req.session.authLevel !== "CLIENT") {
+        const {targetIdUser, newAccess} = req.body;
+        const client = await pool.connect();
+
+        try {
+            if (targetIdUser === undefined || newAccess === undefined ||
+                (newAccess.toUpperCase() !== "CLIENT" && newAccess.toUpperCase() !== "MODERATOR" && newAccess.toUpperCase() !== "ADMINISTRATOR")) {
+                res.sendStatus(400);
+            } else {
+                const {rows: targetUsers} = await UserModele.getUser(client, targetIdUser);
+                const targetUserAccess = targetUsers[0].access;
+
+                if (targetUserAccess !== undefined) {
+                    if (req.session.authLevel === "ADMINISTRATOR" ||
+                        req.session.authLevel === "MODERATOR" && targetUserAccess === "MODERATOR" ||
+                        req.session.authLevel === "MODERATOR" && targetUserAccess === "CLIENT" ||
+                        req.session.authLevel === "MODERATOR" && newAccess.toUpperCase() !== "ADMINISTRATOR") {
+                            next();
+                    } else {
+                        res.sendStatus(403);
+                    }
+                    // if (Constants.ACCESSES_LEVEL.indexOf(Constants.ACCESSES_LEVEL.find(req.session.authLevel)) >=
+                    //     Constants.ACCESSES_LEVEL.indexOf(Constants.ACCESSES_LEVEL.find(targetUserAccess)) &&
+                    //     Constants.ACCESSES_LEVEL.indexOf(Constants.ACCESSES_LEVEL.find(req.session.authLevel)) >=
+                    //     Constants.ACCESSES_LEVEL.indexOf(Constants.ACCESSES_LEVEL.find(newAccess))) {
+                    //     next();
+                    // } else {
+                    //     res.sendStatus(403);
+                    // }
+                } else {
+                    res.sendStatus(404);
+                }
+            }
+        } catch (error){
+            console.log(error);
             res.sendStatus(500);
         } finally {
             client.release();
