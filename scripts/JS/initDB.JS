@@ -8,8 +8,8 @@ async function initDB() {
     try {
         await client.query(fs.readFileSync(path.join(__dirname, "../SQL/createDB.SQL"), "utf-8"));
         await client.query(fs.readFileSync(path.join(__dirname, "../SQL/fillDB.SQL"), "utf-8"));
-    } catch (e) {
-        console.log(e);
+    } catch (error) {
+        console.log(error);
     } finally {
         client.release();
         await pool.end();

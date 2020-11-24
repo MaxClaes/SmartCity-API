@@ -20,9 +20,9 @@
 //             res.status(404).json({error: "l'id du client n'existe pas"});
 //         }
 //
-//     } catch (e){
+//     } catch (error){
 //         client.query("ROLLBACK;");
-//         console.log(e);
+//         console.log(error);
 //         res.sendStatus(500);
 //     } finally {
 //         client.release();

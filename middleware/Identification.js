@@ -18,8 +18,8 @@ module.exports.identification = async (req, res, next) => {
             } else {
                 res.sendStatus(401);
             }
-        } catch (e) {
-            console.log(e);
+        } catch (error) {
+            console.log(error);
             res.sendStatus(500);
         } finally {
             client.release();
@@ -53,8 +53,8 @@ module.exports.identificationWithAuth = async (req, res, next) => {
             } else {
                 res.sendStatus(401);
             }
-        } catch (e) {
-            console.log(e);
+        } catch (error) {
+            console.log(error);
             res.sendStatus(500);
         } finally {
             client.release();

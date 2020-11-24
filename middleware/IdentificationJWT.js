@@ -12,8 +12,8 @@ module.exports.identification = async (req, res, next) => {
             req.session.authLevel = decodedJwtToken.status;
             next();
         }
-        catch (e) {
-            console.log(e);
+        catch (error) {
+            console.log(error);
             res.sendStatus(400);
         }
     } else {

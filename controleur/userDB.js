@@ -31,8 +31,8 @@ module.exports.login = async (req, res) => {
             } else {
                 res.sendStatus(404);
             }
-        } catch (e) {
-            console.log(e);
+        } catch (error) {
+            console.log(error);
             res.sendStatus(500);
         } finally {
             client.release();
@@ -71,9 +71,9 @@ module.exports.createUser = async (req, res) => {
             } else {
                 res.sendStatus(409);
             }
-        } catch (e) {
+        } catch (error) {
             client.query("ROLLBACK;");
-            console.log(e);
+            console.log(error);
             res.sendStatus(500);
         } finally {
             client.release();
@@ -94,8 +94,8 @@ module.exports.updateUser = async (req, res) => {
             try {
                 await UserModele.updateUser(client, name, firstname, birthdate, email, password, height, weight, gsm, req.session.id);
                 res.sendStatus(204);
-            } catch (e) {
-                console.log(e);
+            } catch (error) {
+                console.log(error);
                 res.sendStatus(500);
             } finally {
                 client.release();
@@ -168,18 +168,19 @@ module.exports.getUser = async (req, res) => {
 }
 
 module.exports.changeRole = async (req, res) => {
-    const {targetIdUser, newRole} = req.body;
+    const {targetUserId, targetNewRole} = req.body;
 
-    if (targetIdUser === undefined || newRole === undefined || isNaN(targetIdUser)) {
+    if (targetUserId === undefined || targetNewRole === undefined || isNaN(targetUserId) ||
+        (targetNewRole.toUpperCase() !== Constants.ROLE_CLIENT && targetNewRole.toUpperCase() !== Constants.ROLE_MODERATOR && targetNewRole.toUpperCase() !== Constants.ROLE_ADMINISTRATOR)) {
         res.sendStatus(400);
     } else {
         const client = await pool.connect();
 
         try {
-            await UserModele.changeRole(client, newRole.toUpperCase(), targetIdUser);
+            await UserModele.changeRole(client, targetNewRole.toUpperCase(), targetUserId);
             res.sendStatus(204);
-        } catch (e) {
-            console.log(e);
+        } catch (error) {
+            console.log(error);
             res.sendStatus(500);
         } finally {
             client.release();

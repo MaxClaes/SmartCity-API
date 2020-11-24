@@ -102,47 +102,42 @@ module.exports.canDelete = async (req, res, next) => {
     }
 }
 
+//Un modo peut nommer quelqu'un admin
+//
 module.exports.canChangeRole = async (req, res, next) => {
-    if (req.session && req.session.authLevel !== Constants.ROLE_CLIENT) {
-        const {targetIdUser, newRole} = req.body;
+    if (!req.session && req.session.authLevel === Constants.ROLE_CLIENT) {
+        res.sendStatus(403);
+    } else {
+        const {targetUserId, targetNewRole} = req.body;
         const client = await pool.connect();
 
         try {
-            if (targetIdUser === undefined || newRole === undefined ||
-                (newRole.toUpperCase() !== Constants.ROLE_CLIENT && newRole.toUpperCase() !== Constants.ROLE_MODERATOR && newRole.toUpperCase() !== Constants.ROLE_ADMINISTRATOR)) {
+            if (targetUserId === undefined || targetNewRole === undefined ||
+                (targetNewRole.toUpperCase() !== Constants.ROLE_CLIENT && targetNewRole.toUpperCase() !== Constants.ROLE_MODERATOR && targetNewRole.toUpperCase() !== Constants.ROLE_ADMINISTRATOR)) {
                 res.sendStatus(400);
             } else {
-                const {rows: targetUsers} = await UserModele.getUser(client, targetIdUser);
-                const targetUserRole = targetUsers[0].role;
-
-                if (targetUserRole !== undefined) {
-                    if (req.session.authLevel === Constants.ROLE_ADMINISTRATOR ||
-                        req.session.authLevel === Constants.ROLE_MODERATOR && targetUserRole === Constants.ROLE_MODERATOR ||
-                        req.session.authLevel === Constants.ROLE_MODERATOR && targetUserRole === Constants.ROLE_CLIENT ||
-                        req.session.authLevel === Constants.ROLE_MODERATOR && newRole.toUpperCase() !== Constants.ROLE_ADMINISTRATOR) {
-                            next();
-                    } else {
-                        res.sendStatus(403);
-                    }
-                    // if (Constants.AUTH_LEVEL.indexOf(Constants.AUTH_LEVEL.find(req.session.authLevel)) >=
-                    //     Constants.AUTH_LEVEL.indexOf(Constants.AUTH_LEVEL.find(targetUserRole)) &&
-                    //     Constants.AUTH_LEVEL.indexOf(Constants.AUTH_LEVEL.find(req.session.authLevel)) >=
-                    //     Constants.AUTH_LEVEL.indexOf(Constants.AUTH_LEVEL.find(newRole))) {
-                    //     next();
-                    // } else {
-                    //     res.sendStatus(403);
-                    // }
+                if (req.session.authLevel === Constants.ROLE_ADMINISTRATOR) {
+                    next();
                 } else {
-                    res.sendStatus(404);
+                    const {rows: targetUsers} = await UserModele.getUser(client, targetUserId);
+                    const targetUser = targetUsers[0];
+
+                    if (targetUser !== undefined) {
+                        if (targetUser.role === Constants.ROLE_ADMINISTRATOR || targetNewRole.toUpperCase() === Constants.ROLE_ADMINISTRATOR) {
+                            res.sendStatus(403);
+                        } else {
+                            next();
+                        }
+                    } else {
+                        res.sendStatus(404);
+                    }
                 }
             }
-        } catch (error){
+        } catch (error) {
             console.log(error);
             res.sendStatus(500);
         } finally {
             client.release();
         }
-    } else {
-        res.sendStatus(403);
     }
 }
