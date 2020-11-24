@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const pool = require('../modele/database');
 const UserModele = require('../modele/userDB');
 const AddressModele = require('../modele/addressDB');
+const Constants = require('../utils/constant');
 
 module.exports.login = async (req, res) => {
     const {email, password} = req.body;
@@ -18,7 +19,7 @@ module.exports.login = async (req, res) => {
             const result = await UserModele.getUserLogin(client, email, password);
             const {userType, value} = result;
 
-            if (userType === "CLIENT" || userType === "ADMINISTRATOR" || userType === "MODERATOR") {
+            if (userType === Constants.ROLE_CLIENT || userType === Constants.ROLE_ADMINISTRATOR || userType === Constants.ROLE_MODERATOR) {
                 const {id, name, firstname} = value;
                 const payload = {status: userType, value: {id, name, firstname}};
                 const token = jwt.sign(

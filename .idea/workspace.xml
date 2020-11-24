@@ -23,11 +23,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controleur/userDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/controleur/userDB.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/middleware/Authorization.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/Authorization.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modele/clientDB.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/modele/userDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/modele/userDB.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/route/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/route/user.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/SQL/createDB.sql" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/SQL/createDB.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/SQL/fillDB.sql" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/SQL/fillDB.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils/constant.js" beforeDir="false" afterPath="$PROJECT_DIR$/utils/constant.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -78,7 +74,7 @@
       <workItem from="1605722241968" duration="565000" />
       <workItem from="1605722965081" duration="48745000" />
       <workItem from="1606063188192" duration="14763000" />
-      <workItem from="1606130340244" duration="16240000" />
+      <workItem from="1606130340244" duration="16747000" />
     </task>
     <servers />
   </component>
@@ -185,10 +181,10 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state width="498" height="446" key="SwitcherDM/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1605991791729" />
-    <state x="616" y="91" width="581" height="556" key="find.popup" timestamp="1606232758980">
+    <state x="616" y="91" width="581" height="556" key="find.popup" timestamp="1606233217949">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="616" y="91" width="581" height="556" key="find.popup/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1606232758980" />
+    <state x="616" y="91" width="581" height="556" key="find.popup/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1606233217949" />
     <state x="339" y="162" key="run.anything.popup" timestamp="1606215577606">
       <screen x="0" y="0" width="1366" height="728" />
     </state>

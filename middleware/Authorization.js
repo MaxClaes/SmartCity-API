@@ -1,10 +1,10 @@
 const DrinkModele = require("../modele/drinkDB");
-const pool = require("../modele/database");
 const UserModele = require('../modele/userDB');
+const pool = require("../modele/database");
 const Constants = require('../utils/constant');
 
 module.exports.mustBeAdministrator = (req, res, next) => {
-    if (req.session && req.session.authLevel === "ADMINISTRATOR") {
+    if (req.session && req.session.authLevel === Constants.ROLE_ADMINISTRATOR) {
         next();
     } else {
         res.sendStatus(403);
@@ -12,7 +12,7 @@ module.exports.mustBeAdministrator = (req, res, next) => {
 }
 
 module.exports.mustBeModerator = (req, res, next) => {
-    if (req.session && req.session.authLevel === "MODERATOR") {
+    if (req.session && req.session.authLevel === Constants.ROLE_MODERATOR) {
         next();
     } else {
         res.sendStatus(403);
@@ -21,7 +21,7 @@ module.exports.mustBeModerator = (req, res, next) => {
 
 module.exports.mustBeManager = (req, res, next) => {
     if (req.session) {
-        if (req.session.authLevel === "ADMINISTRATOR" || req.session.authLevel === "MODERATOR") {
+        if (req.session.authLevel === Constants.ROLE_ADMINISTRATOR || req.session.authLevel === Constants.ROLE_MODERATOR) {
             next();
         } else {
             res.sendStatus(403);
@@ -54,7 +54,7 @@ module.exports.mustBeManagerOrCreator = (req, res, next) => {
         if (isNaN(id)) {
             res.sendStatus(400);
         } else {
-            if (req.session.authLevel === "ADMINISTRATOR" || req.session.authLevel === "MODERATOR" || (id === req.session.id)) {
+            if (req.session.authLevel === Constants.ROLE_ADMINISTRATOR || req.session.authLevel === Constants.ROLE_MODERATOR || (id === req.session.id)) {
                 next();
             } else {
                 res.sendStatus(403);
@@ -75,7 +75,7 @@ module.exports.canDelete = async (req, res, next) => {
             if (isNaN(id)) {
                 res.sendStatus(400);
             } else {
-                if (req.session.authLevel === "ADMINISTRATOR" || req.session.authLevel === "MODERATOR") {
+                if (req.session.authLevel === Constants.ROLE_ADMINISTRATOR || req.session.authLevel === Constants.ROLE_MODERATOR) {
                     next();
                 } else {
                     const {rows: drinks} = await DrinkModele.getDrinkById(client, id);
@@ -103,23 +103,23 @@ module.exports.canDelete = async (req, res, next) => {
 }
 
 module.exports.canChangeRole = async (req, res, next) => {
-    if (req.session && req.session.authLevel !== "CLIENT") {
+    if (req.session && req.session.authLevel !== Constants.ROLE_CLIENT) {
         const {targetIdUser, newRole} = req.body;
         const client = await pool.connect();
 
         try {
             if (targetIdUser === undefined || newRole === undefined ||
-                (newRole.toUpperCase() !== "CLIENT" && newRole.toUpperCase() !== "MODERATOR" && newRole.toUpperCase() !== "ADMINISTRATOR")) {
+                (newRole.toUpperCase() !== Constants.ROLE_CLIENT && newRole.toUpperCase() !== Constants.ROLE_MODERATOR && newRole.toUpperCase() !== Constants.ROLE_ADMINISTRATOR)) {
                 res.sendStatus(400);
             } else {
                 const {rows: targetUsers} = await UserModele.getUser(client, targetIdUser);
                 const targetUserRole = targetUsers[0].role;
 
                 if (targetUserRole !== undefined) {
-                    if (req.session.authLevel === "ADMINISTRATOR" ||
-                        req.session.authLevel === "MODERATOR" && targetUserRole === "MODERATOR" ||
-                        req.session.authLevel === "MODERATOR" && targetUserRole === "CLIENT" ||
-                        req.session.authLevel === "MODERATOR" && newRole.toUpperCase() !== "ADMINISTRATOR") {
+                    if (req.session.authLevel === Constants.ROLE_ADMINISTRATOR ||
+                        req.session.authLevel === Constants.ROLE_MODERATOR && targetUserRole === Constants.ROLE_MODERATOR ||
+                        req.session.authLevel === Constants.ROLE_MODERATOR && targetUserRole === Constants.ROLE_CLIENT ||
+                        req.session.authLevel === Constants.ROLE_MODERATOR && newRole.toUpperCase() !== Constants.ROLE_ADMINISTRATOR) {
                             next();
                     } else {
                         res.sendStatus(403);
