@@ -21,10 +21,10 @@ INSERT INTO band (creation_date, label) VALUES
 (TO_DATE('18/07/2020', 'DD/MM/YYYY'), 'les buveurs fous'),
 (TO_DATE('24/05/2020', 'DD/MM/YYYY'), 'les buveurs calmes');
 
-INSERT INTO client_band (client_id, band_id, creation_date, join_date, role) VALUES
-(1, 1, TO_DATE('17/11/2020', 'DD/MM/YYYY'), TO_DATE('17/11/2020', 'DD/MM/YYYY'), 'ADMINISTRATOR'),
-(3, 2, TO_DATE('17/11/2020', 'DD/MM/YYYY'), TO_DATE('17/11/2020', 'DD/MM/YYYY'), 'ADMINISTRATOR'),
-(1, 2, TO_DATE('17/11/2020', 'DD/MM/YYYY'), TO_DATE('18/11/2020', 'DD/MM/YYYY'), 'CLIENT');
+INSERT INTO client_band (client_id, band_id, creation_date, status, role) VALUES
+(1, 1, TO_DATE('17/11/2020', 'DD/MM/YYYY'), 'A', 'ADMINISTRATOR'),
+(3, 2, TO_DATE('17/11/2020', 'DD/MM/YYYY'), 'R', 'ADMINISTRATOR'),
+(1, 2, TO_DATE('17/11/2020', 'DD/MM/YYYY'), null, 'CLIENT');
 
 INSERT INTO client_band (client_id, band_id, creation_date, role) VALUES
 (2, 1, TO_DATE('17/11/2020', 'DD/MM/YYYY'), 'CLIENT');

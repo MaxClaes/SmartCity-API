@@ -48,7 +48,7 @@ CREATE TABLE client_band (
     client_id integer REFERENCES client(id) DEFERRABLE INITIALLY IMMEDIATE,
     band_id integer REFERENCES band(id) DEFERRABLE INITIALLY IMMEDIATE,
     creation_date date,
-    join_date date,
+    status char(1),
     role varchar,
     PRIMARY KEY(client_id, band_id)
 );
