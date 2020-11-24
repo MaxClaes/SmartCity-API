@@ -21,7 +21,7 @@ CREATE TABLE client (
     height integer,
     weight float,
     gsm varchar,
-    access varchar,
+    role varchar,
     address integer REFERENCES address(id) DEFERRABLE INITIALLY IMMEDIATE
 );
 
@@ -49,7 +49,7 @@ CREATE TABLE client_band (
     band_id integer REFERENCES band(id) DEFERRABLE INITIALLY IMMEDIATE,
     creation_date date,
     join_date date,
-    access varchar,
+    role varchar,
     PRIMARY KEY(client_id, band_id)
 );
 

@@ -3,7 +3,7 @@ INSERT INTO address (country, postal_code, city, street, number) VALUES
 ('Belgium', 2000, 'anvers', 'par là', '123'),
 ('Belgium', 4000, 'liège', 'par où', '10a');
 
-INSERT INTO client (name, firstname, birthdate, email, password, registration_date, height, weight, gsm, access, address) VALUES
+INSERT INTO client (name, firstname, birthdate, email, password, registration_date, height, weight, gsm, role, address) VALUES
 ('AdminName', 'AdminFirstname', TO_DATE('17/12/1992', 'DD/MM/YYYY'), 'administrateur@gmail.com', '$2a$10$fiKILzSQn2YvA.mbmxhqa.7f8pErrnl4qofZY7nE/a5Vq8KakfPKG', TO_DATE('04/10/2020', 'DD/MM/YYYY'), 178, 80.0, '+32475254163', 'ADMINISTRATOR', 1),
 ('ModoName', 'ModoFirstname', TO_DATE('01/01/1985', 'DD/MM/YYYY'), 'moderateur@gmail.com', '$2a$10$fiKILzSQn2YvA.mbmxhqa.7f8pErrnl4qofZY7nE/a5Vq8KakfPKG', TO_DATE('04/10/2020', 'DD/MM/YYYY'), 195, 110.5, '+32479456525', 'MODERATOR', 2),
 ('ClientName', 'ClientFirstname', TO_DATE('10/09/1995', 'DD/MM/YYYY'), 'client@gmail.com', '$2a$10$fiKILzSQn2YvA.mbmxhqa.7f8pErrnl4qofZY7nE/a5Vq8KakfPKG', TO_DATE('04/10/2020', 'DD/MM/YYYY'), 162, 59.9, '+32475136479', 'CLIENT', 3);
@@ -21,10 +21,10 @@ INSERT INTO band (creation_date, label) VALUES
 (TO_DATE('18/07/2020', 'DD/MM/YYYY'), 'les buveurs fous'),
 (TO_DATE('24/05/2020', 'DD/MM/YYYY'), 'les buveurs calmes');
 
-INSERT INTO client_band (client_id, band_id, creation_date, join_date, access) VALUES
+INSERT INTO client_band (client_id, band_id, creation_date, join_date, role) VALUES
 (1, 1, TO_DATE('17/11/2020', 'DD/MM/YYYY'), TO_DATE('17/11/2020', 'DD/MM/YYYY'), 'ADMINISTRATOR'),
 (3, 2, TO_DATE('17/11/2020', 'DD/MM/YYYY'), TO_DATE('17/11/2020', 'DD/MM/YYYY'), 'ADMINISTRATOR'),
 (1, 2, TO_DATE('17/11/2020', 'DD/MM/YYYY'), TO_DATE('18/11/2020', 'DD/MM/YYYY'), 'CLIENT');
 
-INSERT INTO client_band (client_id, band_id, creation_date, access) VALUES
+INSERT INTO client_band (client_id, band_id, creation_date, role) VALUES
 (2, 1, TO_DATE('17/11/2020', 'DD/MM/YYYY'), 'CLIENT');

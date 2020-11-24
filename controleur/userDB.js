@@ -160,16 +160,16 @@ module.exports.getUser = async (req, res) => {
     }
 }
 
-module.exports.changeAccess = async (req, res) => {
-    const {targetIdUser, newAccess} = req.body;
+module.exports.changeRole = async (req, res) => {
+    const {targetIdUser, newRole} = req.body;
 
-    if(targetIdUser === undefined || newAccess === undefined || isNaN(targetIdUser)){
+    if(targetIdUser === undefined || newRole === undefined || isNaN(targetIdUser)){
         res.sendStatus(400);
     } else {
         const client = await pool.connect();
 
         try {
-            await UserModele.changeAccess(client, newAccess.toUpperCase(), targetIdUser);
+            await UserModele.changeRole(client, newRole.toUpperCase(), targetIdUser);
             res.sendStatus(204);
         } catch (e) {
             console.log(e);

@@ -102,32 +102,32 @@ module.exports.canDelete = async (req, res, next) => {
     }
 }
 
-module.exports.canChangeAccess = async (req, res, next) => {
+module.exports.canChangeRole = async (req, res, next) => {
     if (req.session && req.session.authLevel !== "CLIENT") {
-        const {targetIdUser, newAccess} = req.body;
+        const {targetIdUser, newRole} = req.body;
         const client = await pool.connect();
 
         try {
-            if (targetIdUser === undefined || newAccess === undefined ||
-                (newAccess.toUpperCase() !== "CLIENT" && newAccess.toUpperCase() !== "MODERATOR" && newAccess.toUpperCase() !== "ADMINISTRATOR")) {
+            if (targetIdUser === undefined || newRole === undefined ||
+                (newRole.toUpperCase() !== "CLIENT" && newRole.toUpperCase() !== "MODERATOR" && newRole.toUpperCase() !== "ADMINISTRATOR")) {
                 res.sendStatus(400);
             } else {
                 const {rows: targetUsers} = await UserModele.getUser(client, targetIdUser);
-                const targetUserAccess = targetUsers[0].access;
+                const targetUserRole = targetUsers[0].role;
 
-                if (targetUserAccess !== undefined) {
+                if (targetUserRole !== undefined) {
                     if (req.session.authLevel === "ADMINISTRATOR" ||
-                        req.session.authLevel === "MODERATOR" && targetUserAccess === "MODERATOR" ||
-                        req.session.authLevel === "MODERATOR" && targetUserAccess === "CLIENT" ||
-                        req.session.authLevel === "MODERATOR" && newAccess.toUpperCase() !== "ADMINISTRATOR") {
+                        req.session.authLevel === "MODERATOR" && targetUserRole === "MODERATOR" ||
+                        req.session.authLevel === "MODERATOR" && targetUserRole === "CLIENT" ||
+                        req.session.authLevel === "MODERATOR" && newRole.toUpperCase() !== "ADMINISTRATOR") {
                             next();
                     } else {
                         res.sendStatus(403);
                     }
-                    // if (Constants.ACCESSES_LEVEL.indexOf(Constants.ACCESSES_LEVEL.find(req.session.authLevel)) >=
-                    //     Constants.ACCESSES_LEVEL.indexOf(Constants.ACCESSES_LEVEL.find(targetUserAccess)) &&
-                    //     Constants.ACCESSES_LEVEL.indexOf(Constants.ACCESSES_LEVEL.find(req.session.authLevel)) >=
-                    //     Constants.ACCESSES_LEVEL.indexOf(Constants.ACCESSES_LEVEL.find(newAccess))) {
+                    // if (Constants.AUTH_LEVEL.indexOf(Constants.AUTH_LEVEL.find(req.session.authLevel)) >=
+                    //     Constants.AUTH_LEVEL.indexOf(Constants.AUTH_LEVEL.find(targetUserRole)) &&
+                    //     Constants.AUTH_LEVEL.indexOf(Constants.AUTH_LEVEL.find(req.session.authLevel)) >=
+                    //     Constants.AUTH_LEVEL.indexOf(Constants.AUTH_LEVEL.find(newRole))) {
                     //     next();
                     // } else {
                     //     res.sendStatus(403);
