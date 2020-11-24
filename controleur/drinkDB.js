@@ -9,7 +9,8 @@ module.exports.createDrink = async (req, res) => {
     try {
         await DrinkModele.createDrink(client, label, prcAlcohol, quantity, createdBy);
         res.sendStatus(201);
-    } catch (error){
+    } catch (error) {
+        console.log(error);
         res.sendStatus(500);
     } finally {
         client.release();
@@ -23,7 +24,8 @@ module.exports.updateDrink = async (req, res) => {
     try {
         await DrinkModele.updateDrink(client, label, prcAlcohol, quantity, id);
         res.sendStatus(204);
-    } catch (error){
+    } catch (error) {
+        console.log(error);
         res.sendStatus(500);
     } finally {
         client.release();
@@ -42,7 +44,8 @@ module.exports.getAllDrinks = async (req, res) => {
         } else {
             res.sendStatus(404);
         }
-    } catch (error){
+    } catch (error) {
+        console.log(error);
         res.sendStatus(500);
     } finally {
         client.release();
@@ -63,7 +66,8 @@ module.exports.getDrinksByName = async (req, res) => {
         } else {
             res.sendStatus(404);
         }
-    } catch (error){
+    } catch (error) {
+        console.log(error);
         res.sendStatus(500);
     } finally {
         client.release();
@@ -88,7 +92,8 @@ module.exports.getDrinksByCreatedBy = async (req, res) => {
                 res.sendStatus(404);
             }
         }
-    } catch (error){
+    } catch (error) {
+        console.log(error);
         res.sendStatus(500);
     } finally {
         client.release();
@@ -107,7 +112,8 @@ module.exports.deleteDrink = async (req, res) => {
             await DrinkModele.deleteDrink(client, id);
             res.sendStatus(204);
         }
-    } catch (error){
+    } catch (error) {
+        console.log(error);
         res.sendStatus(500);
     } finally {
         client.release();
@@ -132,7 +138,8 @@ module.exports.getDrinkById = async (req, res) => {
                 res.sendStatus(404);
             }
         }
-    } catch (error){
+    } catch (error) {
+        console.log(error);
         res.sendStatus(500);
     } finally {
         client.release();

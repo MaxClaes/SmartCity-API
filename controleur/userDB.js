@@ -155,12 +155,13 @@ module.exports.getUser = async (req, res) => {
         const {rows: users} = await UserModele.getUser(client, id);
         const user = users[0];
 
-        if(user !== undefined){
+        if(user !== undefined) {
             res.json(user);
         } else {
             res.sendStatus(404);
         }
-    } catch (error){
+    } catch (error) {
+        console.log(error);
         res.sendStatus(500);
     } finally {
         client.release();

@@ -9,7 +9,8 @@ module.exports.resetReport = async (req, res) => {
     try {
         await ReportModele.resetReport(client, drinkId);
         res.sendStatus(204);
-    } catch (error){
+    } catch (error) {
+        console.log(error);
         res.sendStatus(500);
     } finally {
         client.release();
@@ -24,7 +25,8 @@ module.exports.incrementReport = async (req, res) => {
     try {
         await ReportModele.incrementReport(client, drinkId);
         res.sendStatus(204);
-    } catch (error){
+    } catch (error) {
+        console.log(error);
         res.sendStatus(500);
     } finally {
         client.release();

@@ -10,9 +10,9 @@ router.get('/:id', JWTMiddleWare.identification, AuthoMiddleware.canSeeBandById,
 router.post('/', JWTMiddleWare.identification, BandControleur.createBand);
 router.delete('/:id', JWTMiddleWare.identification, AuthoMiddleware.canDeleteBand, BandControleur.deleteBand);  //Soit manager tout court, soit manager du groupe
 
-router.patch('/:id/addMembrer', JWTMiddleWare.identification, BandControleur.addMember);  //idBand, idNewMember | Vérifier si user dans idBand | N'importe qui du groupe peut ajouter un membre
-router.patch('/:id/deleteMember', JWTMiddleWare.identification, BandControleur.deleteMember);  //idBand, idMember | Vérifier si user dans idBand, idMember dans idBand, user a role suffisant
-router.patch('/:id/role', JWTMiddleWare.identification, BandControleur.changeRole);
+router.patch('/:id/member', JWTMiddleWare.identification, BandControleur.addMember);  //idBand, idNewMember | Vérifier si user dans idBand | N'importe qui du groupe peut ajouter un membre
+router.patch('/:id/member', JWTMiddleWare.identification, BandControleur.deleteMember);  //idBand, idMember | Vérifier si user dans idBand, idMember dans idBand, user a role suffisant
+router.patch('/:id/member/role', JWTMiddleWare.identification, BandControleur.changeRole);
 
 router.get('/invitation', JWTMiddleWare.identification, BandControleur.getAllInvitations);
 router.patch('/invitation/:id/accept', JWTMiddleWare.identification, BandControleur.acceptInvitation);

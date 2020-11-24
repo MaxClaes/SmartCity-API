@@ -21,8 +21,11 @@
   <component name="ChangeListManager">
     <list default="true" id="084b7899-cb0a-4e00-98be-82cfd2e99716" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/route/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/route/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/route/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/route/user.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controleur/bandDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/controleur/bandDB.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controleur/drinkDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/controleur/drinkDB.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controleur/reportDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/controleur/reportDB.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controleur/userDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/controleur/userDB.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/route/band.js" beforeDir="false" afterPath="$PROJECT_DIR$/route/band.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,7 +75,7 @@
       <workItem from="1605722241968" duration="565000" />
       <workItem from="1605722965081" duration="48745000" />
       <workItem from="1606063188192" duration="14763000" />
-      <workItem from="1606130340244" duration="27529000" />
+      <workItem from="1606130340244" duration="28377000" />
     </task>
     <servers />
   </component>
