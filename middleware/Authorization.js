@@ -1,5 +1,6 @@
 const DrinkModele = require("../modele/drinkDB");
 const UserModele = require('../modele/userDB');
+const BandModele = require('../modele/bandDB')
 const pool = require("../modele/database");
 const Constants = require('../utils/constant');
 
@@ -102,8 +103,6 @@ module.exports.canDelete = async (req, res, next) => {
     }
 }
 
-//Un modo peut nommer quelqu'un admin
-//
 module.exports.canChangeRole = async (req, res, next) => {
     if (!req.session && req.session.authLevel === Constants.ROLE_CLIENT) {
         res.sendStatus(403);
@@ -141,3 +140,36 @@ module.exports.canChangeRole = async (req, res, next) => {
         }
     }
 }
+
+// module.exports.canSeeBandById = async (req, res, next) => {
+//     if (req.session) {
+//         if (req.session.authLevel === Constants.ROLE_ADMINISTRATOR || req.session.authLevel === Constants.ROLE_MODERATOR) {
+//             next();
+//         } else {
+//             const idBandTexte = req.params.id;
+//             const idBand = parseInt(idBandTexte);
+//
+//             if (isNaN(id)) {
+//                 res.sendStatus(400);
+//             } else {
+//                 const client = await pool.connect();
+//                 try {
+//                     const {rows: bands} = await BandModele.getBandByUserId(client, req.session.id, idBandTexte);
+//                     const band = bands[0];
+//
+//                     if (band !== undefined) {
+//                         next();
+//                     } else {
+//                         res.sendStatus(403);
+//                     }
+//                 } catch (error){
+//                     res.sendStatus(500);
+//                 } finally {
+//                     client.release();
+//                 }
+//             }
+//         }
+//     } else {
+//         res.sendStatus(401);
+//     }
+// }

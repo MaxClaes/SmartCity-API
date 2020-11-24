@@ -6,7 +6,8 @@ const Router = require("express-promise-router");
 const router = new Router;
 
 router.get('/', JWTMiddleWare.identification, AuthoMiddleware.mustBeManager, BandControleur.getAllBands);
-router.get('/:id', JWTMiddleWare.identification, AuthoMiddleware.canSeeBandById, BandControleur.getBandById);  //Soit manager soit participant du groupe
+router.get('/:id', JWTMiddleWare.identification, AuthoMiddleware.mustBeManager, BandControleur.getBandById);
+router.get('/mybands', JWTMiddleWare.identification, BandControleur.getBandsByUserId);
 router.post('/', JWTMiddleWare.identification, BandControleur.createBand);
 router.delete('/:id', JWTMiddleWare.identification, AuthoMiddleware.canDeleteBand, BandControleur.deleteBand);  //Soit manager tout court, soit manager du groupe
 
