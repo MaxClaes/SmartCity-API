@@ -10,8 +10,8 @@ const Constants = require('../utils/constant');
 module.exports.login = async (req, res) => {
     const {email, password} = req.body;
 
-    if(email === undefined || password === undefined){
-        res.sendStatus(400);
+    if (email === undefined || password === undefined) {
+        res.status(400).json({error: "Email/password incorrect"});
     } else {
         const client = await pool.connect();
 
@@ -43,27 +43,33 @@ module.exports.login = async (req, res) => {
 module.exports.createUser = async (req, res) => {
     const {name, firstname, birthdate, email, password, height, weight, gsm, address:addressObj} = req.body;
 
-    if(name === undefined || firstname === undefined || birthdate === undefined || email === undefined ||
-        password === undefined || height === undefined || weight === undefined || gsm === undefined ||
-        addressObj.country === undefined || addressObj.postalCode === undefined || addressObj.city === undefined ||
-        addressObj.street === undefined || addressObj.number === undefined) {
+    if (name === undefined || firstname === undefined || birthdate === undefined || email === undefined ||
+        password === undefined || password.trim() === "" || height === undefined || weight === undefined ||
+        gsm === undefined || addressObj.country === undefined || addressObj.postalCode === undefined ||
+        addressObj.city === undefined || addressObj.street === undefined || addressObj.number === undefined) {
         res.sendStatus(400);
     } else {
         const client = await pool.connect();
 
         try {
-            client.query("BEGIN;");
+            const user = await UserModele.getUserByEmail(client, email);
 
-            await AddressModele.createAddress(client, addressObj.country, addressObj.postalCode, addressObj.city, addressObj.street, addressObj.number);
-            const {rows: addresses} = await AddressModele.getAddress(client, addressObj.country, addressObj.postalCode, addressObj.city, addressObj.street, addressObj.number);
-            const address = addresses[0];
+            if (user === undefined) {
+                client.query("BEGIN;");
 
-            if(address !== undefined){
-                await UserModele.createUser(client, name, firstname, birthdate, email, password, height, weight, gsm, address.id);
-                client.query("COMMIT;");
-                res.sendStatus(201);
+                await AddressModele.createAddress(client, addressObj.country, addressObj.postalCode, addressObj.city, addressObj.street, addressObj.number);
+                const {rows: addresses} = await AddressModele.getAddress(client, addressObj.country, addressObj.postalCode, addressObj.city, addressObj.street, addressObj.number);
+                const address = addresses[0];
+
+                if (address !== undefined) {
+                    await UserModele.createUser(client, name, firstname, birthdate, email, password, height, weight, gsm, address.id);
+                    client.query("COMMIT;");
+                    res.sendStatus(201);
+                } else {
+                    res.sendStatus(404);
+                }
             } else {
-                res.sendStatus(404);
+                res.sendStatus(409);
             }
         } catch (e) {
             client.query("ROLLBACK;");
@@ -76,10 +82,10 @@ module.exports.createUser = async (req, res) => {
 };
 
 module.exports.updateUser = async (req, res) => {
-    if(req.session) {
+    if (req.session) {
         const {name, firstname, birthdate, email, password, height, weight, gsm} = req.body;
 
-        if(name === undefined && firstname === undefined && birthdate === undefined && email === undefined &&
+        if (name === undefined && firstname === undefined && birthdate === undefined && email === undefined &&
             password === undefined && height === undefined && weight === undefined && gsm === undefined) {
             res.sendStatus(400);
         } else {
@@ -164,7 +170,7 @@ module.exports.getUser = async (req, res) => {
 module.exports.changeRole = async (req, res) => {
     const {targetIdUser, newRole} = req.body;
 
-    if(targetIdUser === undefined || newRole === undefined || isNaN(targetIdUser)){
+    if (targetIdUser === undefined || newRole === undefined || isNaN(targetIdUser)) {
         res.sendStatus(400);
     } else {
         const client = await pool.connect();
