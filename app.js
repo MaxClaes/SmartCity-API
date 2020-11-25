@@ -6,7 +6,7 @@ const port = 3001
 app.use(express.json());
 app.use(Router);
 
-app.get('/', (req, res) => {
+app.get('/api/', (req, res) => {
     res.send('Hello tout le monde !');
 });
 
