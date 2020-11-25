@@ -247,3 +247,19 @@ module.exports.acceptInvitation = async (req, res) => {
         client.release();
     }
 }
+
+module.exports.refuseInvitation = async (req, res) => {
+    const bandIdTexte = req.params.bandId;
+    const bandId = parseInt(bandIdTexte);
+    const client = await pool.connect();
+
+    try {
+        await BandModel.changeStatus(client, bandId, req.session.id, Constants.STATUS_REJETED);
+        res.sendStatus(204);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    } finally {
+        client.release();
+    }
+}
