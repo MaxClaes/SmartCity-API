@@ -125,7 +125,7 @@ module.exports.getAllBands = async (req, res) => {
 // }
 
 module.exports.getBandById = async (req, res) => {
-    const bandIdTexte = req.params.idBand;
+    const bandIdTexte = req.params.bandId;
     const bandId = parseInt(bandIdTexte);
     const client = await pool.connect();
 
