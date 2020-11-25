@@ -1,3 +1,5 @@
+const Constants = require("../utils/constant");
+
 module.exports.createBand = async (client, label, creationDate) => {
     return await client.query(`
         INSERT INTO band(label, creation_date)
@@ -45,13 +47,20 @@ module.exports.getAllBands = async (client) => {
 //         `, [createdBy]
 //     );
 // };
-//
-// module.exports.deleteDrink = async (client, id) => {
-//     return await client.query(`
-//         DELETE from drink WHERE id = $1;
-//         `, [id]
-//     );
-// }
+
+module.exports.deleteBand = async (client, bandId) => {
+    return await client.query(`
+        DELETE band, band_client from band INNER JOIN band_client on band_client.band_id = band.id WHERE band.id = $1;
+        `, [bandId]
+    );
+}
+
+module.exports.deleteMember = async (client, bandId, memberId) => {
+    return await client.query(`
+        DELETE from band_client WHERE band_id = $1 AND client_id = $2;
+        `, [bandId, memberId]
+    );
+}
 
 module.exports.getBandById = async (client, bandId) => {
     return await client.query(`
@@ -78,3 +87,20 @@ module.exports.bandExist = async (client, bandId) => {
     );
     return rows[0].nbr > 0;
 };
+
+module.exports.userExist = async (client, bandId, clientId) => {
+    const {rows} = await client.query(
+        "SELECT count(user_id) AS nbr FROM band_client WHERE band_id = $1 AND client_id = $2",
+        [bandId, clientId]
+    );
+    return rows[0].nbr > 0;
+};
+
+module.exports.isManagerInBand = async (client, bandId, clientId) => {
+    const {rows} = await client.query(
+        "SELECT count(user_id) AS nbr FROM band_client WHERE band_id = $1 AND client_id = $2 AND role = $3",
+        [bandId, clientId, Constants.ROLE_ADMINISTRATOR]
+    );
+    return rows[0].nbr > 0;
+};
+

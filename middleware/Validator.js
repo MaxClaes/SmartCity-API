@@ -55,3 +55,57 @@ module.exports.userExists = async (req, res, next) => {
         res.sendStatus(403);
     }
 }
+
+module.exports.userInBand = async (req, res, next) => {
+    if (req.session) {
+        const bandIdTexte = req.params.bandId;
+        const bandId = parseInt(bandIdTexte);
+        const client = await pool.connect();
+
+        if (isNaN(bandId)) {
+            res.sendStatus(400);
+        } else {
+            try {
+                if (await BandModel.userExist(client, bandId, req.session.id)) {
+                    next();
+                } else {
+                    res.sendStatus(404);
+                }
+            } catch (error) {
+                console.log(error);
+                res.sendStatus(500);
+            } finally {
+                client.release();
+            }
+        }
+    } else {
+        res.sendStatus(403);
+    }
+}
+
+module.exports.isManagerInBand = async (req, res, next) => {
+    if (req.session) {
+        const bandIdTexte = req.params.bandId;
+        const bandId = parseInt(bandIdTexte);
+        const client = await pool.connect();
+
+        if (isNaN(bandId)) {
+            res.sendStatus(400);
+        } else {
+            try {
+                if (await BandModel.isManagerInBand(client, bandId, req.session.id)) {
+                    next();
+                } else {
+                    res.sendStatus(404);
+                }
+            } catch (error) {
+                console.log(error);
+                res.sendStatus(500);
+            } finally {
+                client.release();
+            }
+        }
+    } else {
+        res.sendStatus(403);
+    }
+}

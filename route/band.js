@@ -12,7 +12,7 @@ router.post('/', JWTMiddleWare.identification, BandControleur.createBand);
 router.delete('/:bandId', JWTMiddleWare.identification, AuthoMiddleware.canDeleteBand, BandControleur.deleteBand);  //Soit manager tout court, soit manager du groupe
 
 router.get('/mybands', JWTMiddleWare.identification, BandControleur.getBandsByUserId);
-router.delete('/mybands/:bandId', JWTMiddleWare.identification, AuthoMiddleware.canDeleteBand, BandControleur.deleteBand);  //Soit manager tout court, soit manager du groupe
+router.delete('/mybands/:bandId', JWTMiddleWare.identification, ValidatorMiddleWare.bandExists, ValidatorMiddleWare.userInBand, ValidatorMiddleWare.isManagerInBand, BandControleur.deleteBand);  //Soit manager tout court, soit manager du groupe
 router.post('/mybands/:bandId/member/:userId', JWTMiddleWare.identification, ValidatorMiddleWare.bandExists, ValidatorMiddleWare.userExists, BandControleur.addMember);  //idBand, idNewMember | Vérifier si user dans idBand | N'importe qui du groupe peut ajouter un membre
 router.delete('/mybands/:bandId/member/:userId', JWTMiddleWare.identification, BandControleur.deleteMember);  //idBand, idMember | Vérifier si user dans idBand, idMember dans idBand, user a role suffisant
 router.patch('/mybands/:bandId/member/:userId/role', JWTMiddleWare.identification, BandControleur.changeRole);

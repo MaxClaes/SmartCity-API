@@ -105,24 +105,25 @@ module.exports.getAllBands = async (req, res) => {
 //     }
 // }
 //
-// module.exports.deleteDrink = async (req, res) => {
-//     const idTexte = req.params.id;
-//     const id = parseInt(idTexte);
-//     const client = await pool.connect();
-//
-//     try {
-//         if (isNaN(id)) {
-//             res.sendStatus(400);
-//         } else {
-//             await DrinkModele.deleteDrink(client, id);
-//             res.sendStatus(204);
-//         }
-//     } catch (error){
-//         res.sendStatus(500);
-//     } finally {
-//         client.release();
-//     }
-// }
+module.exports.deleteBand = async (req, res) => {
+    const bandIdTexte = req.params.bandId;
+    const bandId = parseInt(bandIdTexte);
+    const client = await pool.connect();
+
+    if (isNaN(bandId)) {
+        res.sendStatus(400);
+    } else {
+        try {
+            await BandModel.deleteBand(client, bandId);
+            res.sendStatus(204);
+        } catch (error){
+            console.log(error);
+            res.sendStatus(500);
+        } finally {
+            client.release();
+        }
+    }
+}
 
 module.exports.getBandById = async (req, res) => {
     const bandIdTexte = req.params.bandId;
