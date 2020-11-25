@@ -56,7 +56,7 @@ module.exports.userExists = async (req, res, next) => {
     }
 }
 
-module.exports.userInBand = async (req, res, next) => {
+module.exports.userExistsInBand = async (req, res, next) => {
     if (req.session) {
         const bandIdTexte = req.params.bandId;
         const bandId = parseInt(bandIdTexte);
