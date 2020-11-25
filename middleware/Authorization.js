@@ -1,6 +1,5 @@
-const DrinkModele = require("../modele/drinkDB");
-const UserModele = require('../modele/userDB');
-const BandModele = require('../modele/bandDB')
+const DrinkModel = require("../modele/drinkDB");
+const UserModel = require('../modele/userDB');
 const pool = require("../modele/database");
 const Constants = require('../utils/constant');
 
@@ -79,7 +78,7 @@ module.exports.canDelete = async (req, res, next) => {
                 if (req.session.authLevel === Constants.ROLE_ADMINISTRATOR || req.session.authLevel === Constants.ROLE_MODERATOR) {
                     next();
                 } else {
-                    const {rows: drinks} = await DrinkModele.getDrinkById(client, id);
+                    const {rows: drinks} = await DrinkModel.getDrinkById(client, id);
                     const drink = drinks[0];
 
                     if(drink !== undefined) {
@@ -119,7 +118,7 @@ module.exports.canChangeRole = async (req, res, next) => {
                 if (req.session.authLevel === Constants.ROLE_ADMINISTRATOR) {
                     next();
                 } else {
-                    const {rows: targetUsers} = await UserModele.getUser(client, targetUserId);
+                    const {rows: targetUsers} = await UserModel.getUser(client, targetUserId);
                     const targetUser = targetUsers[0];
 
                     if (targetUser !== undefined) {
@@ -155,7 +154,7 @@ module.exports.canChangeRole = async (req, res, next) => {
 //             } else {
 //                 const client = await pool.connect();
 //                 try {
-//                     const {rows: bands} = await BandModele.getBandByUserId(client, req.session.id, idBandTexte);
+//                     const {rows: bands} = await BandModel.getBandByUserId(client, req.session.id, idBandTexte);
 //                     const band = bands[0];
 //
 //                     if (band !== undefined) {

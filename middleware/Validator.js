@@ -1,5 +1,5 @@
-const UserModele = require('../modele/userDB');
-const BandModele = require('../modele/bandDB');
+const UserModel = require('../modele/userDB');
+const BandModel = require('../modele/bandDB');
 const pool = require("../modele/database");
 
 module.exports.bandExists = async (req, res, next) => {
@@ -12,7 +12,7 @@ module.exports.bandExists = async (req, res, next) => {
             res.sendStatus(400);
         } else {
             try {
-                if(await BandModele.bandExist(client, bandId)) {
+                if(await BandModel.bandExist(client, bandId)) {
                     next();
                 } else {
                     res.sendStatus(404);
@@ -39,7 +39,7 @@ module.exports.userExists = async (req, res, next) => {
             res.sendStatus(400);
         } else {
             try {
-                if(await UserModele.userExist(client, userId)) {
+                if(await UserModel.userExist(client, userId)) {
                     next();
                 } else {
                     res.sendStatus(404);

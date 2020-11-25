@@ -1,4 +1,4 @@
-const DrinkModele = require("../modele/drinkDB");
+const DrinkModel = require("../modele/drinkDB");
 const pool = require("../modele/database");
 
 module.exports.createDrink = async (req, res) => {
@@ -7,7 +7,7 @@ module.exports.createDrink = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        await DrinkModele.createDrink(client, label, prcAlcohol, quantity, createdBy);
+        await DrinkModel.createDrink(client, label, prcAlcohol, quantity, createdBy);
         res.sendStatus(201);
     } catch (error) {
         console.log(error);
@@ -22,7 +22,7 @@ module.exports.updateDrink = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        await DrinkModele.updateDrink(client, label, prcAlcohol, quantity, id);
+        await DrinkModel.updateDrink(client, label, prcAlcohol, quantity, id);
         res.sendStatus(204);
     } catch (error) {
         console.log(error);
@@ -36,7 +36,7 @@ module.exports.getAllDrinks = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        const {rows: drinks} = await DrinkModele.getAllDrinks(client);
+        const {rows: drinks} = await DrinkModel.getAllDrinks(client);
         const drink = drinks[0];
 
         if(drink !== undefined){
@@ -58,7 +58,7 @@ module.exports.getDrinksByName = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        const {rows: drinks} = await DrinkModele.getDrinksByName(client, labelWithoutSpace);
+        const {rows: drinks} = await DrinkModel.getDrinksByName(client, labelWithoutSpace);
         const drink = drinks[0];
 
         if(drink !== undefined){
@@ -83,7 +83,7 @@ module.exports.getDrinksByCreatedBy = async (req, res) => {
         if (isNaN(createdBy)) {
             res.sendStatus(400);
         } else {
-            const {rows: drinks} = await DrinkModele.getDrinksByCreatedBy(client, createdBy);
+            const {rows: drinks} = await DrinkModel.getDrinksByCreatedBy(client, createdBy);
             const drink = drinks[0];
 
             if (drink !== undefined) {
@@ -109,7 +109,7 @@ module.exports.deleteDrink = async (req, res) => {
         if (isNaN(id)) {
             res.sendStatus(400);
         } else {
-            await DrinkModele.deleteDrink(client, id);
+            await DrinkModel.deleteDrink(client, id);
             res.sendStatus(204);
         }
     } catch (error) {
@@ -129,7 +129,7 @@ module.exports.getDrinkById = async (req, res) => {
         if(isNaN(id)){
             res.sendStatus(400);
         } else {
-            const {rows: drinks} = await DrinkModele.getDrinkById(client, id);
+            const {rows: drinks} = await DrinkModel.getDrinkById(client, id);
             const drink = drinks[0];
 
             if(drink !== undefined){

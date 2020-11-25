@@ -1,4 +1,4 @@
-const ReportModele = require("../modele/reportDB");
+const ReportModel = require("../modele/reportDB");
 const pool = require("../modele/database");
 
 module.exports.resetReport = async (req, res) => {
@@ -7,7 +7,7 @@ module.exports.resetReport = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        await ReportModele.resetReport(client, drinkId);
+        await ReportModel.resetReport(client, drinkId);
         res.sendStatus(204);
     } catch (error) {
         console.log(error);
@@ -23,7 +23,7 @@ module.exports.incrementReport = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        await ReportModele.incrementReport(client, drinkId);
+        await ReportModel.incrementReport(client, drinkId);
         res.sendStatus(204);
     } catch (error) {
         console.log(error);

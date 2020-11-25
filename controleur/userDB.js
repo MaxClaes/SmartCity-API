@@ -3,8 +3,8 @@ const process = require('process');
 const jwt = require('jsonwebtoken');
 
 const pool = require('../modele/database');
-const UserModele = require('../modele/userDB');
-const AddressModele = require('../modele/addressDB');
+const UserModel = require('../modele/userDB');
+const AddressModel = require('../modele/addressDB');
 const Constants = require('../utils/constant');
 
 module.exports.login = async (req, res) => {
@@ -16,7 +16,7 @@ module.exports.login = async (req, res) => {
         const client = await pool.connect();
 
         try {
-            const result = await UserModele.getUserLogin(client, email, password);
+            const result = await UserModel.getUserLogin(client, email, password);
             const {userType, value} = result;
 
             if (userType === Constants.ROLE_CLIENT || userType === Constants.ROLE_ADMINISTRATOR || userType === Constants.ROLE_MODERATOR) {
@@ -52,17 +52,17 @@ module.exports.createUser = async (req, res) => {
         const client = await pool.connect();
 
         try {
-            const user = await UserModele.getUserByEmail(client, email);
+            const user = await UserModel.getUserByEmail(client, email);
 
             if (user === undefined) {
                 client.query("BEGIN;");
 
-                await AddressModele.createAddress(client, addressObj.country, addressObj.postalCode, addressObj.city, addressObj.street, addressObj.number);
-                const {rows: addresses} = await AddressModele.getAddress(client, addressObj.country, addressObj.postalCode, addressObj.city, addressObj.street, addressObj.number);
+                await AddressModel.createAddress(client, addressObj.country, addressObj.postalCode, addressObj.city, addressObj.street, addressObj.number);
+                const {rows: addresses} = await AddressModel.getAddress(client, addressObj.country, addressObj.postalCode, addressObj.city, addressObj.street, addressObj.number);
                 const address = addresses[0];
 
                 if (address !== undefined) {
-                    await UserModele.createUser(client, name, firstname, birthdate, email, password, new Date(), height, weight, gsm, address.id);
+                    await UserModel.createUser(client, name, firstname, birthdate, email, password, new Date(), height, weight, gsm, address.id);
                     client.query("COMMIT;");
                     res.sendStatus(201);
                 } else {
@@ -92,7 +92,7 @@ module.exports.updateUser = async (req, res) => {
             const client = await pool.connect();
 
             try {
-                await UserModele.updateUser(client, name, firstname, birthdate, email, password, height, weight, gsm, req.session.id);
+                await UserModel.updateUser(client, name, firstname, birthdate, email, password, height, weight, gsm, req.session.id);
                 res.sendStatus(204);
             } catch (error) {
                 console.log(error);
@@ -110,7 +110,7 @@ module.exports.getAllUsers = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        const {rows: users} = await UserModele.getAllUsers(client);
+        const {rows: users} = await UserModel.getAllUsers(client);
         const user = users[0];
 
         const usersFormated = [];
@@ -152,7 +152,7 @@ module.exports.getUser = async (req, res) => {
     const id = parseInt(idTexte);
 
     try {
-        const {rows: users} = await UserModele.getUser(client, id);
+        const {rows: users} = await UserModel.getUser(client, id);
         const user = users[0];
 
         if(user !== undefined) {
@@ -178,7 +178,7 @@ module.exports.changeRole = async (req, res) => {
         const client = await pool.connect();
 
         try {
-            await UserModele.changeRole(client, targetNewRole.toUpperCase(), targetUserId);
+            await UserModel.changeRole(client, targetNewRole.toUpperCase(), targetUserId);
             res.sendStatus(204);
         } catch (error) {
             console.log(error);

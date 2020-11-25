@@ -1,4 +1,4 @@
-const BandModele = require("../modele/bandDB");
+const BandModel = require("../modele/bandDB");
 const pool = require("../modele/database");
 const Constants = require("../utils/constant");
 
@@ -8,8 +8,8 @@ module.exports.createBand = async (req, res) => {
 
     try {
         client.query("BEGIN;");
-        const bandId = await BandModele.createBand(client, label, new Date());
-        await BandModele.addMember(client, req.session.id, bandId, null, null, Constants.ROLE_ADMINISTRATOR)
+        const bandId = await BandModel.createBand(client, label, new Date());
+        await BandModel.addMember(client, req.session.id, bandId, null, null, Constants.ROLE_ADMINISTRATOR)
         client.query("COMMIT;");
         res.sendStatus(201);
     } catch (error){
@@ -29,7 +29,7 @@ module.exports.addMember = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        await BandModele.addMember(client, userId, bandId, new Date(), Constants.STATUS_WAITING, Constants.ROLE_NONE);
+        await BandModel.addMember(client, userId, bandId, new Date(), Constants.STATUS_WAITING, Constants.ROLE_NONE);
         res.sendStatus(204);
     } catch (error){
         console.log(error);
@@ -43,7 +43,7 @@ module.exports.getAllBands = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        const {rows: bands} = await BandModele.getAllBands(client);
+        const {rows: bands} = await BandModel.getAllBands(client);
         const band = bands[0];
 
         if(band !== undefined){
@@ -133,7 +133,7 @@ module.exports.getBandById = async (req, res) => {
         res.sendStatus(400);
     } else {
         try {
-            const {rows: bands} = await BandModele.getBandById(client, bandId);
+            const {rows: bands} = await BandModel.getBandById(client, bandId);
             const band = bands[0];
 
             if (band !== undefined){
@@ -154,7 +154,7 @@ module.exports.getBandsByUserId = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        const {rows: bands} = await BandModele.getBandsByUserId(client, req.session.id);
+        const {rows: bands} = await BandModel.getBandsByUserId(client, req.session.id);
         const band = bands[0];
 
         if (band !== undefined) {
