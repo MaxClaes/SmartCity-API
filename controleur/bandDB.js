@@ -59,6 +59,26 @@ module.exports.getAllBands = async (req, res) => {
     }
 }
 
+module.exports.getAllInvitations = async (req, res) => {
+    const client = await pool.connect();
+
+    try {
+        const {rows: invitations} = await BandModel.getAllInvitations(client, req.session.id);
+        const invitation = invitations[0];
+
+        if (invitation !== undefined){
+            res.json(invitations);
+        } else {
+            res.sendStatus(404);
+        }
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    } finally {
+        client.release();
+    }
+}
+
 // module.exports.getDrinksByName = async (req, res) => {
 //     const label = req.params.label;
 //     const labelWithoutSpace = label.trim();

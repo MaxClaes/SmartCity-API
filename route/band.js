@@ -19,8 +19,8 @@ router.delete('/mybands/:bandId/member/:userId', JWTMiddleWare.identification, V
 router.patch('/mybands/:bandId/member/:userId/role', JWTMiddleWare.identification, ValidatorMiddleWare.bandExists, ValidatorMiddleWare.userExistsInBand, ValidatorMiddleWare.authUserIsAdministratorInBand, ValidatorMiddleWare.roleIsValid, ValidatorMiddleWare.canChangeRoleInBand, BandControleur.changeRole);
 
 router.get('/invitation', JWTMiddleWare.identification, BandControleur.getAllInvitations);
-router.patch('/invitation/:id/accept', JWTMiddleWare.identification, BandControleur.acceptInvitation);
-router.patch('/invitation/:id/refuse', JWTMiddleWare.identification, BandControleur.refuseInvitation);
+router.patch('/invitation/:bandId/accept', JWTMiddleWare.identification, ValidatorMiddleWare.bandExists, ValidatorMiddleWare.authUserExistsInBand, BandControleur.acceptInvitation);
+router.patch('/invitation/:bandId/refuse', JWTMiddleWare.identification, ValidatorMiddleWare.bandExists, ValidatorMiddleWare.authUserExistsInBand, BandControleur.refuseInvitation);
 
 //router.get('/name/:label', BandControleur.getBandByName); //Si on est manager
 

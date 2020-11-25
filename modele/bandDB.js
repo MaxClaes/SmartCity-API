@@ -32,6 +32,10 @@ module.exports.getAllBands = async (client) => {
     return await client.query(`SELECT * FROM band;`);
 }
 
+module.exports.getAllInvitations = async (client, userId) => {
+    return await client.query(`SELECT * FROM band_client WHERE client_id = $1 AND status = $2;`, [userId, Constants.STATUS_WAITING]);
+}
+
 // module.exports.getDrinksByName = async (client, label) => {
 //     const labelUpperCase = label.toUpperCase();
 //
