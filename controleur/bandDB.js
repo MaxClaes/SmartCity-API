@@ -125,6 +125,28 @@ module.exports.deleteBand = async (req, res) => {
     }
 }
 
+module.exports.deleteMember = async (req, res) => {
+    const bandIdTexte = req.params.bandId;
+    const bandId = parseInt(bandIdTexte);
+    const userIdTexte = req.params.userId;
+    const userId = parseInt(userIdTexte);
+    const client = await pool.connect();
+
+    if (isNaN(bandId) || isNaN(userId)) {
+        res.sendStatus(400);
+    } else {
+        try {
+            await BandModel.deleteMember(client, bandId, userId);
+            res.sendStatus(204);
+        } catch (error){
+            console.log(error);
+            res.sendStatus(500);
+        } finally {
+            client.release();
+        }
+    }
+}
+
 module.exports.getBandById = async (req, res) => {
     const bandIdTexte = req.params.bandId;
     const bandId = parseInt(bandIdTexte);

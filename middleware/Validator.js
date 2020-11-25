@@ -60,13 +60,15 @@ module.exports.userExistsInBand = async (req, res, next) => {
     if (req.session) {
         const bandIdTexte = req.params.bandId;
         const bandId = parseInt(bandIdTexte);
+        const userIdTexte = req.params.userId;
+        const userId = parseInt(userIdTexte);
         const client = await pool.connect();
 
         if (isNaN(bandId)) {
             res.sendStatus(400);
         } else {
             try {
-                if (await BandModel.userExist(client, bandId, req.session.id)) {
+                if (await BandModel.userExist(client, bandId, userId == null ? req.session.id : userId)) {
                     next();
                 } else {
                     res.sendStatus(404);
