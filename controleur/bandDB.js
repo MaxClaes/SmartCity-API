@@ -59,26 +59,6 @@ module.exports.getAllBands = async (req, res) => {
     }
 }
 
-module.exports.getAllInvitations = async (req, res) => {
-    const client = await pool.connect();
-
-    try {
-        const {rows: invitations} = await BandModel.getAllInvitations(client, req.session.id);
-        const invitation = invitations[0];
-
-        if (invitation !== undefined){
-            res.json(invitations);
-        } else {
-            res.sendStatus(404);
-        }
-    } catch (error) {
-        console.log(error);
-        res.sendStatus(500);
-    } finally {
-        client.release();
-    }
-}
-
 // module.exports.getDrinksByName = async (req, res) => {
 //     const label = req.params.label;
 //     const labelWithoutSpace = label.trim();
@@ -223,6 +203,42 @@ module.exports.changeRole = async (req, res) => {
 
     try {
         await BandModel.changeRole(client, bandId, userId, role);
+        res.sendStatus(204);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    } finally {
+        client.release();
+    }
+}
+
+module.exports.getAllInvitations = async (req, res) => {
+    const client = await pool.connect();
+
+    try {
+        const {rows: invitations} = await BandModel.getAllInvitations(client, req.session.id);
+        const invitation = invitations[0];
+
+        if (invitation !== undefined){
+            res.json(invitations);
+        } else {
+            res.sendStatus(404);
+        }
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    } finally {
+        client.release();
+    }
+}
+
+module.exports.acceptInvitation = async (req, res) => {
+    const bandIdTexte = req.params.bandId;
+    const bandId = parseInt(bandIdTexte);
+    const client = await pool.connect();
+
+    try {
+        await BandModel.changeStatus(client, bandId, req.session.id, Constants.STATUS_ACCEPTED);
         res.sendStatus(204);
     } catch (error) {
         console.log(error);
