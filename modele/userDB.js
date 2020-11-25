@@ -80,8 +80,8 @@ module.exports.updateUser = async (client, name, firstname, birthdate, email, pa
     }
 };
 
-module.exports.changeRole = async (client, newRole, id) => {
-    return await client.query(`UPDATE client SET role = $1 WHERE id = $2;`, [newRole, id]);
+module.exports.changeRole = async (client, role, id) => {
+    return await client.query(`UPDATE client SET role = $1 WHERE id = $2;`, [role, id]);
 };
 
 module.exports.userExist = async (client, userId) => {

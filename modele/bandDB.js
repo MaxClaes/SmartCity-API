@@ -96,7 +96,7 @@ module.exports.userExist = async (client, bandId, clientId) => {
     return rows[0].nbr > 0;
 };
 
-module.exports.isManagerInBand = async (client, bandId, clientId) => {
+module.exports.isAdministratorInBand = async (client, bandId, clientId) => {
     const {rows} = await client.query(
         "SELECT count(user_id) AS nbr FROM band_client WHERE band_id = $1 AND client_id = $2 AND role = $3",
         [bandId, clientId, Constants.ROLE_ADMINISTRATOR]
@@ -104,3 +104,6 @@ module.exports.isManagerInBand = async (client, bandId, clientId) => {
     return rows[0].nbr > 0;
 };
 
+module.exports.changeRole = async (client, bandId, userId, role) => {
+    return await client.query(`UPDATE band_client SET role = $1 WHERE client_id = $2 AND band_id;`, [role, userId, bandId]);
+};

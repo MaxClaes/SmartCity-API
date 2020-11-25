@@ -29,7 +29,7 @@ module.exports.addMember = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        await BandModel.addMember(client, userId, bandId, new Date(), Constants.STATUS_WAITING, Constants.ROLE_NONE);
+        await BandModel.addMember(client, userId, bandId, new Date(), Constants.STATUS_WAITING, Constants.ROLE_CLIENT);
         res.sendStatus(204);
     } catch (error){
         console.log(error);
@@ -185,6 +185,25 @@ module.exports.getBandsByUserId = async (req, res) => {
         } else {
             res.sendStatus(404);
         }
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    } finally {
+        client.release();
+    }
+}
+module.exports.changeRole = async (req, res) => {
+    const bandIdTexte = req.params.bandId;
+    const bandId = parseInt(bandIdTexte);
+    const userIdTexte = req.params.userId;
+    const userId = parseInt(userIdTexte);
+    const {role} = req.body;
+
+    const client = await pool.connect();
+
+    try {
+        await BandModel.changeRole(client, bandId, userId, role);
+        res.sendStatus(204);
     } catch (error) {
         console.log(error);
         res.sendStatus(500);

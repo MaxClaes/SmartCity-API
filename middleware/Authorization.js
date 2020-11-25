@@ -104,7 +104,7 @@ module.exports.canDelete = async (req, res, next) => {
 }
 
 module.exports.canChangeRole = async (req, res, next) => {
-    if (!req.session && req.session.authLevel === Constants.ROLE_CLIENT) {
+    if (!req.session || req.session.authLevel === Constants.ROLE_CLIENT) {
         res.sendStatus(403);
     } else {
         const {targetUserId, targetNewRole} = req.body;
