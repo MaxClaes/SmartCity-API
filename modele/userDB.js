@@ -40,10 +40,10 @@ module.exports.getUser = async (client, id) => {
     );
 }
 
-module.exports.createUser = async (client, name, firstname, birthdate, email, password, height, weight, gsm, addressId) => {
+module.exports.createUser = async (client, name, firstname, birthdate, email, password, registrationDate, height, weight, gsm, addressId) => {
     return await client.query(`
         INSERT INTO client(name, firstname, birthdate, email, password, registration_date, height, weight, gsm, role, address) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);`, [name, firstname, birthdate, email, await getHash(password), new Date(), height, weight, gsm, Constants.ROLE_CLIENT, addressId]
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);`, [name, firstname, birthdate, email, await getHash(password), registrationDate, height, weight, gsm, Constants.ROLE_CLIENT, addressId]
     );
 };
 

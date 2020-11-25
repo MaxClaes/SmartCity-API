@@ -62,7 +62,7 @@ module.exports.createUser = async (req, res) => {
                 const address = addresses[0];
 
                 if (address !== undefined) {
-                    await UserModele.createUser(client, name, firstname, birthdate, email, password, height, weight, gsm, address.id);
+                    await UserModele.createUser(client, name, firstname, birthdate, email, password, new Date(), height, weight, gsm, address.id);
                     client.query("COMMIT;");
                     res.sendStatus(201);
                 } else {

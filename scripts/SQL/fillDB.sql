@@ -1,7 +1,7 @@
 INSERT INTO address (country, postal_code, city, street, number) VALUES
-('Belgium', 1000, 'bruxelles', 'par ici', '15'),
-('Belgium', 2000, 'anvers', 'par là', '123'),
-('Belgium', 4000, 'liège', 'par où', '10a');
+('Belgium', 1000, 'Bruxelles', 'par ici', '15'),
+('Belgium', 2000, 'Anvers', 'par là', '123'),
+('Belgium', 4000, 'Liège', 'par où', '10a');
 
 INSERT INTO client (name, firstname, birthdate, email, password, registration_date, height, weight, gsm, role, address) VALUES
 ('AdminName', 'AdminFirstname', TO_DATE('17/12/1992', 'DD/MM/YYYY'), 'administrator@gmail.com', '$2a$10$fiKILzSQn2YvA.mbmxhqa.7f8pErrnl4qofZY7nE/a5Vq8KakfPKG', TO_DATE('04/10/2020', 'DD/MM/YYYY'), 178, 80.0, '+32475254163', 'ADMINISTRATOR', 1),
@@ -18,13 +18,13 @@ INSERT INTO drink (label, prc_alcohol, quantity, nb_reports) VALUES
 ('Eau', 0, 0.25, 0);
 
 INSERT INTO band (creation_date, label) VALUES
-(TO_DATE('18/07/2020', 'DD/MM/YYYY'), 'les buveurs fous'),
-(TO_DATE('24/05/2020', 'DD/MM/YYYY'), 'les buveurs calmes');
+('Les buveurs fous', TO_DATE('18/07/2020', 'DD/MM/YYYY')),
+('Les buveurs calmes', TO_DATE('24/05/2020', 'DD/MM/YYYY'));
 
 INSERT INTO client_band (client_id, band_id, creation_date, status, role) VALUES
 (1, 1, TO_DATE('17/11/2020', 'DD/MM/YYYY'), 'A', 'ADMINISTRATOR'),
 (3, 2, TO_DATE('17/11/2020', 'DD/MM/YYYY'), 'R', 'ADMINISTRATOR'),
-(1, 2, TO_DATE('17/11/2020', 'DD/MM/YYYY'), null, 'CLIENT');
+(1, 2, TO_DATE('17/11/2020', 'DD/MM/YYYY'), 'W', 'CLIENT');
 
 INSERT INTO client_band (client_id, band_id, creation_date, role) VALUES
 (2, 1, TO_DATE('17/11/2020', 'DD/MM/YYYY'), 'CLIENT');

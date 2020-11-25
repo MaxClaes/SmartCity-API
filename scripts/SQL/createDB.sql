@@ -39,8 +39,8 @@ CREATE TABLE drink (
 DROP TABLE IF EXISTS band CASCADE;
 CREATE TABLE band (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    creation_date date,
-    label varchar
+    label varchar,
+    creation_date date
 );
 
 DROP TABLE IF EXISTS client_band CASCADE;

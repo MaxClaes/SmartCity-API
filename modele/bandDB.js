@@ -1,10 +1,19 @@
-// module.exports.createDrink = async (client, label, prcAlcohol, quantity, createdBy) => {
-//     return await client.query(`
-//         INSERT INTO drink(label, prc_alcohol, quantity, created_by)
-//         VALUES ($1, $2, $3, $4, $5);
-//         `, [label, prcAlcohol, quantity, createdBy]
-//     );
-// };
+module.exports.createBand = async (client, label, creationDate) => {
+    return await client.query(`
+        INSERT INTO band(label, creation_date)
+        VALUES ($1, $2) SET @LASTID = SCOPE_IDENTITY()
+        `, [label, creationDate]
+    );
+};
+
+module.exports.addMember = async (client, clientId, bandId, creationDate, status, role) => {
+    return await client.query(`
+        INSERT INTO band_client(client_id, band_id, creation_date, status, role)
+        VALUES ($1, $2, $3, $4, $5)
+        `, [clientId, bandId, creationDate, status, role]
+    );
+};
+
 //
 // /*
 //  On ne permet pas de passer nbSignalement car ce sera trop risqué qu'un utilisateur puisse modifier cette variable comme il le souhaite

@@ -1,21 +1,26 @@
 const BandModele = require("../modele/bandDB");
 const pool = require("../modele/database");
+const Constants = require("../utils/constant");
 
-// module.exports.createDrink = async (req, res) => {
-//     const {label, prcAlcohol, quantity} = req.body;
-//     const createdBy = req.session.id;
-//     const client = await pool.connect();
-//
-//     try {
-//         await DrinkModele.createDrink(client, label, prcAlcohol, quantity, createdBy);
-//         res.sendStatus(201);
-//     } catch (error){
-//         res.sendStatus(500);
-//     } finally {
-//         client.release();
-//     }
-// }
-//
+module.exports.createBand = async (req, res) => {
+    const {label} = req.body;
+    const client = await pool.connect();
+
+    try {
+        client.query("BEGIN;");
+        const bandId = await BandModele.createBand(client, label, new Date());
+        await BandModele.addMember(client, req.session.id, bandId, null, null, Constants.ROLE_ADMINISTRATOR)
+        client.query("COMMIT;");
+        res.sendStatus(201);
+    } catch (error){
+        client.query("ROLLBACK;");
+        console.log(error);
+        res.sendStatus(500);
+    } finally {
+        client.release();
+    }
+}
+
 // module.exports.updateDrink = async (req, res) => {
 //     const {label, prcAlcohol, quantity, id} = req.body;
 //     const client = await pool.connect();
@@ -133,6 +138,7 @@ module.exports.getBandById = async (req, res) => {
                 res.sendStatus(404);
             }
         } catch (error){
+            console.log(error);
             res.sendStatus(500);
         } finally {
             client.release();
@@ -153,6 +159,7 @@ module.exports.getBandsByUserId = async (req, res) => {
             res.sendStatus(404);
         }
     } catch (error) {
+        console.log(error);
         res.sendStatus(500);
     } finally {
         client.release();
