@@ -21,19 +21,23 @@ module.exports.createBand = async (req, res) => {
     }
 }
 
-// module.exports.updateDrink = async (req, res) => {
-//     const {label, prcAlcohol, quantity, id} = req.body;
-//     const client = await pool.connect();
-//
-//     try {
-//         await DrinkModele.updateDrink(client, label, prcAlcohol, quantity, id);
-//         res.sendStatus(204);
-//     } catch (error){
-//         res.sendStatus(500);
-//     } finally {
-//         client.release();
-//     }
-// }
+module.exports.addMember = async (req, res) => {
+    const bandIdTexte = req.params.bandId;
+    const bandId = parseInt(bandIdTexte);
+    const userIdTexte = req.params.userId;
+    const userId = parseInt(userIdTexte);
+    const client = await pool.connect();
+
+    try {
+        await BandModele.addMember(client, userId, bandId, new Date(), Constants.STATUS_WAITING, Constants.ROLE_NONE);
+        res.sendStatus(204);
+    } catch (error){
+        console.log(error);
+        res.sendStatus(500);
+    } finally {
+        client.release();
+    }
+}
 
 module.exports.getAllBands = async (req, res) => {
     const client = await pool.connect();
@@ -121,7 +125,7 @@ module.exports.getAllBands = async (req, res) => {
 // }
 
 module.exports.getBandById = async (req, res) => {
-    const bandIdTexte = req.params.id;
+    const bandIdTexte = req.params.idBand;
     const bandId = parseInt(bandIdTexte);
     const client = await pool.connect();
 

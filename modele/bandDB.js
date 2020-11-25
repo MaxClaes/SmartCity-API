@@ -6,11 +6,11 @@ module.exports.createBand = async (client, label, creationDate) => {
     );
 };
 
-module.exports.addMember = async (client, clientId, bandId, creationDate, status, role) => {
+module.exports.addMember = async (client, userId, bandId, creationDate, status, role) => {
     return await client.query(`
         INSERT INTO band_client(client_id, band_id, creation_date, status, role)
         VALUES ($1, $2, $3, $4, $5)
-        `, [clientId, bandId, creationDate, status, role]
+        `, [userId, bandId, creationDate, status, role]
     );
 };
 
@@ -70,3 +70,11 @@ module.exports.getBandsByUserId = async (client, userId) => {
         `, [userId]
     );
 }
+
+module.exports.bandExist = async (client, bandId) => {
+    const {rows} = await client.query(
+        "SELECT count(band_id) AS nbr FROM band_client WHERE band_id = $1",
+        [bandId]
+    );
+    return rows[0].nbr > 0;
+};

@@ -94,6 +94,7 @@ module.exports.canDelete = async (req, res, next) => {
                 }
             }
         } catch (error){
+            console.log(error);
             res.sendStatus(500);
         } finally {
             client.release();
