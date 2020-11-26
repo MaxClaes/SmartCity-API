@@ -1,3 +1,5 @@
+SET TIMEZONE='GMT';
+
 DROP TABLE IF EXISTS address CASCADE;
 CREATE TABLE address (
     id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -43,13 +45,14 @@ CREATE TABLE band (
     creation_date date
 );
 
-DROP TABLE IF EXISTS client_band CASCADE;
-CREATE TABLE client_band (
+DROP TABLE IF EXISTS band_client CASCADE;
+CREATE TABLE band_client (
     client_id integer REFERENCES client(id) DEFERRABLE INITIALLY IMMEDIATE,
     band_id integer REFERENCES band(id) DEFERRABLE INITIALLY IMMEDIATE,
     creation_date date,
     status char(1),
     role varchar,
+    invited_by integer REFERENCES client(id) DEFERRABLE INITIALLY IMMEDIATE,
     PRIMARY KEY(client_id, band_id)
 );
 

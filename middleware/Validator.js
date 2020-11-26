@@ -125,7 +125,7 @@ module.exports.authUserIsAdministratorInBand = async (req, res, next) => {
                 if (await BandModel.isAdministratorInBand(client, bandId, req.session.id)) {
                     next();
                 } else {
-                    res.sendStatus(404);
+                    res.sendStatus(403);
                 }
             } catch (error) {
                 console.log(error);
@@ -153,10 +153,81 @@ module.exports.roleIsValid = (req, res, next) => {
     }
 }
 
-module.exports.canChangeRoleInBand = async (req, res, next) => {
-    if (!req.session || req.session.authLevel === Constants.ROLE_CLIENT) {
-        res.sendStatus(403);
+// module.exports.canChangeRoleInBand = async (req, res, next) => {
+//     if (!req.session || req.session.authLevel === Constants.ROLE_CLIENT) {
+//         res.sendStatus(403);
+//     } else {
+//         next();
+//     }
+// }
+
+module.exports.userIsNotInBand = async (req, res, next) => {
+    if (req.session) {
+        const bandIdTexte = req.params.bandId;
+        const bandId = parseInt(bandIdTexte);
+        const userIdTexte = req.params.userId;
+        const userId = parseInt(userIdTexte);
+        const client = await pool.connect();
+
+        if (isNaN(bandId)) {
+            res.sendStatus(400);
+        } else {
+            try {
+                if (!await BandModel.userExist(client, bandId, userId)) {
+                    next();
+                } else {
+                    res.sendStatus(409);
+                }
+            } catch (error) {
+                console.log(error);
+                res.sendStatus(500);
+            } finally {
+                client.release();
+            }
+        }
     } else {
-        next();
+        res.sendStatus(403);
+    }
+}
+
+module.exports.statusIsValid = (req, res, next) => {
+    if (req.session) {
+        const {status} = req.body;
+
+        if (status !== undefined && (status.toUpperCase() === Constants.STATUS_ACCEPTED || status.toUpperCase() === Constants.STATUS_REJECTED)) {
+            next();
+        } else {
+            res.sendStatus(403);
+        }
+    } else {
+        res.sendStatus(403);
+    }
+}
+
+module.exports.hasAcceptedStatus = async (req, res, next) => {
+    if (req.session) {
+        const bandIdTexte = req.params.bandId;
+        const bandId = parseInt(bandIdTexte);
+        const client = await pool.connect();
+
+        if (isNaN(bandId)) {
+            res.sendStatus(400);
+        } else {
+            try {
+                const status = await BandModel.getStatus(client, bandId, req.session.id)
+                if (status === Constants.STATUS_ACCEPTED) {
+                    next();
+                } else {
+                    res.sendStatus(403);
+                }
+            } catch (error) {
+                console.log(error);
+                res.sendStatus(500);
+            } finally {
+                client.release();
+            }
+        }
+    } else {
+        res.sendStatus(403);
     }
 }

@@ -3,7 +3,7 @@ const Constants = require("../utils/constant");
 module.exports.createBand = async (client, label, creationDate) => {
     return await client.query(`
         INSERT INTO band(label, creation_date)
-        VALUES ($1, $2) SET @LASTID = SCOPE_IDENTITY()
+        VALUES ($1, $2) RETURNING id;
         `, [label, creationDate]
     );
 };
@@ -11,7 +11,7 @@ module.exports.createBand = async (client, label, creationDate) => {
 module.exports.addMember = async (client, userId, bandId, creationDate, status, role) => {
     return await client.query(`
         INSERT INTO band_client(client_id, band_id, creation_date, status, role)
-        VALUES ($1, $2, $3, $4, $5)
+        VALUES ($1, $2, $3, $4, $5);
         `, [userId, bandId, creationDate, status, role]
     );
 };
@@ -29,28 +29,19 @@ module.exports.addMember = async (client, userId, bandId, creationDate, status, 
 // };
 
 module.exports.getAllBands = async (client) => {
-    return await client.query(`SELECT * FROM band;`);
+    return await client.query(`SELECT * FROM band_client;`);    //A changer le band_client
 }
 
-// module.exports.getDrinksByName = async (client, label) => {
-//     const labelUpperCase = label.toUpperCase();
-//
-//     return await client.query(`
-//         SELECT * FROM drink WHERE UPPER(label) = $1;
-//         `, [labelUpperCase]
-//     );
-// };
-//
-// module.exports.getDrinksByCreatedBy = async (client, createdBy) => {
-//     return await client.query(`
-//         SELECT * FROM drink WHERE created_by = $1;
-//         `, [createdBy]
-//     );
-// };
+module.exports.deleteAllMemberOfBand = async (client, bandId) => {
+    return await client.query(`
+        DELETE FROM band_client WHERE band_id = $1;
+        `, [bandId]
+    );
+}
 
 module.exports.deleteBand = async (client, bandId) => {
     return await client.query(`
-        DELETE band, band_client from band INNER JOIN band_client on band_client.band_id = band.id WHERE band.id = $1;
+        DELETE FROM band WHERE id = $1;
         `, [bandId]
     );
 }
@@ -63,19 +54,21 @@ module.exports.deleteMember = async (client, bandId, memberId) => {
 }
 
 module.exports.getBandById = async (client, bandId) => {
+    // return await client.query(`
+    //     SELECT * from band WHERE id = $1`, [bandId]
+    // );
     return await client.query(`
-        SELECT band_client.client_id, band_client.band_id, band_client.creation_date, band_client.status, band_client.role, 
-        band.id, band.creation_date, band.label 
-        FROM band_client INNER JOIN band on band_client.band_id = band.id WHERE band.id = $1;
+        SELECT band_client.client_id, band_client.band_id, band_client.creation_date, band_client.status, band_client.role, band_client.invited_by
+        band.creation_date, band.label
+        FROM band_client INNER JOIN band on band_client.band_id = band.id WHERE band_client.band_id = $1;
         `, [bandId]
     );
 }
 
 module.exports.getBandsByUserId = async (client, userId) => {
     return await client.query(`
-        SELECT band_client.client_id, band_client.band_id, band_client.creation_date, band_client.status, band_client.role, 
-        band.id, band.creation_date, band.label 
-        FROM band_client INNER JOIN band on band_client.band_id = band.id WHERE client_id = $1;
+        SELECT band.id, band.label, band.creation_date, band_client.status, band_client.role, band_client.invited_by 
+        FROM band_client INNER JOIN band on band_client.band_id = band.id WHERE band_client.client_id = $1;
         `, [userId]
     );
 }
@@ -90,28 +83,57 @@ module.exports.bandExist = async (client, bandId) => {
 
 module.exports.userExist = async (client, bandId, clientId) => {
     const {rows} = await client.query(
-        "SELECT count(user_id) AS nbr FROM band_client WHERE band_id = $1 AND client_id = $2",
+        "SELECT count(client_id) AS nbr FROM band_client WHERE band_id = $1 AND client_id = $2",
         [bandId, clientId]
     );
     return rows[0].nbr > 0;
 };
 
+module.exports.bandIsEmpty = async (client, bandId) => {
+    const {rows} = await client.query(
+        "SELECT count(band_id) AS nbr FROM band_client WHERE band_id = $1",
+        [bandId]
+    );
+    return rows[0].nbr == 0;
+};
+
 module.exports.isAdministratorInBand = async (client, bandId, clientId) => {
     const {rows} = await client.query(
-        "SELECT count(user_id) AS nbr FROM band_client WHERE band_id = $1 AND client_id = $2 AND role = $3",
+        "SELECT count(client_id) AS nbr FROM band_client WHERE band_id = $1 AND client_id = $2 AND role = $3",
         [bandId, clientId, Constants.ROLE_ADMINISTRATOR]
     );
     return rows[0].nbr > 0;
 };
 
+module.exports.administratorExistsInBand = async (client, bandId) => {
+    const {rows} = await client.query(
+        "SELECT count(client_id) AS nbr FROM band_client WHERE band_id = $1 AND role = $2",
+        [bandId, Constants.ROLE_ADMINISTRATOR]
+    );
+    return rows[0].nbr > 0;
+};
+
+module.exports.getFirstUserIdWithStatusAccepted = async (client, bandId) => {
+    return await client.query(
+        "SELECT band_client.client_id DISTINCT band_client.band_id FROM band_client WHERE band_id = $1 AND status = $2;",
+        [bandId, Constants.STATUS_ACCEPTED]
+    );
+};
+
 module.exports.changeRole = async (client, bandId, userId, role) => {
-    return await client.query(`UPDATE band_client SET role = $1 WHERE client_id = $2 AND band_id;`, [role, userId, bandId]);
+    return await client.query(`UPDATE band_client SET role = $1 WHERE client_id = $2 AND band_id = $3;`, [role, userId, bandId]);
 };
 
 module.exports.getAllInvitations = async (client, userId) => {
-    return await client.query(`SELECT * FROM band_client WHERE client_id = $1 AND status = $2;`, [userId, Constants.STATUS_WAITING]);
-}
+    return await client.query(`SELECT band_client.client_id, band_client.band_id, band_client.creation_date, 
+    band_client.status, band_client.role, band_client.invited_by, band.id, band.label, band.creation_date 
+    FROM band_client INNER JOIN band on band_client.band_id = band.id WHERE client_id = $1 AND status = $2;`, [userId, Constants.STATUS_WAITING]);
+};
 
 module.exports.changeStatus = async (client, bandId, userId, status) => {
-    return await client.query(`UPDATE band_client SET status = $1 WHERE client_id = $2 AND band_id;`, [status, userId, bandId]);
+    return await client.query(`UPDATE band_client SET status = $1 WHERE client_id = $2 AND band_id = $3;`, [status, userId, bandId]);
 };
+
+module.exports.getStatus = async (client, bandId, userId) => {
+    return await client.query(`SELECT band_client.status FROM band_client WHERE client_id = $1 AND band_id = $2;`, [userId, bandId]);
+}

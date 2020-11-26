@@ -8,6 +8,6 @@ module.exports = {
     ROLE_ADMINISTRATOR_LVL : 3,
 
     STATUS_ACCEPTED : 'A',
-    STATUS_REJETED : 'R',
+    STATUS_REJECTED : 'R',
     STATUS_WAITING : 'W'
 }
