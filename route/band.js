@@ -7,8 +7,8 @@ const Router = require("express-promise-router");
 const router = new Router;
 
 router.get('/all', JWTMiddleWare.identification, AuthoMiddleware.mustBeManager, BandControleur.getAllBands);
-router.get('/bandid/:bandId', JWTMiddleWare.identification, AuthoMiddleware.mustBeManager, BandControleur.getBandById);
-router.delete('/bandid/:bandId', JWTMiddleWare.identification, AuthoMiddleware.mustBeManager, BandControleur.deleteBand);  //Manager pour supprimer n'importe quel groupe
+router.get('/bandid/:bandId', JWTMiddleWare.identification, AuthoMiddleware.mustBeManager, ValidatorMiddleWare.bandExists, BandControleur.getBandById);
+router.delete('/bandid/:bandId', JWTMiddleWare.identification, AuthoMiddleware.mustBeManager, ValidatorMiddleWare.bandExists, BandControleur.deleteBand);  //Manager pour supprimer n'importe quel groupe
 
 router.post('/mybands', JWTMiddleWare.identification, BandControleur.createBand);   //Faire les vérifications des entrées
 router.get('/mybands', JWTMiddleWare.identification, BandControleur.getBandsByUserId);
