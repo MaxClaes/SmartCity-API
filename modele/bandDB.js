@@ -115,7 +115,7 @@ module.exports.administratorExistsInBand = async (client, bandId) => {
 
 module.exports.getFirstUserIdWithStatusAccepted = async (client, bandId) => {
     return await client.query(
-        "SELECT band_client.client_id DISTINCT band_client.band_id FROM band_client WHERE band_id = $1 AND status = $2;",
+        "SELECT DISTINCT band_client.client_id as id FROM band_client WHERE band_id = $1 AND status = $2;",
         [bandId, Constants.STATUS_ACCEPTED]
     );
 };

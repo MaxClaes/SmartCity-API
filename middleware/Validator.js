@@ -232,3 +232,32 @@ module.exports.hasAcceptedStatus = async (req, res, next) => {
         res.sendStatus(403);
     }
 }
+
+module.exports.currentStatusIsWaiting = async (req, res, next) => {
+    if (req.session) {
+        const bandIdTexte = req.params.bandId;
+        const bandId = parseInt(bandIdTexte);
+        const client = await pool.connect();
+
+        if (isNaN(bandId)) {
+            res.sendStatus(400);
+        } else {
+            try {
+                const status = await BandModel.getStatus(client, bandId, req.session.id)
+                const userStatus = status.rows[0].status;
+                if (userStatus === Constants.STATUS_WAITING) {
+                    next();
+                } else {
+                    res.sendStatus(409);
+                }
+            } catch (error) {
+                console.log(error);
+                res.sendStatus(500);
+            } finally {
+                client.release();
+            }
+        }
+    } else {
+        res.sendStatus(403);
+    }
+}

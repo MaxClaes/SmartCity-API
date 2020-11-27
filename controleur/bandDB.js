@@ -155,7 +155,8 @@ module.exports.deleteMember = async (req, res) => {
                 await BandModel.deleteBand(client, bandId);
             } else {
                 if (!await BandModel.administratorExistsInBand(client, bandId)) {
-                    const userIdWithStatusAccepted = await BandModel.getFirstUserIdWithStatusAccepted(client, bandId);
+                    const users = await BandModel.getFirstUserIdWithStatusAccepted(client, bandId);
+                    const userIdWithStatusAccepted = users.rows[0].id
 
                     if (userIdWithStatusAccepted !== undefined) {
                         //On lui assigne le rôle administrator
