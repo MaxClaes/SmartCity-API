@@ -7,12 +7,14 @@ module.exports.createBand = async (req, res) => {
     const client = await pool.connect();
 
     try {
+        const date = new Date();
+
         client.query("BEGIN;");
-        const bands = await BandModel.createBand(client, label, new Date());
+        const bands = await BandModel.createBand(client, label, date);
         const bandId = bands.rows[0].id;
 
         if (bandId !== undefined && bandId !== null) {
-            await BandModel.addMember(client, req.session.id, bandId, new Date(), null, Constants.ROLE_ADMINISTRATOR)
+            await BandModel.addMember(client, req.session.id, bandId, null, Constants.STATUS_ACCEPTED, Constants.ROLE_ADMINISTRATOR, null)
             client.query("COMMIT;");
             res.sendStatus(201);
         } else {
@@ -35,8 +37,8 @@ module.exports.addMember = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        await BandModel.addMember(client, userId, bandId, new Date(), Constants.STATUS_WAITING, Constants.ROLE_CLIENT);
-        res.sendStatus(204);
+        await BandModel.addMember(client, userId, bandId, new Date(), Constants.STATUS_WAITING, Constants.ROLE_CLIENT, req.session.id);
+        res.sendStatus(201);
     } catch (error){
         console.log(error);
         res.sendStatus(500);
@@ -189,7 +191,7 @@ module.exports.getBandById = async (req, res) => {
             const band = bands[0];
 
             if (band !== undefined){
-                res.json(band);
+                res.json(bands);
             } else {
                 res.sendStatus(404);
             }
@@ -210,7 +212,7 @@ module.exports.getBandsByUserId = async (req, res) => {
         const band = bands[0];
 
         if (band !== undefined) {
-            const bandsAccepted = bands.filter(band => band.status === Constants.STATUS_ACCEPTED);
+            const bandsAccepted = bands.filter(band => band.status === Constants.STATUS_ACCEPTED || band.status === null);
             res.json(bandsAccepted);
         } else {
             res.sendStatus(404);
@@ -279,8 +281,11 @@ module.exports.responseInvitation = async (req, res) => {
                 await BandModel.changeRole(client, bandId, req.session.id, Constants.ROLE_ADMINISTRATOR);
             }
         } else {
-            await BandModel.changeStatus(client, bandId, req.session.id, Constants.STATUS_REJECTED);
-
+            await BandModel.deleteMember(client, bandId, req.session.id);
+            //Si on veut garder une trace que l'utilisateur a refusé la demande on peut mettre la ligne suivante
+            //Cela implique des changements dans les conditions de suppression d'un groupe
+            //Il faudrait ajouter qu'on peut supprimer un groupe s'il est vide ou si tous les status restants sont à 'R'
+            //await BandModel.changeStatus(client, bandId, req.session.id, Constants.STATUS_REJECTED);
             if (await BandModel.bandIsEmpty(client, bandId)) {
                 await BandModel.deleteBand(client, bandId);
             }

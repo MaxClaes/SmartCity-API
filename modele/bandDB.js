@@ -8,11 +8,11 @@ module.exports.createBand = async (client, label, creationDate) => {
     );
 };
 
-module.exports.addMember = async (client, userId, bandId, creationDate, status, role) => {
+module.exports.addMember = async (client, userId, bandId, creationDate, status, role, invited_by) => {
     return await client.query(`
-        INSERT INTO band_client(client_id, band_id, creation_date, status, role)
-        VALUES ($1, $2, $3, $4, $5);
-        `, [userId, bandId, creationDate, status, role]
+        INSERT INTO band_client(client_id, band_id, creation_date, status, role, invited_by)
+        VALUES ($1, $2, $3, $4, $5, $6);
+        `, [userId, bandId, creationDate, status, role, invited_by]
     );
 };
 
@@ -58,8 +58,8 @@ module.exports.getBandById = async (client, bandId) => {
     //     SELECT * from band WHERE id = $1`, [bandId]
     // );
     return await client.query(`
-        SELECT band_client.client_id, band_client.band_id, band_client.creation_date, band_client.status, band_client.role, band_client.invited_by
-        band.creation_date, band.label
+        SELECT band.id, band.label, band.creation_date as bandCreationDate, band_client.client_id as userId, 
+        band_client.creation_date as dateOfInvitation, band_client.status, band_client.role, band_client.invited_by
         FROM band_client INNER JOIN band on band_client.band_id = band.id WHERE band_client.band_id = $1;
         `, [bandId]
     );
@@ -67,8 +67,8 @@ module.exports.getBandById = async (client, bandId) => {
 
 module.exports.getBandsByUserId = async (client, userId) => {
     return await client.query(`
-        SELECT band.id, band.label, band.creation_date, band_client.status, band_client.role, band_client.invited_by 
-        FROM band_client INNER JOIN band on band_client.band_id = band.id WHERE band_client.client_id = $1;
+        SELECT band.id, band.label, band.creation_date as bandCreationDate, band_client.creation_date as dateOfInvitation, 
+        band_client.status, band_client.role, band_client.invited_by FROM band_client INNER JOIN band on band_client.band_id = band.id WHERE band_client.client_id = $1;
         `, [userId]
     );
 }
@@ -125,8 +125,8 @@ module.exports.changeRole = async (client, bandId, userId, role) => {
 };
 
 module.exports.getAllInvitations = async (client, userId) => {
-    return await client.query(`SELECT band_client.client_id, band_client.band_id, band_client.creation_date, 
-    band_client.status, band_client.role, band_client.invited_by, band.id, band.label, band.creation_date 
+    return await client.query(`SELECT band.id, band.label, band.creation_date as bandCreationDate, 
+    band_client.creation_date as dateOfInvitation, band_client.status, band_client.role, band_client.invited_by 
     FROM band_client INNER JOIN band on band_client.band_id = band.id WHERE client_id = $1 AND status = $2;`, [userId, Constants.STATUS_WAITING]);
 };
 

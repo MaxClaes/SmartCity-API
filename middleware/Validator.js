@@ -215,7 +215,8 @@ module.exports.hasAcceptedStatus = async (req, res, next) => {
         } else {
             try {
                 const status = await BandModel.getStatus(client, bandId, req.session.id)
-                if (status === Constants.STATUS_ACCEPTED) {
+                const userStatus = status.rows[0].status;
+                if (userStatus === Constants.STATUS_ACCEPTED) {
                     next();
                 } else {
                     res.sendStatus(403);
