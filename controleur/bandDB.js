@@ -1,5 +1,5 @@
-const BandModel = require("../modele/bandDB");
-const pool = require("../modele/database");
+const BandModel = require("../model/bandDB");
+const pool = require("../model/database");
 const Constants = require("../utils/constant");
 const DTO = require('../dto/dto');
 

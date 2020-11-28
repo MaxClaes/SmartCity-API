@@ -2,9 +2,9 @@ require("dotenv").config();
 const process = require('process');
 const jwt = require('jsonwebtoken');
 
-const pool = require('../modele/database');
-const UserModel = require('../modele/userDB');
-const AddressModel = require('../modele/addressDB');
+const pool = require('../model/database');
+const UserModel = require('../model/userDB');
+const AddressModel = require('../model/addressDB');
 const Constants = require('../utils/constant');
 const DTO = require('../dto/dto');
 

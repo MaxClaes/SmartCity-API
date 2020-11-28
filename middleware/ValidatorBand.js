@@ -1,6 +1,6 @@
-const UserModel = require('../modele/userDB');
-const BandModel = require('../modele/bandDB');
-const pool = require("../modele/database");
+const UserModel = require('../model/userDB');
+const BandModel = require('../model/bandDB');
+const pool = require("../model/database");
 const Constants = require('../utils/constant');
 
 module.exports.bandExists = async (req, res, next) => {

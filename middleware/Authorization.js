@@ -1,6 +1,6 @@
-const DrinkModel = require("../modele/drinkDB");
-const UserModel = require('../modele/userDB');
-const pool = require("../modele/database");
+const DrinkModel = require("../model/drinkDB");
+const UserModel = require('../model/userDB');
+const pool = require("../model/database");
 const Constants = require('../utils/constant');
 
 // module.exports.mustBeAdministrator = (req, res, next) => {

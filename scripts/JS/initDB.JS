@@ -1,4 +1,4 @@
-const pool = require("../../modele/database");
+const pool = require("../../model/database");
 const fs = require("fs");
 const path = require("path");
 

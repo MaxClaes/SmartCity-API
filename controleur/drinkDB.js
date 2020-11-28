@@ -1,5 +1,5 @@
-const DrinkModel = require("../modele/drinkDB");
-const pool = require("../modele/database");
+const DrinkModel = require("../model/drinkDB");
+const pool = require("../model/database");
 const DTO = require('../dto/dto');
 
 module.exports.createDrink = async (req, res) => {
