@@ -3,7 +3,7 @@ const Constants = require("../utils/constant");
 module.exports.createBand = async (client, label, creationDate) => {
     return await client.query(`
         INSERT INTO band(label, creation_date)
-        VALUES ($1, $2) RETURNING id;
+        VALUES ($1, $2) RETURNING band_id;
         `, [label, creationDate]
     );
 };

@@ -1,7 +1,7 @@
 module.exports.createAddress = async (client, country, postalCode, city, street, number) => {
     return await client.query(`
         INSERT INTO address(country, postal_code, city, street, number)
-        VALUES ($1, $2, $3, $4, $5); 
+        VALUES ($1, $2, $3, $4, $5) RETURNING address_id; 
         `, [country, postalCode, city, street, number]
     );
 };

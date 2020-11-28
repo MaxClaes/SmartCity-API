@@ -9,7 +9,7 @@ module.exports.getUserLogin = async (client, email, password) => {
     const values = await Promise.all(promises);
     const userRow = values[0].rows[0];
 
-    if(userRow !== undefined && await compareHash(password, userRow.password)){
+    if(userRow !== undefined && await compareHash(password, userRow.password)) {
         return {userType: userRow.role, value: userRow};
     } else {
         return {userType: null, value: null}
@@ -22,23 +22,67 @@ module.exports.getUserByEmail = async (client, email) => {
     `, [email]);
 };
 
+// module.exports.getAllUsers = async (client) => {
+//     return await client.query(`
+//         SELECT client.id as user_id, client.name as user_name, client.firstname as user_firstname, client.birthdate as user_birthdate,
+//         client.email as user_email, client.registration_date as user_registration_date, client.height as user_height,
+//         client.weight as user_weight, client.gsm as user_gsm, client.role as user_role,
+//         address.id as address_id, address.country as address_country, address.postal_code as address_postal_code,
+//         address.city as address_city, address.street as address_street, address.number as address_number
+//         FROM client INNER JOIN address ON client.address = address.id;`
+//     );
+// }
+
+// module.exports.getAllUsers = async (client) => {
+//     const t = await client.query(`
+//         SELECT client.id as user_id, client.name as user_name, client.firstname as user_firstname, client.birthdate as user_birthdate,
+//         client.email as user_email, client.registration_date as user_registration_date, client.height as user_height,
+//         client.weight as user_weight, client.gsm as user_gsm, client.role as user_role,
+//         address.id as address_id, address.country as address_country, address.postal_code as address_postal_code,
+//         address.city as address_city, address.street as address_street, address.number as address_number
+//         FROM client INNER JOIN address ON client.address = address.id;`
+//     );
+//     return t;
+// }
+
+// module.exports.getAllUsers = async (client) => {
+//     const t = await client.query(`
+//         SELECT client.c_id, client.c_name, client.c_firstname, client.c_birthdate, client.c_email, client.c_registration_date,
+//         client.c_height, client.c_weight, client.c_gsm, client.c_role,
+//         address.a_id, address.a_country, address.a_postal_code, address.a_city, address.a_street, address.a_number
+//         FROM client as c INNER JOIN address as a ON c.address = a.id;`
+//     );
+//     return t;
+// }
+
+
+// module.exports.getAllUsers = async (client) => {
+//     return await client.query(`
+//         SELECT client.id as cli_id, client.name as cli_name, client.firstname as cli_firstname, client.birthdate as cli_birthdate,
+//         client.email as cli_email, client.registration_date as cli_registration_date, client.height as cli_height, client.weight as cli_weight,
+//         client.gsm as cli_gsm, client.role as cli_role, address.id as adr_id, address.country as adr_country, address.postal_code as adr_postal_code,
+//         address.city as adr_city, address.street as adr_street, address.number as adr_number
+//         FROM client INNER JOIN address ON client.address = address.id;`
+//     );
+// }
+
 module.exports.getAllUsers = async (client) => {
-    const t = await client.query(`
-        SELECT client.id as client_id, client.name as client_name, client.firstname as client_firstname, client.birthdate as client_birthdate, 
-        client.email as client_email, client.registration_date AS client_registration_date, client.height as client_height, 
-        client.weight as client_weight, client.gsm as client_gsm, client.role as client_role, 
-        address.id as address_id, address.country as address_country, address.postal_code as address_postal_code, 
-        address.city as address_city, address.street as address_street, address.number as address_number 
-        FROM client INNER JOIN address ON client.address = address.id;`
+    return await client.query(`
+        SELECT client.client_id, client.name, client.firstname, client.birthdate, 
+        client.email, client.registration_date, client.height, client.weight, 
+        client.gsm, client.role, address.address_id, address.country, address.postal_code, 
+        address.city, address.street, address.number
+        FROM client INNER JOIN address ON client.address = address.address_id;`
     );
-    return t;
 }
+
 module.exports.getUser = async (client, id) => {
     return await client.query(`
-        SELECT client.id, client.name, client.firstname, client.birthdate, client.email, client.registration_date, 
-        client.height, client.weight, client.gsm, client.role, 
-        address.id, address.country, address.postal_code, address.city, address.street, address.number 
-        FROM client INNER JOIN address ON client.address = address.id WHERE client.id = $1;`, [id]
+        SELECT client.client_id, client.name, client.firstname, client.birthdate, 
+        client.email, client.registration_date, client.height, client.weight, 
+        client.gsm, client.role, address.address_id, address.country, address.postal_code, 
+        address.city, address.street, address.number 
+        FROM client INNER JOIN address ON client.address = address.address_id WHERE client.client_id = $1;`, [id]
     );
 }
 

@@ -107,22 +107,22 @@ module.exports.canChangeRole = async (req, res, next) => {
     if (!req.session || req.session.authLevel === Constants.ROLE_CLIENT) {
         res.sendStatus(403);
     } else {
-        const {targetUserId, targetNewRole} = req.body;
+        const {userId, role} = req.body;
         const client = await pool.connect();
 
         try {
-            if (targetUserId === undefined || targetNewRole === undefined ||
-                (targetNewRole.toUpperCase() !== Constants.ROLE_CLIENT && targetNewRole.toUpperCase() !== Constants.ROLE_MODERATOR && targetNewRole.toUpperCase() !== Constants.ROLE_ADMINISTRATOR)) {
+            if (userId === undefined || role === undefined ||
+                (role.toUpperCase() !== Constants.ROLE_CLIENT && role.toUpperCase() !== Constants.ROLE_MODERATOR && role.toUpperCase() !== Constants.ROLE_ADMINISTRATOR)) {
                 res.sendStatus(400);
             } else {
                 if (req.session.authLevel === Constants.ROLE_ADMINISTRATOR) {
                     next();
                 } else {
-                    const {rows: targetUsers} = await UserModel.getUser(client, targetUserId);
-                    const targetUser = targetUsers[0];
+                    const {rows: userEntities} = await UserModel.getUser(client, userId);
+                    const userEntity = userEntities[0];
 
-                    if (targetUser !== undefined) {
-                        if (targetUser.role === Constants.ROLE_ADMINISTRATOR || targetNewRole.toUpperCase() === Constants.ROLE_ADMINISTRATOR) {
+                    if (userEntity !== undefined) {
+                        if (userEntity.role === Constants.ROLE_ADMINISTRATOR || role.toUpperCase() === Constants.ROLE_ADMINISTRATOR) {
                             res.sendStatus(403);
                         } else {
                             next();
