@@ -21,11 +21,10 @@
   <component name="ChangeListManager">
     <list default="true" id="084b7899-cb0a-4e00-98be-82cfd2e99716" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controleur/bandDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/controleur/bandDB.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controleur/drinkDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/controleur/drinkDB.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controleur/userDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/controleur/userDB.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dto/dto.js" beforeDir="false" afterPath="$PROJECT_DIR$/dto/dto.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modele/drinkDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/modele/drinkDB.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modele/addressDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/modele/addressDB.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modele/bandDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/modele/bandDB.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modele/userDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/modele/userDB.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/SQL/createDB.sql" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/SQL/createDB.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,7 +75,7 @@
       <workItem from="1605722965081" duration="48745000" />
       <workItem from="1606063188192" duration="14763000" />
       <workItem from="1606130340244" duration="83094000" />
-      <workItem from="1606561539323" duration="14711000" />
+      <workItem from="1606561539323" duration="15696000" />
     </task>
     <servers />
   </component>
@@ -203,11 +202,11 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state width="498" height="446" key="SwitcherDM/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1606236004897" />
-    <state x="616" y="91" width="581" height="556" key="find.popup" timestamp="1606580194998">
+    <state x="616" y="91" width="581" height="556" key="find.popup" timestamp="1606582134252">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="616" y="91" width="581" height="556" key="find.popup/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1606387689764" />
-    <state x="616" y="91" width="581" height="556" key="find.popup/0.0.1366.728@0.0.1366.728" timestamp="1606580194998" />
+    <state x="616" y="91" width="581" height="556" key="find.popup/0.0.1366.728@0.0.1366.728" timestamp="1606582134252" />
     <state x="339" y="162" key="run.anything.popup" timestamp="1606249521607">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -220,11 +219,6 @@
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/modele/bandDB.js</url>
-          <line>3</line>
-          <option name="timeStamp" value="47" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/controleur/bandDB.js</url>
           <line>158</line>

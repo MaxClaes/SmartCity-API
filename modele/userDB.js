@@ -118,7 +118,7 @@ module.exports.updateUser = async (client, name, firstname, birthdate, email, pa
     if(params.length > 0){
         query += querySet.join(',');
         params.push(id);
-        query += ` WHERE id = $${params.length};`;
+        query += ` WHERE client_id = $${params.length};`;
 
         return client.query(query, params);
     } else {
