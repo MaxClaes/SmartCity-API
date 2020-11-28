@@ -1,6 +1,7 @@
 const BandModel = require("../modele/bandDB");
 const pool = require("../modele/database");
 const Constants = require("../utils/constant");
+const DTO = require('../dto/dto');
 
 module.exports.createBand = async (req, res) => {
     const {label} = req.body;
@@ -51,10 +52,14 @@ module.exports.getAllBands = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        const {rows: bands} = await BandModel.getAllBands(client);
-        const band = bands[0];
+        const {rows: bandsEntities} = await BandModel.getAllBands(client);
+        const bandEntity = bandsEntities[0];
 
-        if(band !== undefined){
+        if(bandEntity !== undefined) {
+            const bands = [];
+            bandsEntities.forEach(function(b) {
+                bands.push(DTO.bandClientDTO(b));
+            });
             res.json(bands);
         } else {
             res.sendStatus(404);
@@ -80,31 +85,6 @@ module.exports.getAllBands = async (req, res) => {
 //             res.json(drinks);
 //         } else {
 //             res.sendStatus(404);
-//         }
-//     } catch (error){
-//         res.sendStatus(500);
-//     } finally {
-//         client.release();
-//     }
-// }
-//
-// module.exports.getDrinksByCreatedBy = async (req, res) => {
-//     const idTexte = req.params.id;
-//     const createdBy = parseInt(idTexte);
-//     const client = await pool.connect();
-//
-//     try {
-//         if (isNaN(createdBy)) {
-//             res.sendStatus(400);
-//         } else {
-//             const {rows: drinks} = await DrinkModele.getDrinksByCreatedBy(client, createdBy);
-//             const drink = drinks[0];
-//
-//             if (drink !== undefined) {
-//                 res.json(drinks);
-//             } else {
-//                 res.sendStatus(404);
-//             }
 //         }
 //     } catch (error){
 //         res.sendStatus(500);
@@ -155,8 +135,8 @@ module.exports.deleteMember = async (req, res) => {
                 await BandModel.deleteBand(client, bandId);
             } else {
                 if (!await BandModel.administratorExistsInBand(client, bandId)) {
-                    const users = await BandModel.getFirstUserIdWithStatusAccepted(client, bandId);
-                    const userIdWithStatusAccepted = users.rows[0].id
+                    const {rows: users} = await BandModel.getFirstUserIdWithStatusAccepted(client, bandId);
+                    const userIdWithStatusAccepted = users[0].id
 
                     if (userIdWithStatusAccepted !== undefined) {
                         //On lui assigne le rôle administrator
@@ -188,11 +168,11 @@ module.exports.getBandById = async (req, res) => {
         res.sendStatus(400);
     } else {
         try {
-            const {rows: bands} = await BandModel.getBandById(client, bandId);
-            const band = bands[0];
+            const {rows: bandsEntities} = await BandModel.getBandById(client, bandId);
+            const bandEntity = bandsEntities[0];
 
-            if (band !== undefined){
-                res.json(bands);
+            if (bandEntity !== undefined){
+                res.json(DTO.bandClientDTO(bandEntity));
             } else {
                 res.sendStatus(404);
             }
@@ -209,11 +189,17 @@ module.exports.getBandsByUserId = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        const {rows: bands} = await BandModel.getBandsByUserId(client, req.session.id);
-        const band = bands[0];
+        const {rows: bandsEntities} = await BandModel.getBandsByUserId(client, req.session.id);
+        const bandEntity = bandsEntities[0];
 
-        if (band !== undefined) {
-            const bandsAccepted = bands.filter(band => band.status === Constants.STATUS_ACCEPTED || band.status === null);
+        if (bandEntity !== undefined) {
+            //const bandsAccepted = bandsEntities.filter(band => band.status === Constants.STATUS_ACCEPTED || band.status === null);
+            const bandsAccepted = [];
+            bandsEntities.forEach(function(b) {
+                if (b.status === Constants.STATUS_ACCEPTED || b.status === null) {
+                    bandsAccepted.push(DTO.bandClientDTO(b));
+                }
+            });
             res.json(bandsAccepted);
         } else {
             res.sendStatus(404);
@@ -250,10 +236,14 @@ module.exports.getAllInvitations = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        const {rows: invitations} = await BandModel.getAllInvitations(client, req.session.id);
-        const invitation = invitations[0];
+        const {rows: invitationsEntities} = await BandModel.getAllInvitations(client, req.session.id);
+        const invitationEntity = invitationsEntities[0];
 
-        if (invitation !== undefined){
+        if (invitationEntity !== undefined) {
+            const invitations = [];
+            invitationsEntities.forEach(function(i) {
+                invitations.push(DTO.bandClientDTO(i));
+            });
             res.json(invitations);
         } else {
             res.sendStatus(404);

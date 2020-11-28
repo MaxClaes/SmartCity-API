@@ -65,3 +65,24 @@ module.exports.drinkDTO = (drinkEntity) => {
         createdBy : drinkEntity.created_by
     }
 }
+
+module.exports.bandClientDTO = (bandClientEntity) => {
+    return {
+        user : this.userDTO(bandClientEntity),
+        band : this.bandDTO(bandClientEntity),
+        //userId : bandClientEntity.client_id,
+        //bandId : bandClientEntity.band_id,
+        dateInvitation : bandClientEntity.date_invitation,
+        status : bandClientEntity.status,
+        role : bandClientEntity.role,
+        invitedBy : bandClientEntity.invited_by
+    }
+}
+
+module.exports.bandDTO = (bandEntity) => {
+    return {
+        id : bandEntity.band_id,
+        label : bandEntity.label,
+        creationDate : bandEntity.creation_date
+    }
+}
