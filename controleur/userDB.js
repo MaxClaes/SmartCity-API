@@ -58,8 +58,8 @@ module.exports.createUser = async (req, res) => {
             if (user === undefined) {
                 client.query("BEGIN;");
 
-                const addresses = await AddressModel.createAddress(client, addressObj.country, addressObj.postalCode, addressObj.city, addressObj.street, addressObj.number);
-                const addressId = addresses.rows[0].address_id;
+                const {rows: addresses} = await AddressModel.createAddress(client, addressObj.country, addressObj.postalCode, addressObj.city, addressObj.street, addressObj.number);
+                const addressId = addresses[0].address_id;
 
                 if (addressId !== undefined) {
                     await UserModel.createUser(client, name, firstname, birthdate, email, password, new Date(), height, weight, gsm, addressId);

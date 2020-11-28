@@ -12,7 +12,7 @@ module.exports.createDrink = async (client, label, prcAlcohol, quantity, created
 module.exports.updateDrink = async (client, label, prcAlcohol, quantity, id) => {
      return await client.query(`
         UPDATE drink SET label = $1, prc_alcohol = $2, quantity = $3
-        WHERE id = $4;
+        WHERE drink_id = $4;
         `, [label, prcAlcohol, quantity, id]
      );
 };
@@ -22,11 +22,9 @@ module.exports.getAllDrinks = async (client) => {
 }
 
 module.exports.getDrinksByName = async (client, label) => {
-    const labelUpperCase = label.toUpperCase();
-
     return await client.query(`
         SELECT * FROM drink WHERE UPPER(label) = $1;
-        `, [labelUpperCase]
+        `, [label]
     );
 };
 
@@ -39,7 +37,7 @@ module.exports.getDrinksByCreatedBy = async (client, createdBy) => {
 
 module.exports.deleteDrink = async (client, id) => {
     return await client.query(`
-        DELETE from drink WHERE id = $1;
+        DELETE from drink WHERE drink_id = $1;
         `, [id]
     );
 }
@@ -56,7 +54,7 @@ module.exports.resetReport = async (client, id) => {
 
     return await client.query(`
         UPDATE drink SET nb_reports = $1
-        WHERE id = $2;
+        WHERE drink_id = $2;
         `, [nbReportsInitial, id]
     );
 }
@@ -64,7 +62,7 @@ module.exports.resetReport = async (client, id) => {
 module.exports.incrementReport = async (client, id) => {
     return await client.query(`
         UPDATE drink SET nb_reports = (nb_reports + 1)
-        WHERE id = $1;
+        WHERE drink_id = $1;
         `, [id]
     );
 }

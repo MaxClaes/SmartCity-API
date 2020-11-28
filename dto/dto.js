@@ -27,29 +27,41 @@
 // }
 
 
-module.exports.userDTO = (client) => {
+module.exports.userDTO = (clientEntity) => {
     return  {
-        id : client.client_id,
-        name : client.name,
-        firstname : client.firstname,
-        birthdate : client.birthdate,
-        email : client.email,
-        registrationDate : client.registration_date,
-        height : client.height,
-        weight : client.weight,
-        gsm : client.gsm,
-        role : client.role,
-        address : this.addressDTO(client)
+        id : clientEntity.client_id,
+        name : clientEntity.name,
+        firstname : clientEntity.firstname,
+        birthdate : clientEntity.birthdate,
+        email : clientEntity.email,
+        registrationDate : clientEntity.registration_date,
+        height : clientEntity.height,
+        weight : clientEntity.weight,
+        gsm : clientEntity.gsm,
+        role : clientEntity.role,
+        address : this.addressDTO(clientEntity)
     };
 }
 
-module.exports.addressDTO = (address) => {
+module.exports.addressDTO = (addressEntity) => {
     return {
-        id : address.address_id,
-        country : address.country,
-        postalCode : address.postal_code,
-        city : address.city,
-        street : address.street,
-        number : address.number
+        id : addressEntity.address_id,
+        country : addressEntity.country,
+        postalCode : addressEntity.postal_code,
+        city : addressEntity.city,
+        street : addressEntity.street,
+        number : addressEntity.number
     };
+}
+
+module.exports.drinkDTO = (drinkEntity) => {
+    return {
+        id : drinkEntity.drink_id,
+        label : drinkEntity.label,
+        prcAlcohol : drinkEntity.prc_alcohol,
+        quantity : drinkEntity.quantity,
+        nbReports : drinkEntity.nb_reports,
+        popularity : drinkEntity.popularity,
+        createdBy : drinkEntity.created_by
+    }
 }

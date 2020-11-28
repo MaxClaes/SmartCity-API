@@ -1,5 +1,6 @@
 const DrinkModel = require("../modele/drinkDB");
 const pool = require("../modele/database");
+const DTO = require('../dto/dto');
 
 module.exports.createDrink = async (req, res) => {
     const {label, prcAlcohol, quantity} = req.body;
@@ -36,10 +37,14 @@ module.exports.getAllDrinks = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        const {rows: drinks} = await DrinkModel.getAllDrinks(client);
-        const drink = drinks[0];
+        const {rows: drinksEntities} = await DrinkModel.getAllDrinks(client);
+        const drinkEntity = drinksEntities[0];
 
-        if(drink !== undefined){
+        if(drinkEntity !== undefined) {
+            const drinks = [];
+            drinksEntities.forEach(function(d) {
+                drinks.push(DTO.drinkDTO(d));
+            });
             res.json(drinks);
         } else {
             res.sendStatus(404);
@@ -58,11 +63,11 @@ module.exports.getDrinksByName = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        const {rows: drinks} = await DrinkModel.getDrinksByName(client, labelWithoutSpace);
-        const drink = drinks[0];
+        const {rows: drinksEntities} = await DrinkModel.getDrinksByName(client, labelWithoutSpace.toUpperCase());
+        const drinkEntity = drinksEntities[0];
 
-        if(drink !== undefined){
-            res.json(drinks);
+        if(drinkEntity !== undefined) {
+            res.json(DTO.drinkDTO(drinkEntity));
         } else {
             res.sendStatus(404);
         }
@@ -83,10 +88,14 @@ module.exports.getDrinksByCreatedBy = async (req, res) => {
         if (isNaN(createdBy)) {
             res.sendStatus(400);
         } else {
-            const {rows: drinks} = await DrinkModel.getDrinksByCreatedBy(client, createdBy);
-            const drink = drinks[0];
+            const {rows: drinksEntities} = await DrinkModel.getDrinksByCreatedBy(client, createdBy);
+            const drinkEntity = drinksEntities[0];
 
-            if (drink !== undefined) {
+            if (drinkEntity !== undefined) {
+                const drinks = [];
+                drinksEntities.forEach(function(d) {
+                    drinks.push(DTO.drinkDTO(d));
+                });
                 res.json(drinks);
             } else {
                 res.sendStatus(404);
@@ -129,11 +138,11 @@ module.exports.getDrinkById = async (req, res) => {
         if(isNaN(id)){
             res.sendStatus(400);
         } else {
-            const {rows: drinks} = await DrinkModel.getDrinkById(client, id);
-            const drink = drinks[0];
+            const {rows: drinksEntities} = await DrinkModel.getDrinkById(client, id);
+            const drinkEntity = drinksEntities[0];
 
-            if(drink !== undefined){
-                res.json(drinks);
+            if(drinkEntity !== undefined){
+                res.json(DTO.drinkDTO(drinkEntity));
             } else {
                 res.sendStatus(404);
             }

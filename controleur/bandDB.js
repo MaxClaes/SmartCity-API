@@ -10,8 +10,8 @@ module.exports.createBand = async (req, res) => {
         const date = new Date();
 
         client.query("BEGIN;");
-        const bands = await BandModel.createBand(client, label, date);
-        const bandId = bands.rows[0].id;
+        const {rows: bands} = await BandModel.createBand(client, label, date);
+        const bandId = bands[0].id;
 
         if (bandId !== undefined && bandId !== null) {
             await BandModel.addMember(client, req.session.id, bandId, null, Constants.STATUS_ACCEPTED, Constants.ROLE_ADMINISTRATOR, null)
