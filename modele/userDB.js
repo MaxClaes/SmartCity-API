@@ -24,9 +24,11 @@ module.exports.getUserByEmail = async (client, email) => {
 
 module.exports.getAllUsers = async (client) => {
     const t = await client.query(`
-        SELECT client.id, client.name, client.firstname, client.birthdate, client.email, client.registration_date AS registrationDate, 
-        client.height, client.weight, client.gsm, client.role, 
-        address.id AS addressId, address.country, address.postal_code AS postalCode, address.city, address.street, address.number 
+        SELECT client.id as client_id, client.name as client_name, client.firstname as client_firstname, client.birthdate as client_birthdate, 
+        client.email as client_email, client.registration_date AS client_registration_date, client.height as client_height, 
+        client.weight as client_weight, client.gsm as client_gsm, client.role as client_role, 
+        address.id as address_id, address.country as address_country, address.postal_code as address_postal_code, 
+        address.city as address_city, address.street as address_street, address.number as address_number 
         FROM client INNER JOIN address ON client.address = address.id;`
     );
     return t;
