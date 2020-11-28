@@ -46,7 +46,7 @@ module.exports.deleteDrink = async (client, id) => {
 
 module.exports.getDrinkById = async (client, id) => {
     return await client.query(`
-        SELECT * from drink WHERE id = $1;
+        SELECT * from drink WHERE drink_id = $1;
         `, [id]
     );
 }

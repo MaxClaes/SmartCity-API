@@ -3,21 +3,21 @@ const UserModel = require('../modele/userDB');
 const pool = require("../modele/database");
 const Constants = require('../utils/constant');
 
-module.exports.mustBeAdministrator = (req, res, next) => {
-    if (req.session && req.session.authLevel === Constants.ROLE_ADMINISTRATOR) {
-        next();
-    } else {
-        res.sendStatus(403);
-    }
-}
-
-module.exports.mustBeModerator = (req, res, next) => {
-    if (req.session && req.session.authLevel === Constants.ROLE_MODERATOR) {
-        next();
-    } else {
-        res.sendStatus(403);
-    }
-}
+// module.exports.mustBeAdministrator = (req, res, next) => {
+//     if (req.session && req.session.authLevel === Constants.ROLE_ADMINISTRATOR) {
+//         next();
+//     } else {
+//         res.sendStatus(403);
+//     }
+// }
+//
+// module.exports.mustBeModerator = (req, res, next) => {
+//     if (req.session && req.session.authLevel === Constants.ROLE_MODERATOR) {
+//         next();
+//     } else {
+//         res.sendStatus(403);
+//     }
+// }
 
 module.exports.mustBeManager = (req, res, next) => {
     if (req.session) {
@@ -31,20 +31,20 @@ module.exports.mustBeManager = (req, res, next) => {
     }
 }
 
-module.exports.mustBeCreator = (req, res, next) => {
-    if (req.session) {
-        const {userId} = req.body;
-        const clientObj = req.session;
-
-        if (userId !== undefined && userId === clientObj.id) {
-            next();
-        } else {
-            res.sendStatus(403);
-        }
-    } else {
-        res.sendStatus(403);
-    }
-}
+// module.exports.mustBeCreator = (req, res, next) => {
+//     if (req.session) {
+//         const {userId} = req.body;
+//         const clientObj = req.session;
+//
+//         if (userId !== undefined && userId === clientObj.id) {
+//             next();
+//         } else {
+//             res.sendStatus(403);
+//         }
+//     } else {
+//         res.sendStatus(403);
+//     }
+// }
 
 module.exports.mustBeManagerOrCreator = (req, res, next) => {
     if (req.session) {
@@ -61,7 +61,7 @@ module.exports.mustBeManagerOrCreator = (req, res, next) => {
             }
         }
     } else {
-        res.sendStatus(403);    //401 plutôt ??
+        res.sendStatus(401);
     }
 }
 
