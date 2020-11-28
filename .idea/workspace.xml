@@ -20,9 +20,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="084b7899-cb0a-4e00-98be-82cfd2e99716" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controleur/bandDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/controleur/bandDB.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dto/dto.js" beforeDir="false" afterPath="$PROJECT_DIR$/dto/dto.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware/Validator.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/Validator.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,7 +71,7 @@
       <workItem from="1605722965081" duration="48745000" />
       <workItem from="1606063188192" duration="14763000" />
       <workItem from="1606130340244" duration="83094000" />
-      <workItem from="1606561539323" duration="16926000" />
+      <workItem from="1606561539323" duration="17076000" />
     </task>
     <servers />
   </component>
@@ -214,16 +212,5 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="346" y="49" width="672" height="678" key="search.everywhere.popup/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1606387485215" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/middleware/Validator.js</url>
-          <line>236</line>
-          <option name="timeStamp" value="55" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

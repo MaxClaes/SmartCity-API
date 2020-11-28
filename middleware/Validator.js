@@ -214,8 +214,9 @@ module.exports.hasAcceptedStatus = async (req, res, next) => {
             res.sendStatus(400);
         } else {
             try {
-                const status = await BandModel.getStatus(client, bandId, req.session.id)
-                const userStatus = status.rows[0].status;
+                const {rows: status} = await BandModel.getStatus(client, bandId, req.session.id)
+                const userStatus = status[0].status;
+
                 if (userStatus === Constants.STATUS_ACCEPTED) {
                     next();
                 } else {
@@ -243,8 +244,9 @@ module.exports.currentStatusIsWaiting = async (req, res, next) => {
             res.sendStatus(400);
         } else {
             try {
-                const status = await BandModel.getStatus(client, bandId, req.session.id)
-                const userStatus = status.rows[0].status;
+                const {rows: status} = await BandModel.getStatus(client, bandId, req.session.id)
+                const userStatus = status[0].status;
+
                 if (userStatus === Constants.STATUS_WAITING) {
                     next();
                 } else {
