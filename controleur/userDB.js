@@ -53,9 +53,10 @@ module.exports.createUser = async (req, res) => {
         const client = await pool.connect();
 
         try {
-            const user = await UserModel.getUserByEmail(client, email);
+            const {rows: usersEntities} = await UserModel.getUserByEmail(client, email);
+            const userEntity = usersEntities[0];
 
-            if (user === undefined) {
+            if (userEntity === undefined) {
                 client.query("BEGIN;");
 
                 const {rows: addresses} = await AddressModel.createAddress(client, addressObj.country, addressObj.postalCode, addressObj.city, addressObj.street, addressObj.number);

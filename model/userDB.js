@@ -127,12 +127,12 @@ module.exports.updateUser = async (client, name, firstname, birthdate, email, pa
 };
 
 module.exports.changeRole = async (client, role, id) => {
-    return await client.query(`UPDATE client SET role = $1 WHERE id = $2;`, [role, id]);
+    return await client.query(`UPDATE client SET role = $1 WHERE client_id = $2;`, [role, id]);
 };
 
 module.exports.userExist = async (client, userId) => {
     const {rows} = await client.query(
-        "SELECT count(id) AS nbr FROM client WHERE id = $1",
+        "SELECT count(id) AS nbr FROM client WHERE client_id = $1",
         [userId]
     );
     return rows[0].nbr > 0;

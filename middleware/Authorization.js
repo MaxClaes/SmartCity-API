@@ -108,16 +108,17 @@ module.exports.canChangeRole = async (req, res, next) => {
         res.sendStatus(403);
     } else {
         const {userId, role} = req.body;
-        const client = await pool.connect();
 
-        try {
-            if (userId === undefined || role === undefined ||
-                (role.toUpperCase() !== Constants.ROLE_CLIENT && role.toUpperCase() !== Constants.ROLE_MODERATOR && role.toUpperCase() !== Constants.ROLE_ADMINISTRATOR)) {
-                res.sendStatus(400);
+        if (userId === undefined || role === undefined ||
+            (role.toUpperCase() !== Constants.ROLE_CLIENT && role.toUpperCase() !== Constants.ROLE_MODERATOR && role.toUpperCase() !== Constants.ROLE_ADMINISTRATOR)) {
+            res.sendStatus(400);
+        } else {
+            if (req.session.authLevel === Constants.ROLE_ADMINISTRATOR) {
+                next();
             } else {
-                if (req.session.authLevel === Constants.ROLE_ADMINISTRATOR) {
-                    next();
-                } else {
+                const client = await pool.connect();
+
+                try {
                     const {rows: userEntities} = await UserModel.getUser(client, userId);
                     const userEntity = userEntities[0];
 
@@ -130,13 +131,13 @@ module.exports.canChangeRole = async (req, res, next) => {
                     } else {
                         res.sendStatus(404);
                     }
+                } catch (error) {
+                    console.log(error);
+                    res.sendStatus(500);
+                } finally {
+                    client.release();
                 }
             }
-        } catch (error) {
-            console.log(error);
-            res.sendStatus(500);
-        } finally {
-            client.release();
         }
     }
 }
