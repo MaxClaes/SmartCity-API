@@ -1,4 +1,5 @@
 const pool = require("../model/database");
+const userModel = require('../model/userDB')
 const constant = require('../utils/constant');
 const error = require('../error/index');
 
@@ -40,16 +41,17 @@ module.exports.userExists = async (req, res, next) => {
     if (req.session) {
         const userIdTexte = req.params.userId;
         const userId = parseInt(userIdTexte);
-        const client = await pool.connect();
 
         if (isNaN(userId)) {
-            res.sendStatus(400);
+            res.status(400).json({error: error.INVALID_PARAMETER});
         } else {
+            const client = await pool.connect();
+
             try {
                 if(await userModel.userExist(client, userId)) {
                     next();
                 } else {
-                    res.sendStatus(404);
+                    res.status(404).json({error: error.USER_NOT_FOUND});
                 }
             } catch (error) {
                 console.log(error);
@@ -59,7 +61,7 @@ module.exports.userExists = async (req, res, next) => {
             }
         }
     } else {
-        res.sendStatus(403);
+        res.status(403).json({error: error.UNAUTHENTICATED});
     }
 }
 
@@ -70,9 +72,9 @@ module.exports.roleIsValid = (req, res, next) => {
         if (role !== undefined && (role.toUpperCase() === constant.ROLE_ADMINISTRATOR || role.toUpperCase() === constant.ROLE_MODERATOR|| role.toUpperCase() === constant.ROLE_CLIENT)) {
             next();
         } else {
-            res.sendStatus(403);
+            res.status(400).json({error: error.INVALID_PARAMETER});
         }
     } else {
-        res.sendStatus(403);
+        res.status(403).json({error: error.UNAUTHENTICATED});
     }
 }

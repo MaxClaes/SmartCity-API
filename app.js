@@ -7,7 +7,7 @@ app.use(express.json());
 app.use(Router);
 
 app.get('/', (req, res) => {
-    res.send('Hello tout le monde !');
+    res.send('API is running !');
 });
 
 app.listen(port, () => {
