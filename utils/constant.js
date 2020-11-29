@@ -10,4 +10,4 @@ module.exports = {
     STATUS_ACCEPTED : 'A',
     STATUS_REJECTED : 'R',
     STATUS_WAITING : 'W'
-}
+};

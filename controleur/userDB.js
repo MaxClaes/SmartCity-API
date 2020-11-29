@@ -7,12 +7,13 @@ const UserModel = require('../model/userDB');
 const AddressModel = require('../model/addressDB');
 const Constants = require('../utils/constant');
 const DTO = require('../dto');
+const Error = require('../error/index');
 
 module.exports.login = async (req, res) => {
     const {email, password} = req.body;
 
     if (email === undefined || password === undefined) {
-        res.status(400).json({error: "Email/password incorrect"});
+        res.status(400).json({error: Error.ERROR_LOGIN});
     } else {
         const client = await pool.connect();
 
