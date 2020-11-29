@@ -44,7 +44,7 @@ module.exports.createUser = async (req, res) => {
         password === undefined || password.trim() === "" || height === undefined || weight === undefined ||
         gsm === undefined || addressObj.country === undefined || addressObj.postalCode === undefined ||
         addressObj.city === undefined || addressObj.street === undefined || addressObj.number === undefined) {
-        res.sendStatus(400);
+        res.status(400).json({error: error.MISSING_PARAMETER});
     } else {
         const client = await pool.connect();
 

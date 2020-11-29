@@ -56,6 +56,10 @@ module.exports = {
         code : 221,
         message : "Band not found."
     },
+    CONSUMPTION_NOT_FOUND : {
+        code : 222,
+        message : "Consumption not found."
+    },
     USER_NOT_FOUND_IN_BAND : {
         code : 222,
         message : "User not found in band."
