@@ -11,34 +11,29 @@ const error = require('../error/index');
 
 module.exports.login = async (req, res) => {
     const {email, password} = req.body;
+    const client = await pool.connect();
 
-    if (email === undefined || password === undefined) {
-        res.status(400).json({error: error.ERROR_LOGIN});
-    } else {
-        const client = await pool.connect();
+    try {
+        const result = await userModel.getUserLogin(client, email, password);
+        const {userType, value} = result;
 
-        try {
-            const result = await userModel.getUserLogin(client, email, password);
-            const {userType, value} = result;
-
-            if (userType === constant.ROLE_CLIENT || userType === constant.ROLE_ADMINISTRATOR || userType === constant.ROLE_MODERATOR) {
-                const {client_id: id, name, firstname} = value;
-                const payload = {status: userType, value: {id, name, firstname}};
-                const token = jwt.sign(
-                    payload,
-                    process.env.SECRET_TOKEN,
-                    {expiresIn: '1d'}   //Peut etre modifier
-                );
-                res.json(token);
-            } else {
-                res.sendStatus(404);
-            }
-        } catch (error) {
-            console.log(error);
-            res.sendStatus(500);
-        } finally {
-            client.release();
+        if (userType === constant.ROLE_CLIENT || userType === constant.ROLE_ADMINISTRATOR || userType === constant.ROLE_MODERATOR) {
+            const {client_id: id, name, firstname} = value;
+            const payload = {status: userType, value: {id, name, firstname}};
+            const token = jwt.sign(
+                payload,
+                process.env.SECRET_TOKEN,
+                {expiresIn: '1d'}   //Peut etre modifier
+            );
+            res.json(token);
+        } else {
+            res.status(404).json({error: error.USER_NOT_FOUND});
         }
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    } finally {
+        client.release();
     }
 };
 
@@ -62,16 +57,12 @@ module.exports.createUser = async (req, res) => {
 
                 const {rows: addresses} = await addressModel.createAddress(client, addressObj.country, addressObj.postalCode, addressObj.city, addressObj.street, addressObj.number);
                 const addressId = addresses[0].address_id;
+                await userModel.createUser(client, name, firstname, birthdate, email, password, new Date(), height, weight, gsm, addressId);
 
-                if (addressId !== undefined) {
-                    await userModel.createUser(client, name, firstname, birthdate, email, password, new Date(), height, weight, gsm, addressId);
-                    client.query("COMMIT;");
-                    res.sendStatus(201);
-                } else {
-                    res.sendStatus(404);
-                }
+                client.query("COMMIT;");
+                res.sendStatus(201);
             } else {
-                res.sendStatus(409);
+                res.status(409).json({error: error.EMAIL_ALREADY_EXISTS});
             }
         } catch (error) {
             client.query("ROLLBACK;");
@@ -89,7 +80,7 @@ module.exports.updateUser = async (req, res) => {
 
         if (name === undefined && firstname === undefined && birthdate === undefined && email === undefined &&
             password === undefined && height === undefined && weight === undefined && gsm === undefined) {
-            res.sendStatus(400);
+            res.status(400).json({error: error.MISSING_PARAMETER});
         } else {
             const client = await pool.connect();
 
@@ -104,7 +95,7 @@ module.exports.updateUser = async (req, res) => {
             }
         }
     } else {
-        res.sendStatus(401);
+        res.status(401).json({error: error.UNAUTHENTICATED});
     }
 };
 
