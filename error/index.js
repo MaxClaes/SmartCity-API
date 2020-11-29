@@ -16,13 +16,13 @@ module.exports = {
         code : 211,
         message : "Bad Authentication data."
     },
-    USER_NOT_FOUND : {
-        code : 212,
-        message : "User not found."
-    },
-    EMAIL_ALREADY_EXISTS : {
+    EMAIL_CONFLICT : {
         code : 213,
         message : "Email already exists."
+    },
+    USER_CONFLICT : {
+        code : 225,
+        message : "User already exists."
     },
     INVALID_PARAMETER : {
         code : 214,
@@ -40,12 +40,40 @@ module.exports = {
         code : 217,
         message : "The user does not have sufficient access rights."
     },
-    DRINK_NOT_FOUND : {
+    ACCESS_RESTRICTED : {
         code : 218,
+        message : "Access restricted to the item's owner."
+    },
+    USER_NOT_FOUND : {
+        code : 219,
+        message : "User not found."
+    },
+    DRINK_NOT_FOUND : {
+        code : 220,
         message : "Drink not found."
     },
-    ACCESS_RESTRICTED : {
-        code : 219,
-        message : "Access restricted to the item's owner."
+    BAND_NOT_FOUND : {
+        code : 221,
+        message : "Band not found."
+    },
+    USER_NOT_FOUND_IN_BAND : {
+        code : 222,
+        message : "User not found in band."
+    },
+    IDENTIFIED_USER_NOT_FOUND_IN_BAND : {
+        code : 223,
+        message : "Identified user not found in band."
+    },
+    ACCESS_DENIED_IN_BAND : {
+        code : 224,
+        message : "The user does not have sufficient access rights in band."
+    },
+    STATUS_NOT_ACCEPTED_IN_BAND : {
+        code : 225,
+        message : "The user does not have accepted band invitation."
+    },
+    STATUS_ALREADY_CHANGED_IN_BAND : {
+        code : 226,
+        message : "Status in band is already accepted/refused."
     }
 };

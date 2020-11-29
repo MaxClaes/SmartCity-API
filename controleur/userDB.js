@@ -62,7 +62,7 @@ module.exports.createUser = async (req, res) => {
                 client.query("COMMIT;");
                 res.sendStatus(201);
             } else {
-                res.status(409).json({error: error.EMAIL_ALREADY_EXISTS});
+                res.status(409).json({error: error.EMAIL_CONFLICT});
             }
         } catch (error) {
             client.query("ROLLBACK;");

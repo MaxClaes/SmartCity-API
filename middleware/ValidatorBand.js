@@ -1,22 +1,23 @@
-const userModel = require('../model/userDB');
 const bandModel = require('../model/bandDB');
 const pool = require("../model/database");
 const constant = require('../utils/constant');
+const error = require('../error/index');
 
 module.exports.bandExists = async (req, res, next) => {
     if (req.session) {
         const bandIdTexte = req.params.bandId;
         const bandId = parseInt(bandIdTexte);
-        const client = await pool.connect();
 
         if (isNaN(bandId)) {
-            res.sendStatus(400);
+            res.status(400).json({error: error.INVALID_PARAMETER});
         } else {
+            const client = await pool.connect();
+
             try {
                 if(await bandModel.bandExist(client, bandId)) {
                     next();
                 } else {
-                    res.sendStatus(404);
+                    res.status(404).json({error: error.BAND_NOT_FOUND});
                 }
             } catch (error) {
                 console.log(error);
@@ -26,7 +27,7 @@ module.exports.bandExists = async (req, res, next) => {
             }
         }
     } else {
-        res.sendStatus(403);
+        res.status(403).json({error: error.UNAUTHENTICATED});
     }
 }
 
@@ -34,16 +35,17 @@ module.exports.authUserExistsInBand = async (req, res, next) => {
     if (req.session) {
         const bandIdTexte = req.params.bandId;
         const bandId = parseInt(bandIdTexte);
-        const client = await pool.connect();
 
         if (isNaN(bandId)) {
-            res.sendStatus(400);
+            res.status(400).json({error: error.INVALID_PARAMETER});
         } else {
+            const client = await pool.connect();
+
             try {
                 if (await bandModel.userExist(client, bandId, req.session.id)) {
                     next();
                 } else {
-                    res.sendStatus(404);
+                    res.status(404).json({error: error.IDENTIFIED_USER_NOT_FOUND_IN_BAND});
                 }
             } catch (error) {
                 console.log(error);
@@ -53,7 +55,7 @@ module.exports.authUserExistsInBand = async (req, res, next) => {
             }
         }
     } else {
-        res.sendStatus(403);
+        res.status(403).json({error: error.UNAUTHENTICATED});
     }
 }
 
@@ -63,16 +65,17 @@ module.exports.userExistsInBand = async (req, res, next) => {
         const bandId = parseInt(bandIdTexte);
         const userIdTexte = req.params.userId;
         const userId = parseInt(userIdTexte);
-        const client = await pool.connect();
 
-        if (isNaN(bandId)) {
-            res.sendStatus(400);
+        if (isNaN(bandId) ||isNaN(userId)) {
+            res.status(400).json({error: error.INVALID_PARAMETER});
         } else {
+            const client = await pool.connect();
+
             try {
                 if (await bandModel.userExist(client, bandId, userId)) {
                     next();
                 } else {
-                    res.sendStatus(404);
+                    res.status(404).json({error: error.USER_NOT_FOUND_IN_BAND});
                 }
             } catch (error) {
                 console.log(error);
@@ -82,7 +85,7 @@ module.exports.userExistsInBand = async (req, res, next) => {
             }
         }
     } else {
-        res.sendStatus(403);
+        res.status(403).json({error: error.UNAUTHENTICATED});
     }
 }
 
@@ -90,16 +93,17 @@ module.exports.authUserIsAdministratorInBand = async (req, res, next) => {
     if (req.session) {
         const bandIdTexte = req.params.bandId;
         const bandId = parseInt(bandIdTexte);
-        const client = await pool.connect();
 
         if (isNaN(bandId)) {
-            res.sendStatus(400);
+            res.status(400).json({error: error.INVALID_PARAMETER});
         } else {
+            const client = await pool.connect();
+
             try {
                 if (await bandModel.isAdministratorInBand(client, bandId, req.session.id)) {
                     next();
                 } else {
-                    res.sendStatus(403);
+                    res.status(403).json({error: error.ACCESS_DENIED_IN_BAND});
                 }
             } catch (error) {
                 console.log(error);
@@ -109,7 +113,7 @@ module.exports.authUserIsAdministratorInBand = async (req, res, next) => {
             }
         }
     } else {
-        res.sendStatus(403);
+        res.status(403).json({error: error.UNAUTHENTICATED});
     }
 }
 
@@ -120,20 +124,12 @@ module.exports.roleIsValid = (req, res, next) => {
         if (role !== undefined && (role.toUpperCase() === constant.ROLE_ADMINISTRATOR || role.toUpperCase() === constant.ROLE_CLIENT)) {
             next();
         } else {
-            res.sendStatus(403);
+            res.status(400).json({error: error.INVALID_PARAMETER});
         }
     } else {
-        res.sendStatus(403);
+        res.status(403).json({error: error.UNAUTHENTICATED});
     }
 }
-
-// module.exports.canChangeRoleInBand = async (req, res, next) => {
-//     if (!req.session || req.session.authLevel === constant.ROLE_CLIENT) {
-//         res.sendStatus(403);
-//     } else {
-//         next();
-//     }
-// }
 
 module.exports.userIsNotInBand = async (req, res, next) => {
     if (req.session) {
@@ -141,16 +137,17 @@ module.exports.userIsNotInBand = async (req, res, next) => {
         const bandId = parseInt(bandIdTexte);
         const userIdTexte = req.params.userId;
         const userId = parseInt(userIdTexte);
-        const client = await pool.connect();
 
-        if (isNaN(bandId)) {
-            res.sendStatus(400);
+        if (isNaN(bandId) || isNaN(userId)) {
+            res.status(400).json({error: error.INVALID_PARAMETER});
         } else {
+            const client = await pool.connect();
+
             try {
                 if (!await bandModel.userExist(client, bandId, userId)) {
                     next();
                 } else {
-                    res.sendStatus(409);
+                    res.status(409).json({error: error.USER_CONFLICT});
                 }
             } catch (error) {
                 console.log(error);
@@ -160,7 +157,7 @@ module.exports.userIsNotInBand = async (req, res, next) => {
             }
         }
     } else {
-        res.sendStatus(403);
+        res.status(403).json({error: error.UNAUTHENTICATED});
     }
 }
 
@@ -171,10 +168,10 @@ module.exports.statusIsValid = (req, res, next) => {
         if (status !== undefined && (status.toUpperCase() === constant.STATUS_ACCEPTED || status.toUpperCase() === constant.STATUS_REJECTED)) {
             next();
         } else {
-            res.sendStatus(403);
+            res.status(400).json({error: error.INVALID_PARAMETER});
         }
     } else {
-        res.sendStatus(403);
+        res.status(403).json({error: error.UNAUTHENTICATED});
     }
 }
 
@@ -182,11 +179,12 @@ module.exports.hasAcceptedStatus = async (req, res, next) => {
     if (req.session) {
         const bandIdTexte = req.params.bandId;
         const bandId = parseInt(bandIdTexte);
-        const client = await pool.connect();
 
         if (isNaN(bandId)) {
-            res.sendStatus(400);
+            res.status(400).json({error: error.INVALID_PARAMETER});
         } else {
+            const client = await pool.connect();
+
             try {
                 const {rows: status} = await bandModel.getStatus(client, bandId, req.session.id)
                 const userStatus = status[0].status;
@@ -194,7 +192,7 @@ module.exports.hasAcceptedStatus = async (req, res, next) => {
                 if (userStatus === constant.STATUS_ACCEPTED) {
                     next();
                 } else {
-                    res.sendStatus(403);
+                    res.status(400).json({error: error.STATUS_NOT_ACCEPTED_IN_BAND});
                 }
             } catch (error) {
                 console.log(error);
@@ -204,7 +202,7 @@ module.exports.hasAcceptedStatus = async (req, res, next) => {
             }
         }
     } else {
-        res.sendStatus(403);
+        res.status(403).json({error: error.UNAUTHENTICATED});
     }
 }
 
@@ -212,11 +210,12 @@ module.exports.currentStatusIsWaiting = async (req, res, next) => {
     if (req.session) {
         const bandIdTexte = req.params.bandId;
         const bandId = parseInt(bandIdTexte);
-        const client = await pool.connect();
 
         if (isNaN(bandId)) {
-            res.sendStatus(400);
+            res.status(400).json({error: error.INVALID_PARAMETER});
         } else {
+            const client = await pool.connect();
+
             try {
                 const {rows: status} = await bandModel.getStatus(client, bandId, req.session.id)
                 const userStatus = status[0].status;
@@ -224,7 +223,7 @@ module.exports.currentStatusIsWaiting = async (req, res, next) => {
                 if (userStatus === constant.STATUS_WAITING) {
                     next();
                 } else {
-                    res.sendStatus(409);
+                    res.status(403).json({error: error.STATUS_ALREADY_CHANGED_IN_BAND});
                 }
             } catch (error) {
                 console.log(error);
@@ -234,6 +233,6 @@ module.exports.currentStatusIsWaiting = async (req, res, next) => {
             }
         }
     } else {
-        res.sendStatus(403);
+        res.status(403).json({error: error.UNAUTHENTICATED});
     }
 }
