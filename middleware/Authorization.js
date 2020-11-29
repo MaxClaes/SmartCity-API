@@ -4,22 +4,6 @@ const pool = require("../model/database");
 const constant = require('../utils/constant');
 const error = require('../error/index');
 
-// module.exports.mustBeAdministrator = (req, res, next) => {
-//     if (req.session && req.session.authLevel === constant.ROLE_ADMINISTRATOR) {
-//         next();
-//     } else {
-//         res.sendStatus(403);
-//     }
-// }
-//
-// module.exports.mustBeModerator = (req, res, next) => {
-//     if (req.session && req.session.authLevel === constant.ROLE_MODERATOR) {
-//         next();
-//     } else {
-//         res.sendStatus(403);
-//     }
-// }
-
 module.exports.mustBeManager = (req, res, next) => {
     if (req.session) {
         if (req.session.authLevel === constant.ROLE_ADMINISTRATOR || req.session.authLevel === constant.ROLE_MODERATOR) {
@@ -31,21 +15,6 @@ module.exports.mustBeManager = (req, res, next) => {
         res.status(401).json({error: error.UNAUTHENTICATED});
     }
 }
-
-// module.exports.mustBeCreator = (req, res, next) => {
-//     if (req.session) {
-//         const {userId} = req.body;
-//         const clientObj = req.session;
-//
-//         if (userId !== undefined && userId === clientObj.id) {
-//             next();
-//         } else {
-//             res.sendStatus(403);
-//         }
-//     } else {
-//         res.sendStatus(403);
-//     }
-// }
 
 module.exports.mustBeManagerOrCreator = (req, res, next) => {
     if (req.session) {
@@ -147,36 +116,3 @@ module.exports.canChangeRole = async (req, res, next) => {
         }
     }
 }
-
-// module.exports.canSeeBandById = async (req, res, next) => {
-//     if (req.session) {
-//         if (req.session.authLevel === constant.ROLE_ADMINISTRATOR || req.session.authLevel === constant.ROLE_MODERATOR) {
-//             next();
-//         } else {
-//             const idBandTexte = req.params.id;
-//             const idBand = parseInt(idBandTexte);
-//
-//             if (isNaN(id)) {
-//                 res.sendStatus(400);
-//             } else {
-//                 const client = await pool.connect();
-//                 try {
-//                     const {rows: bands} = await BandModel.getBandByUserId(client, req.session.id, idBandTexte);
-//                     const band = bands[0];
-//
-//                     if (band !== undefined) {
-//                         next();
-//                     } else {
-//                         res.sendStatus(403);
-//                     }
-//                 } catch (error){
-//                     res.sendStatus(500);
-//                 } finally {
-//                     client.release();
-//                 }
-//             }
-//         }
-//     } else {
-//         res.sendStatus(401);
-//     }
-// }
