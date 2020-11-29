@@ -1,7 +1,7 @@
-const UserModel = require('../model/userDB');
-const BandModel = require('../model/bandDB');
+const userModel = require('../model/userDB');
+const bandModel = require('../model/bandDB');
 const pool = require("../model/database");
-const Constants = require('../utils/constant');
+const constant = require('../utils/constant');
 
 module.exports.bandExists = async (req, res, next) => {
     if (req.session) {
@@ -13,7 +13,7 @@ module.exports.bandExists = async (req, res, next) => {
             res.sendStatus(400);
         } else {
             try {
-                if(await BandModel.bandExist(client, bandId)) {
+                if(await bandModel.bandExist(client, bandId)) {
                     next();
                 } else {
                     res.sendStatus(404);
@@ -40,7 +40,7 @@ module.exports.userExists = async (req, res, next) => {
             res.sendStatus(400);
         } else {
             try {
-                if(await UserModel.userExist(client, userId)) {
+                if(await userModel.userExist(client, userId)) {
                     next();
                 } else {
                     res.sendStatus(404);
@@ -66,7 +66,7 @@ module.exports.authUserExistsInBand = async (req, res, next) => {
             res.sendStatus(400);
         } else {
             try {
-                if (await BandModel.userExist(client, bandId, req.session.id)) {
+                if (await bandModel.userExist(client, bandId, req.session.id)) {
                     next();
                 } else {
                     res.sendStatus(404);
@@ -95,7 +95,7 @@ module.exports.userExistsInBand = async (req, res, next) => {
             res.sendStatus(400);
         } else {
             try {
-                if (await BandModel.userExist(client, bandId, userId)) {
+                if (await bandModel.userExist(client, bandId, userId)) {
                     next();
                 } else {
                     res.sendStatus(404);
@@ -122,7 +122,7 @@ module.exports.authUserIsAdministratorInBand = async (req, res, next) => {
             res.sendStatus(400);
         } else {
             try {
-                if (await BandModel.isAdministratorInBand(client, bandId, req.session.id)) {
+                if (await bandModel.isAdministratorInBand(client, bandId, req.session.id)) {
                     next();
                 } else {
                     res.sendStatus(403);
@@ -143,7 +143,7 @@ module.exports.roleIsValid = (req, res, next) => {
     if (req.session) {
         const {role} = req.body;
 
-        if (role !== undefined && (role.toUpperCase() === Constants.ROLE_ADMINISTRATOR || role.toUpperCase() === Constants.ROLE_CLIENT)) {
+        if (role !== undefined && (role.toUpperCase() === constant.ROLE_ADMINISTRATOR || role.toUpperCase() === constant.ROLE_CLIENT)) {
             next();
         } else {
             res.sendStatus(403);
@@ -154,7 +154,7 @@ module.exports.roleIsValid = (req, res, next) => {
 }
 
 // module.exports.canChangeRoleInBand = async (req, res, next) => {
-//     if (!req.session || req.session.authLevel === Constants.ROLE_CLIENT) {
+//     if (!req.session || req.session.authLevel === constant.ROLE_CLIENT) {
 //         res.sendStatus(403);
 //     } else {
 //         next();
@@ -173,7 +173,7 @@ module.exports.userIsNotInBand = async (req, res, next) => {
             res.sendStatus(400);
         } else {
             try {
-                if (!await BandModel.userExist(client, bandId, userId)) {
+                if (!await bandModel.userExist(client, bandId, userId)) {
                     next();
                 } else {
                     res.sendStatus(409);
@@ -194,7 +194,7 @@ module.exports.statusIsValid = (req, res, next) => {
     if (req.session) {
         const {status} = req.body;
 
-        if (status !== undefined && (status.toUpperCase() === Constants.STATUS_ACCEPTED || status.toUpperCase() === Constants.STATUS_REJECTED)) {
+        if (status !== undefined && (status.toUpperCase() === constant.STATUS_ACCEPTED || status.toUpperCase() === constant.STATUS_REJECTED)) {
             next();
         } else {
             res.sendStatus(403);
@@ -214,10 +214,10 @@ module.exports.hasAcceptedStatus = async (req, res, next) => {
             res.sendStatus(400);
         } else {
             try {
-                const {rows: status} = await BandModel.getStatus(client, bandId, req.session.id)
+                const {rows: status} = await bandModel.getStatus(client, bandId, req.session.id)
                 const userStatus = status[0].status;
 
-                if (userStatus === Constants.STATUS_ACCEPTED) {
+                if (userStatus === constant.STATUS_ACCEPTED) {
                     next();
                 } else {
                     res.sendStatus(403);
@@ -244,10 +244,10 @@ module.exports.currentStatusIsWaiting = async (req, res, next) => {
             res.sendStatus(400);
         } else {
             try {
-                const {rows: status} = await BandModel.getStatus(client, bandId, req.session.id)
+                const {rows: status} = await bandModel.getStatus(client, bandId, req.session.id)
                 const userStatus = status[0].status;
 
-                if (userStatus === Constants.STATUS_WAITING) {
+                if (userStatus === constant.STATUS_WAITING) {
                     next();
                 } else {
                     res.sendStatus(409);

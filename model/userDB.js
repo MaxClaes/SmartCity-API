@@ -1,6 +1,6 @@
 const {compareHash} = require('../utils/utils');
 const {getHash} = require("../utils/utils");
-const Constants = require("../utils/constant");
+const constant = require("../utils/constant");
 
 module.exports.getUserLogin = async (client, email, password) => {
     const promises = [];
@@ -89,7 +89,7 @@ module.exports.getUser = async (client, id) => {
 module.exports.createUser = async (client, name, firstname, birthdate, email, password, registrationDate, height, weight, gsm, addressId) => {
     return await client.query(`
         INSERT INTO client(name, firstname, birthdate, email, password, registration_date, height, weight, gsm, role, address) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);`, [name, firstname, birthdate, email, await getHash(password), registrationDate, height, weight, gsm, Constants.ROLE_CLIENT, addressId]
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);`, [name, firstname, birthdate, email, await getHash(password), registrationDate, height, weight, gsm, constant.ROLE_CLIENT, addressId]
     );
 };
 

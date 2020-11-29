@@ -1,10 +1,10 @@
-const UserRouter = require('./user');
-const DrinkRouter = require('./drink');
-const BandRouter = require('./band');
+const userRouter = require('./user');
+const drinkRouter = require('./drink');
+const bandRouter = require('./band');
 const router = require("express").Router();
 
-router.use("/user", UserRouter);
-router.use("/drink", DrinkRouter);
-router.use("/band", BandRouter);
+router.use("/user", userRouter);
+router.use("/drink", drinkRouter);
+router.use("/band", bandRouter);
 
 module.exports = router;

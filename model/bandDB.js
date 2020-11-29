@@ -1,4 +1,4 @@
-const Constants = require("../utils/constant");
+const constant = require("../utils/constant");
 
 module.exports.createBand = async (client, label, creationDate) => {
     return await client.query(`
@@ -86,7 +86,7 @@ module.exports.bandIsEmpty = async (client, bandId) => {
 module.exports.isAdministratorInBand = async (client, bandId, clientId) => {
     const {rows} = await client.query(
         "SELECT count(client_id) AS nbr FROM band_client WHERE band_id = $1 AND client_id = $2 AND role = $3",
-        [bandId, clientId, Constants.ROLE_ADMINISTRATOR]
+        [bandId, clientId, constant.ROLE_ADMINISTRATOR]
     );
     return rows[0].nbr > 0;
 };
@@ -94,7 +94,7 @@ module.exports.isAdministratorInBand = async (client, bandId, clientId) => {
 module.exports.administratorExistsInBand = async (client, bandId) => {
     const {rows} = await client.query(
         "SELECT count(client_id) AS nbr FROM band_client WHERE band_id = $1 AND role = $2",
-        [bandId, Constants.ROLE_ADMINISTRATOR]
+        [bandId, constant.ROLE_ADMINISTRATOR]
     );
     return rows[0].nbr > 0;
 };
@@ -102,7 +102,7 @@ module.exports.administratorExistsInBand = async (client, bandId) => {
 module.exports.getFirstUserIdWithStatusAccepted = async (client, bandId) => {
     return await client.query(
         "SELECT DISTINCT band_client.client_id as id FROM band_client WHERE band_id = $1 AND status = $2;",
-        [bandId, Constants.STATUS_ACCEPTED]
+        [bandId, constant.STATUS_ACCEPTED]
     );
 };
 
@@ -113,7 +113,7 @@ module.exports.changeRole = async (client, bandId, userId, role) => {
 module.exports.getAllInvitations = async (client, userId) => {
     return await client.query(`SELECT band.band_id, band.label, band.creation_date, 
     band_client.date_invitation, band_client.status, band_client.role, band_client.invited_by 
-    FROM band_client INNER JOIN band on band_client.band_id = band.band_id WHERE client_id = $1 AND status = $2;`, [userId, Constants.STATUS_WAITING]);
+    FROM band_client INNER JOIN band on band_client.band_id = band.band_id WHERE client_id = $1 AND status = $2;`, [userId, constant.STATUS_WAITING]);
 };
 
 module.exports.changeStatus = async (client, bandId, userId, status) => {

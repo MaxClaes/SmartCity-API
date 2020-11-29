@@ -1,7 +1,7 @@
-const BandModel = require("../model/bandDB");
+const bandModel = require("../model/bandDB");
 const pool = require("../model/database");
-const Constants = require("../utils/constant");
-const DTO = require('../dto');
+const constant = require("../utils/constant");
+const dto = require('../dto');
 
 module.exports.createBand = async (req, res) => {
     const {label} = req.body;
@@ -11,11 +11,11 @@ module.exports.createBand = async (req, res) => {
         const date = new Date();
 
         client.query("BEGIN;");
-        const {rows: bands} = await BandModel.createBand(client, label, date);
+        const {rows: bands} = await bandModel.createBand(client, label, date);
         const bandId = bands[0].id;
 
         if (bandId !== undefined && bandId !== null) {
-            await BandModel.addMember(client, req.session.id, bandId, null, Constants.STATUS_ACCEPTED, Constants.ROLE_ADMINISTRATOR, null)
+            await bandModel.addMember(client, req.session.id, bandId, null, constant.STATUS_ACCEPTED, constant.ROLE_ADMINISTRATOR, null)
             client.query("COMMIT;");
             res.sendStatus(201);
         } else {
@@ -38,7 +38,7 @@ module.exports.addMember = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        await BandModel.addMember(client, userId, bandId, new Date(), Constants.STATUS_WAITING, Constants.ROLE_CLIENT, req.session.id);
+        await bandModel.addMember(client, userId, bandId, new Date(), constant.STATUS_WAITING, constant.ROLE_CLIENT, req.session.id);
         res.sendStatus(201);
     } catch (error){
         console.log(error);
@@ -52,13 +52,13 @@ module.exports.getAllBands = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        const {rows: bandsEntities} = await BandModel.getAllBands(client);
+        const {rows: bandsEntities} = await bandModel.getAllBands(client);
         const bandEntity = bandsEntities[0];
 
         if(bandEntity !== undefined) {
             const bands = [];
             bandsEntities.forEach(function(b) {
-                bands.push(DTO.bandClientDTO(b));
+                bands.push(dto.bandClientDTO(b));
             });
             res.json(bands);
         } else {
@@ -103,8 +103,8 @@ module.exports.deleteBand = async (req, res) => {
     } else {
         try {
             client.query("BEGIN;");
-            await BandModel.deleteAllMemberOfBand(client, bandId);
-            await BandModel.deleteBand(client, bandId);
+            await bandModel.deleteAllMemberOfBand(client, bandId);
+            await bandModel.deleteBand(client, bandId);
             client.query("COMMIT;");
             res.sendStatus(204);
         } catch (error) {
@@ -129,18 +129,18 @@ module.exports.deleteMember = async (req, res) => {
     } else {
         try {
             client.query("BEGIN;");
-            await BandModel.deleteMember(client, bandId, isNaN(userId) ? req.session.id : userId);
+            await bandModel.deleteMember(client, bandId, isNaN(userId) ? req.session.id : userId);
 
-            if (await BandModel.bandIsEmpty(client, bandId)) {
-                await BandModel.deleteBand(client, bandId);
+            if (await bandModel.bandIsEmpty(client, bandId)) {
+                await bandModel.deleteBand(client, bandId);
             } else {
-                if (!await BandModel.administratorExistsInBand(client, bandId)) {
-                    const {rows: users} = await BandModel.getFirstUserIdWithStatusAccepted(client, bandId);
+                if (!await bandModel.administratorExistsInBand(client, bandId)) {
+                    const {rows: users} = await bandModel.getFirstUserIdWithStatusAccepted(client, bandId);
                     const userIdWithStatusAccepted = users[0].id
 
                     if (userIdWithStatusAccepted !== undefined) {
                         //On lui assigne le rôle administrator
-                        await BandModel.changeRole(client, bandId, userIdWithStatusAccepted, Constants.ROLE_ADMINISTRATOR);
+                        await bandModel.changeRole(client, bandId, userIdWithStatusAccepted, constant.ROLE_ADMINISTRATOR);
                     }
                     //Si pas de user avec status accepted
                     //Alors on ne fait rien et on assignera le role admin lors de l'acceptation d'une invitation
@@ -168,11 +168,11 @@ module.exports.getBandById = async (req, res) => {
         res.sendStatus(400);
     } else {
         try {
-            const {rows: bandsEntities} = await BandModel.getBandById(client, bandId);
+            const {rows: bandsEntities} = await bandModel.getBandById(client, bandId);
             const bandEntity = bandsEntities[0];
 
             if (bandEntity !== undefined){
-                res.json(DTO.bandClientDTO(bandEntity));
+                res.json(dto.bandClientDTO(bandEntity));
             } else {
                 res.sendStatus(404);
             }
@@ -189,15 +189,15 @@ module.exports.getBandsByUserId = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        const {rows: bandsEntities} = await BandModel.getBandsByUserId(client, req.session.id);
+        const {rows: bandsEntities} = await bandModel.getBandsByUserId(client, req.session.id);
         const bandEntity = bandsEntities[0];
 
         if (bandEntity !== undefined) {
-            //const bandsAccepted = bandsEntities.filter(band => band.status === Constants.STATUS_ACCEPTED || band.status === null);
+            //const bandsAccepted = bandsEntities.filter(band => band.status === constant.STATUS_ACCEPTED || band.status === null);
             const bandsAccepted = [];
             bandsEntities.forEach(function(b) {
-                if (b.status === Constants.STATUS_ACCEPTED || b.status === null) {
-                    bandsAccepted.push(DTO.bandClientDTO(b));
+                if (b.status === constant.STATUS_ACCEPTED || b.status === null) {
+                    bandsAccepted.push(dto.bandClientDTO(b));
                 }
             });
             res.json(bandsAccepted);
@@ -222,7 +222,7 @@ module.exports.changeRole = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        await BandModel.changeRole(client, bandId, userId, role);
+        await bandModel.changeRole(client, bandId, userId, role);
         res.sendStatus(204);
     } catch (error) {
         console.log(error);
@@ -236,13 +236,13 @@ module.exports.getAllInvitations = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        const {rows: invitationsEntities} = await BandModel.getAllInvitations(client, req.session.id);
+        const {rows: invitationsEntities} = await bandModel.getAllInvitations(client, req.session.id);
         const invitationEntity = invitationsEntities[0];
 
         if (invitationEntity !== undefined) {
             const invitations = [];
             invitationsEntities.forEach(function(i) {
-                invitations.push(DTO.bandClientDTO(i));
+                invitations.push(dto.bandClientDTO(i));
             });
             res.json(invitations);
         } else {
@@ -265,20 +265,20 @@ module.exports.responseInvitation = async (req, res) => {
     try {
         client.query("BEGIN;");
 
-        if (status === Constants.STATUS_ACCEPTED) {
-            await BandModel.changeStatus(client, bandId, req.session.id, Constants.STATUS_ACCEPTED);
+        if (status === constant.STATUS_ACCEPTED) {
+            await bandModel.changeStatus(client, bandId, req.session.id, constant.STATUS_ACCEPTED);
 
-            if (!await BandModel.administratorExistsInBand(client, bandId)) {
-                await BandModel.changeRole(client, bandId, req.session.id, Constants.ROLE_ADMINISTRATOR);
+            if (!await bandModel.administratorExistsInBand(client, bandId)) {
+                await bandModel.changeRole(client, bandId, req.session.id, constant.ROLE_ADMINISTRATOR);
             }
         } else {
-            await BandModel.deleteMember(client, bandId, req.session.id);
+            await bandModel.deleteMember(client, bandId, req.session.id);
             //Si on veut garder une trace que l'utilisateur a refusé la demande on peut mettre la ligne suivante
             //Cela implique des changements dans les conditions de suppression d'un groupe
             //Il faudrait ajouter qu'on peut supprimer un groupe s'il est vide ou si tous les status restants sont à 'R'
-            //await BandModel.changeStatus(client, bandId, req.session.id, Constants.STATUS_REJECTED);
-            if (await BandModel.bandIsEmpty(client, bandId)) {
-                await BandModel.deleteBand(client, bandId);
+            //await bandModel.changeStatus(client, bandId, req.session.id, constant.STATUS_REJECTED);
+            if (await bandModel.bandIsEmpty(client, bandId)) {
+                await bandModel.deleteBand(client, bandId);
             }
         }
         client.query("COMMIT;");

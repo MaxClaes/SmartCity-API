@@ -3,25 +3,25 @@ const process = require('process');
 const jwt = require('jsonwebtoken');
 
 const pool = require('../model/database');
-const UserModel = require('../model/userDB');
-const AddressModel = require('../model/addressDB');
-const Constants = require('../utils/constant');
-const DTO = require('../dto');
-const Error = require('../error/index');
+const userModel = require('../model/userDB');
+const addressModel = require('../model/addressDB');
+const constant = require('../utils/constant');
+const dto = require('../dto');
+const error = require('../error/index');
 
 module.exports.login = async (req, res) => {
     const {email, password} = req.body;
 
     if (email === undefined || password === undefined) {
-        res.status(400).json({error: Error.ERROR_LOGIN});
+        res.status(400).json({error: error.ERROR_LOGIN});
     } else {
         const client = await pool.connect();
 
         try {
-            const result = await UserModel.getUserLogin(client, email, password);
+            const result = await userModel.getUserLogin(client, email, password);
             const {userType, value} = result;
 
-            if (userType === Constants.ROLE_CLIENT || userType === Constants.ROLE_ADMINISTRATOR || userType === Constants.ROLE_MODERATOR) {
+            if (userType === constant.ROLE_CLIENT || userType === constant.ROLE_ADMINISTRATOR || userType === constant.ROLE_MODERATOR) {
                 const {client_id: id, name, firstname} = value;
                 const payload = {status: userType, value: {id, name, firstname}};
                 const token = jwt.sign(
@@ -54,17 +54,17 @@ module.exports.createUser = async (req, res) => {
         const client = await pool.connect();
 
         try {
-            const {rows: usersEntities} = await UserModel.getUserByEmail(client, email);
+            const {rows: usersEntities} = await userModel.getUserByEmail(client, email);
             const userEntity = usersEntities[0];
 
             if (userEntity === undefined) {
                 client.query("BEGIN;");
 
-                const {rows: addresses} = await AddressModel.createAddress(client, addressObj.country, addressObj.postalCode, addressObj.city, addressObj.street, addressObj.number);
+                const {rows: addresses} = await addressModel.createAddress(client, addressObj.country, addressObj.postalCode, addressObj.city, addressObj.street, addressObj.number);
                 const addressId = addresses[0].address_id;
 
                 if (addressId !== undefined) {
-                    await UserModel.createUser(client, name, firstname, birthdate, email, password, new Date(), height, weight, gsm, addressId);
+                    await userModel.createUser(client, name, firstname, birthdate, email, password, new Date(), height, weight, gsm, addressId);
                     client.query("COMMIT;");
                     res.sendStatus(201);
                 } else {
@@ -94,7 +94,7 @@ module.exports.updateUser = async (req, res) => {
             const client = await pool.connect();
 
             try {
-                await UserModel.updateUser(client, name, firstname, birthdate, email, password, height, weight, gsm, req.session.id);
+                await userModel.updateUser(client, name, firstname, birthdate, email, password, height, weight, gsm, req.session.id);
                 res.sendStatus(204);
             } catch (error) {
                 console.log(error);
@@ -112,13 +112,13 @@ module.exports.getAllUsers = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        const {rows: usersEntities} = await UserModel.getAllUsers(client);
+        const {rows: usersEntities} = await userModel.getAllUsers(client);
         const userEntity = usersEntities[0];
 
         if(userEntity !== undefined) {
             const users = [];
             usersEntities.forEach(function(u) {
-                users.push(DTO.userDTO(u));
+                users.push(dto.userDTO(u));
             });
             res.json(users);
         } else {
@@ -137,11 +137,11 @@ module.exports.getUser = async (req, res) => {
     const id = parseInt(idTexte);
 
     try {
-        const {rows: usersEntities} = await UserModel.getUser(client, id);
+        const {rows: usersEntities} = await userModel.getUser(client, id);
         const userEntity = usersEntities[0];
 
         if(userEntity !== undefined) {
-            res.json(DTO.userDTO(userEntity));
+            res.json(dto.userDTO(userEntity));
         } else {
             res.sendStatus(404);
         }
@@ -157,13 +157,13 @@ module.exports.changeRole = async (req, res) => {
     const {userId, role} = req.body;
 
     if (userId === undefined || role === undefined || isNaN(userId) ||
-        (role.toUpperCase() !== Constants.ROLE_CLIENT && role.toUpperCase() !== Constants.ROLE_MODERATOR && role.toUpperCase() !== Constants.ROLE_ADMINISTRATOR)) {
+        (role.toUpperCase() !== constant.ROLE_CLIENT && role.toUpperCase() !== constant.ROLE_MODERATOR && role.toUpperCase() !== constant.ROLE_ADMINISTRATOR)) {
         res.sendStatus(400);
     } else {
         const client = await pool.connect();
 
         try {
-            await UserModel.changeRole(client, role.toUpperCase(), userId);
+            await userModel.changeRole(client, role.toUpperCase(), userId);
             res.sendStatus(204);
         } catch (error) {
             console.log(error);

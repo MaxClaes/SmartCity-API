@@ -1,6 +1,6 @@
-const DrinkModel = require("../model/drinkDB");
+const drinkModel = require("../model/drinkDB");
 const pool = require("../model/database");
-const DTO = require('../dto');
+const dto = require('../dto');
 
 module.exports.createDrink = async (req, res) => {
     const {label, prcAlcohol, quantity} = req.body;
@@ -8,7 +8,7 @@ module.exports.createDrink = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        await DrinkModel.createDrink(client, label, prcAlcohol, quantity, createdBy);
+        await drinkModel.createDrink(client, label, prcAlcohol, quantity, createdBy);
         res.sendStatus(201);
     } catch (error) {
         console.log(error);
@@ -23,7 +23,7 @@ module.exports.updateDrink = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        await DrinkModel.updateDrink(client, label, prcAlcohol, quantity, id);
+        await drinkModel.updateDrink(client, label, prcAlcohol, quantity, id);
         res.sendStatus(204);
     } catch (error) {
         console.log(error);
@@ -37,13 +37,13 @@ module.exports.getAllDrinks = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        const {rows: drinksEntities} = await DrinkModel.getAllDrinks(client);
+        const {rows: drinksEntities} = await drinkModel.getAllDrinks(client);
         const drinkEntity = drinksEntities[0];
 
         if(drinkEntity !== undefined) {
             const drinks = [];
             drinksEntities.forEach(function(d) {
-                drinks.push(DTO.drinkDTO(d));
+                drinks.push(dto.drinkDTO(d));
             });
             res.json(drinks);
         } else {
@@ -63,11 +63,11 @@ module.exports.getDrinksByName = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        const {rows: drinksEntities} = await DrinkModel.getDrinksByName(client, labelWithoutSpace.toUpperCase());
+        const {rows: drinksEntities} = await drinkModel.getDrinksByName(client, labelWithoutSpace.toUpperCase());
         const drinkEntity = drinksEntities[0];
 
         if(drinkEntity !== undefined) {
-            res.json(DTO.drinkDTO(drinkEntity));
+            res.json(dto.drinkDTO(drinkEntity));
         } else {
             res.sendStatus(404);
         }
@@ -88,13 +88,13 @@ module.exports.getDrinksByCreatedBy = async (req, res) => {
         if (isNaN(createdBy)) {
             res.sendStatus(400);
         } else {
-            const {rows: drinksEntities} = await DrinkModel.getDrinksByCreatedBy(client, createdBy);
+            const {rows: drinksEntities} = await drinkModel.getDrinksByCreatedBy(client, createdBy);
             const drinkEntity = drinksEntities[0];
 
             if (drinkEntity !== undefined) {
                 const drinks = [];
                 drinksEntities.forEach(function(d) {
-                    drinks.push(DTO.drinkDTO(d));
+                    drinks.push(dto.drinkDTO(d));
                 });
                 res.json(drinks);
             } else {
@@ -118,7 +118,7 @@ module.exports.deleteDrink = async (req, res) => {
         if (isNaN(id)) {
             res.sendStatus(400);
         } else {
-            await DrinkModel.deleteDrink(client, id);
+            await drinkModel.deleteDrink(client, id);
             res.sendStatus(204);
         }
     } catch (error) {
@@ -138,11 +138,11 @@ module.exports.getDrinkById = async (req, res) => {
         if(isNaN(id)){
             res.sendStatus(400);
         } else {
-            const {rows: drinksEntities} = await DrinkModel.getDrinkById(client, id);
+            const {rows: drinksEntities} = await drinkModel.getDrinkById(client, id);
             const drinkEntity = drinksEntities[0];
 
             if(drinkEntity !== undefined){
-                res.json(DTO.drinkDTO(drinkEntity));
+                res.json(dto.drinkDTO(drinkEntity));
             } else {
                 res.sendStatus(404);
             }
@@ -161,7 +161,7 @@ module.exports.resetReport = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        await DrinkModel.resetReport(client, drinkId);
+        await drinkModel.resetReport(client, drinkId);
         res.sendStatus(204);
     } catch (error) {
         console.log(error);
@@ -177,7 +177,7 @@ module.exports.incrementReport = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        await DrinkModel.incrementReport(client, drinkId);
+        await drinkModel.incrementReport(client, drinkId);
         res.sendStatus(204);
     } catch (error) {
         console.log(error);

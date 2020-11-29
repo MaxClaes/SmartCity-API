@@ -1,10 +1,10 @@
-const DrinkModel = require("../model/drinkDB");
-const UserModel = require('../model/userDB');
+const drinkModel = require("../model/drinkDB");
+const userModel = require('../model/userDB');
 const pool = require("../model/database");
-const Constants = require('../utils/constant');
+const constant = require('../utils/constant');
 
 // module.exports.mustBeAdministrator = (req, res, next) => {
-//     if (req.session && req.session.authLevel === Constants.ROLE_ADMINISTRATOR) {
+//     if (req.session && req.session.authLevel === constant.ROLE_ADMINISTRATOR) {
 //         next();
 //     } else {
 //         res.sendStatus(403);
@@ -12,7 +12,7 @@ const Constants = require('../utils/constant');
 // }
 //
 // module.exports.mustBeModerator = (req, res, next) => {
-//     if (req.session && req.session.authLevel === Constants.ROLE_MODERATOR) {
+//     if (req.session && req.session.authLevel === constant.ROLE_MODERATOR) {
 //         next();
 //     } else {
 //         res.sendStatus(403);
@@ -21,7 +21,7 @@ const Constants = require('../utils/constant');
 
 module.exports.mustBeManager = (req, res, next) => {
     if (req.session) {
-        if (req.session.authLevel === Constants.ROLE_ADMINISTRATOR || req.session.authLevel === Constants.ROLE_MODERATOR) {
+        if (req.session.authLevel === constant.ROLE_ADMINISTRATOR || req.session.authLevel === constant.ROLE_MODERATOR) {
             next();
         } else {
             res.sendStatus(403);
@@ -54,7 +54,7 @@ module.exports.mustBeManagerOrCreator = (req, res, next) => {
         if (isNaN(id)) {
             res.sendStatus(400);
         } else {
-            if (req.session.authLevel === Constants.ROLE_ADMINISTRATOR || req.session.authLevel === Constants.ROLE_MODERATOR || (id === req.session.id)) {
+            if (req.session.authLevel === constant.ROLE_ADMINISTRATOR || req.session.authLevel === constant.ROLE_MODERATOR || (id === req.session.id)) {
                 next();
             } else {
                 res.sendStatus(403);
@@ -75,10 +75,10 @@ module.exports.canDelete = async (req, res, next) => {
             if (isNaN(id)) {
                 res.sendStatus(400);
             } else {
-                if (req.session.authLevel === Constants.ROLE_ADMINISTRATOR || req.session.authLevel === Constants.ROLE_MODERATOR) {
+                if (req.session.authLevel === constant.ROLE_ADMINISTRATOR || req.session.authLevel === constant.ROLE_MODERATOR) {
                     next();
                 } else {
-                    const {rows: drinks} = await DrinkModel.getDrinkById(client, id);
+                    const {rows: drinks} = await drinkModel.getDrinkById(client, id);
                     const drink = drinks[0];
 
                     if(drink !== undefined) {
@@ -104,26 +104,26 @@ module.exports.canDelete = async (req, res, next) => {
 }
 
 module.exports.canChangeRole = async (req, res, next) => {
-    if (!req.session || req.session.authLevel === Constants.ROLE_CLIENT) {
+    if (!req.session || req.session.authLevel === constant.ROLE_CLIENT) {
         res.sendStatus(403);
     } else {
         const {userId, role} = req.body;
 
         if (userId === undefined || role === undefined ||
-            (role.toUpperCase() !== Constants.ROLE_CLIENT && role.toUpperCase() !== Constants.ROLE_MODERATOR && role.toUpperCase() !== Constants.ROLE_ADMINISTRATOR)) {
+            (role.toUpperCase() !== constant.ROLE_CLIENT && role.toUpperCase() !== constant.ROLE_MODERATOR && role.toUpperCase() !== constant.ROLE_ADMINISTRATOR)) {
             res.sendStatus(400);
         } else {
-            if (req.session.authLevel === Constants.ROLE_ADMINISTRATOR) {
+            if (req.session.authLevel === constant.ROLE_ADMINISTRATOR) {
                 next();
             } else {
                 const client = await pool.connect();
 
                 try {
-                    const {rows: userEntities} = await UserModel.getUser(client, userId);
+                    const {rows: userEntities} = await userModel.getUser(client, userId);
                     const userEntity = userEntities[0];
 
                     if (userEntity !== undefined) {
-                        if (userEntity.role === Constants.ROLE_ADMINISTRATOR || role.toUpperCase() === Constants.ROLE_ADMINISTRATOR) {
+                        if (userEntity.role === constant.ROLE_ADMINISTRATOR || role.toUpperCase() === constant.ROLE_ADMINISTRATOR) {
                             res.sendStatus(403);
                         } else {
                             next();
@@ -144,7 +144,7 @@ module.exports.canChangeRole = async (req, res, next) => {
 
 // module.exports.canSeeBandById = async (req, res, next) => {
 //     if (req.session) {
-//         if (req.session.authLevel === Constants.ROLE_ADMINISTRATOR || req.session.authLevel === Constants.ROLE_MODERATOR) {
+//         if (req.session.authLevel === constant.ROLE_ADMINISTRATOR || req.session.authLevel === constant.ROLE_MODERATOR) {
 //             next();
 //         } else {
 //             const idBandTexte = req.params.id;
