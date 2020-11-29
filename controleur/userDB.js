@@ -6,7 +6,7 @@ const pool = require('../model/database');
 const UserModel = require('../model/userDB');
 const AddressModel = require('../model/addressDB');
 const Constants = require('../utils/constant');
-const DTO = require('../dto/dto');
+const DTO = require('../dto');
 
 module.exports.login = async (req, res) => {
     const {email, password} = req.body;

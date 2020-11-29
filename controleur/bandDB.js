@@ -1,7 +1,7 @@
 const BandModel = require("../model/bandDB");
 const pool = require("../model/database");
 const Constants = require("../utils/constant");
-const DTO = require('../dto/dto');
+const DTO = require('../dto');
 
 module.exports.createBand = async (req, res) => {
     const {label} = req.body;

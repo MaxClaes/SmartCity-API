@@ -1,6 +1,6 @@
 const DrinkModel = require("../model/drinkDB");
 const pool = require("../model/database");
-const DTO = require('../dto/dto');
+const DTO = require('../dto');
 
 module.exports.createDrink = async (req, res) => {
     const {label, prcAlcohol, quantity} = req.body;
