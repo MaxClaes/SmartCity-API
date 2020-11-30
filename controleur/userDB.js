@@ -38,12 +38,13 @@ module.exports.login = async (req, res) => {
 };
 
 module.exports.createUser = async (req, res) => {
-    const {name, firstname, birthdate, email, password, height, weight, gsm, address:addressObj} = req.body;
+    const {name, firstname, birthdate, email, password, sexe, height, weight, gsm, address:addressObj} = req.body;
 
     if (name === undefined || firstname === undefined || birthdate === undefined || email === undefined ||
-        password === undefined || password.trim() === "" || height === undefined || weight === undefined ||
-        gsm === undefined || addressObj.country === undefined || addressObj.postalCode === undefined ||
-        addressObj.city === undefined || addressObj.street === undefined || addressObj.number === undefined) {
+        password === undefined || password.trim() === "" || sexe === undefined || (sexe !== constant.SEXE_HOMME && sexe !== constant.SEXE_FEMME) ||
+        height === undefined || weight === undefined || gsm === undefined || addressObj.country === undefined ||
+        addressObj.postalCode === undefined || addressObj.city === undefined || addressObj.street === undefined ||
+        addressObj.number === undefined) {
         res.status(400).json({error: error.MISSING_PARAMETER});
     } else {
         const client = await pool.connect();
@@ -57,7 +58,7 @@ module.exports.createUser = async (req, res) => {
 
                 const {rows: addresses} = await addressModel.createAddress(client, addressObj.country, addressObj.postalCode, addressObj.city, addressObj.street, addressObj.number);
                 const addressId = addresses[0].address_id;
-                await userModel.createUser(client, name, firstname, birthdate, email, password, new Date(), height, weight, gsm, addressId);
+                await userModel.createUser(client, name, firstname, birthdate, email, password, new Date(), sexe, height, weight, gsm, addressId);
 
                 client.query("COMMIT;");
                 res.sendStatus(201);

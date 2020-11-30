@@ -9,5 +9,8 @@ module.exports = {
 
     STATUS_ACCEPTED : 'A',
     STATUS_REJECTED : 'R',
-    STATUS_WAITING : 'W'
+    STATUS_WAITING : 'W',
+
+    SEXE_HOMME : 'H',
+    SEXE_FEMME : 'F'
 };
