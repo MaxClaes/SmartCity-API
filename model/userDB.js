@@ -132,7 +132,7 @@ module.exports.changeRole = async (client, role, id) => {
 
 module.exports.userExist = async (client, userId) => {
     const {rows} = await client.query(
-        "SELECT count(id) AS nbr FROM client WHERE client_id = $1",
+        "SELECT count(client_id) AS nbr FROM client WHERE client_id = $1",
         [userId]
     );
     return rows[0].nbr > 0;

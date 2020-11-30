@@ -54,10 +54,10 @@ CREATE TABLE band_client (
     PRIMARY KEY(client_id, band_id)
 );
 
-DROP TABLE IF EXISTS drink_consumed CASCADE;
-CREATE TABLE drink_consumed (
-    client_id INTEGER REFERENCES client(client_id) DEFERRABLE INITIALLY IMMEDIATE,
-    drink_id INTEGER REFERENCES drink(drink_id) DEFERRABLE INITIALLY IMMEDIATE,
+DROP TABLE IF EXISTS consumption CASCADE;
+CREATE TABLE consumption (
+    consumption_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     "date" TIMESTAMP NOT NULL,
-    PRIMARY KEY(client_id, drink_id)
+    client_id INTEGER NOT NULL REFERENCES client(client_id) DEFERRABLE INITIALLY IMMEDIATE,
+    drink_id INTEGER NOT NULL REFERENCES drink(drink_id) DEFERRABLE INITIALLY IMMEDIATE
 );

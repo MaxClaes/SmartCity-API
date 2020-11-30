@@ -8,10 +8,8 @@ module.exports.createBand = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        const date = new Date();
-
         client.query("BEGIN;");
-        const {rows: bands} = await bandModel.createBand(client, label, date);
+        const {rows: bands} = await bandModel.createBand(client, label, new Date());
         const bandId = bands[0].id;
 
         if (bandId !== undefined && bandId !== null) {

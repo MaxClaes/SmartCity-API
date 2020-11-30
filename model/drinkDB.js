@@ -49,6 +49,15 @@ module.exports.getDrinkById = async (client, id) => {
     );
 }
 
+module.exports.drinkExists = async (client, drinkId) => {
+    const {rows} = await client.query(
+        "SELECT count(drink_id) AS nbr FROM drink WHERE drink_id = $1",
+        [drinkId]
+    );
+    return rows[0].nbr > 0;
+};
+
+
 module.exports.resetReport = async (client, id) => {
     const nbReportsInitial = 0;
 

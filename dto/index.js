@@ -86,3 +86,15 @@ module.exports.bandDTO = (bandEntity) => {
         creationDate : bandEntity.creation_date
     }
 }
+
+module.exports.consumptionDTO = (consumptionEntity) => {
+    return {
+        // userId : consumptionEntity.client_id,
+        // drinkId : consumptionEntity.drink_id,
+        // date : consumptionEntity.date
+        id : consumptionEntity.consumption_id,
+        date : consumptionEntity.date,
+        userId : consumptionEntity.client_id,
+        drink : this.drinkDTO(consumptionEntity)
+    }
+}
