@@ -36,11 +36,11 @@ module.exports.updateConsumption = async (req, res) => {
     }
 }
 
-module.exports.getAllConsumptionByUserId = async (req, res) => {
+module.exports.getAllConsumptionsByUserId = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        const {rows: consumptionsEntities} = await consumptionModel.getAllConsumptionByUserId(client, req.session.id);
+        const {rows: consumptionsEntities} = await consumptionModel.getAllConsumptionsByUserId(client, req.session.id);
 
         if (consumptionsEntities[0] !== undefined) {
             const consumptions = [];
@@ -59,7 +59,7 @@ module.exports.getAllConsumptionByUserId = async (req, res) => {
     }
 }
 
-// module.exports.getAllConsumptionByDate = async (req, res) => {
+// module.exports.getAllConsumptionsByDate = async (req, res) => {
 //     const {date} = req.body;
 //
 //     if (date === undefined) {
@@ -68,7 +68,7 @@ module.exports.getAllConsumptionByUserId = async (req, res) => {
 //         const client = await pool.connect();
 //
 //         try {
-//             const {rows: consumptionsEntities} = await consumptionModel.getAllConsumptionByDate(client, date);
+//             const {rows: consumptionsEntities} = await consumptionModel.getAllConsumptionsByDate(client, date);
 //
 //             if (consumptionsEntities[0] !== undefined) {
 //                 const consumptions = [];
@@ -117,10 +117,14 @@ module.exports.getAlcoholLevel = async (req, res) => {
         const userEntity = usersEntities[0];
 
         if(userEntity !== undefined) {
-            //Faire plutot un getAllConsumptionByDate pour prendre uniquement les consommations du jour
-            const {rows: consumptionsEntities} = await consumptionModel.getAllConsumptionByUserId(client, req.session.id);
+            let today = new Date();
+            let twoDaysBeforeToday = new Date(today.getTime());
+            twoDaysBeforeToday.setDate(today.getDate() - 2);
+
+            const {rows: consumptionsEntities} = await consumptionModel.getAllConsumptionsAfterDate(client, req.session.id, twoDaysBeforeToday);
             let alcoholLevelNet = 0;
-            let timeLeftBeforeAbsorption = 0;
+            let timeLeftBeforeAbsorption;
+            let totalTimeLeftBeforeAbsorption = 0
 
             if (consumptionsEntities[0] !== undefined) {
                 const user = dto.userDTO(userEntity);
@@ -128,7 +132,7 @@ module.exports.getAlcoholLevel = async (req, res) => {
                 let consumption;
                 let timeDrinkEliminated;
                 let differenceTodayAndConsumption;
-                let today = new Date();
+                let alcoholLevelActual;
 
                 consumptionsEntities.forEach(function(c) {
                     consumption = dto.consumptionDTO(c);
@@ -136,21 +140,25 @@ module.exports.getAlcoholLevel = async (req, res) => {
                     if (consumption.drink.prcAlcohol > 0) {
                         alcoholLevelBrut = (((consumption.drink.quantity * 1000) * (consumption.drink.prcAlcohol / 100) * 0.8) / ((user.gender === constant.GENDER_MAN ? 0.7 : 0.6) * user.weight));
 
-                        // timeDrinkEliminated = Math.ceil(constant.ALCOHOL_TIME_MIN_HIGHEST_LEVEL + (alcoholLevelBrut / (constant.ALCOHOL_ELIMINATION_SPEED / 60)));
-                        // differenceTodayAndConsumption = Math.ceil((today - consumption.date) / (1000 * 60));
-                        timeDrinkEliminated = constant.ALCOHOL_TIME_MIN_HIGHEST_LEVEL + (alcoholLevelBrut / (constant.ALCOHOL_ELIMINATION_SPEED / 60));
+                        timeDrinkEliminated = constant.ALCOHOL_TIME_MAX_HIGHEST_LEVEL + (alcoholLevelBrut / (constant.ALCOHOL_MIN_ELIMINATION_SPEED_MAN / 60));
                         differenceTodayAndConsumption = (today - consumption.date) / (1000 * 60);
-                        timeLeftBeforeAbsorption += timeDrinkEliminated - differenceTodayAndConsumption;
+                        timeLeftBeforeAbsorption = timeDrinkEliminated - differenceTodayAndConsumption;
+                        alcoholLevelActual = alcoholLevelBrut * (differenceTodayAndConsumption / constant.ALCOHOL_TIME_MAX_HIGHEST_LEVEL);
 
                         if (timeLeftBeforeAbsorption > 0) {
-                            alcoholLevelNet += timeLeftBeforeAbsorption * (constant.ALCOHOL_ELIMINATION_SPEED / 60);
+                            if (alcoholLevelActual > alcoholLevelBrut) {
+                                alcoholLevelNet += timeLeftBeforeAbsorption * (constant.ALCOHOL_MIN_ELIMINATION_SPEED_MAN / 60);
+                            } else {
+                                alcoholLevelNet += alcoholLevelActual;
+                            }
+                            totalTimeLeftBeforeAbsorption += timeLeftBeforeAbsorption;
                         }
                     }
                 });
 
-                res.json(alcoholLevel = {currentAlcoholLevel : alcoholLevelNet, timeLeft : timeLeftBeforeAbsorption});
+                res.json(alcoholLevel = {currentAlcoholLevel : alcoholLevelNet, totalTimeLeftBeforeAbsorption : totalTimeLeftBeforeAbsorption});
             } else {
-                res.json(alcoholLevel = {currentAlcoholLevel : alcoholLevelNet, timeLeft : timeLeftBeforeAbsorption});
+                res.json(alcoholLevel = {currentAlcoholLevel : alcoholLevelNet, totalTimeLeftBeforeAbsorption : totalTimeLeftBeforeAbsorption});
             }
         } else {
             res.sendStatus(404);

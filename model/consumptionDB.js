@@ -14,7 +14,7 @@ module.exports.updateConsumption = async (client, consumptionId, date) => {
     );
 };
 
-module.exports.getAllConsumptionByUserId = async (client, userId) => {
+module.exports.getAllConsumptionsByUserId = async (client, userId) => {
     return await client.query(`
         SELECT consumption.consumption_id, consumption.date, drink.drink_id, drink.label, drink.prc_alcohol, drink.quantity 
         FROM consumption INNER JOIN drink on consumption.drink_id = drink.drink_id WHERE consumption.client_id = $1 
@@ -23,12 +23,23 @@ module.exports.getAllConsumptionByUserId = async (client, userId) => {
     );
 }
 
-module.exports.getAllConsumptionByDate = async (client, date) => {
+// module.exports.getAllConsumptionsByDate = async (client, userId, date) => {
+//     return await client.query(`
+//         SELECT consumption.consumption_id, consumption.date, drink.drink_id, drink.label, drink.prc_alcohol, drink.quantity
+//         FROM consumption INNER JOIN drink on consumption.drink_id = drink.drink_id
+//         WHERE consumption.client_id = $1 AND consumption.date = $2
+//         ORDER BY consumption.consumption_id DESC;
+//         `, [userId, date]
+//     );
+// }
+
+module.exports.getAllConsumptionsAfterDate = async (client, userId, date) => {
     return await client.query(`
         SELECT consumption.consumption_id, consumption.date, drink.drink_id, drink.label, drink.prc_alcohol, drink.quantity
-        FROM consumption INNER JOIN drink on consumption.drink_id = drink.drink_id WHERE consumption.date = $1
+        FROM consumption INNER JOIN drink on consumption.drink_id = drink.drink_id 
+        WHERE consumption.client_id = $1 AND consumption.date > $2
         ORDER BY consumption.consumption_id DESC;
-        `, [date]
+        `, [userId, date]
     );
 }
 
