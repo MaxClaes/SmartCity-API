@@ -10,11 +10,31 @@ module.exports.createDrink = async (client, label, prcAlcohol, quantity, created
  On ne permet pas de passer nbSignalement car ce sera trop risqué qu'un utilisateur puisse modifier cette variable comme il le souhaite
  */
 module.exports.updateDrink = async (client, label, prcAlcohol, quantity, id) => {
-     return await client.query(`
-        UPDATE drink SET label = $1, prc_alcohol = $2, quantity = $3
-        WHERE drink_id = $4;
-        `, [label, prcAlcohol, quantity, id]
-     );
+    let query = "UPDATE drink SET ";
+    let argumentsWithoutId = [
+        ['label', label],
+        ['prc_alcohol', prcAlcohol],
+        ['quantity', quantity]
+    ];
+    const params = [], querySet = [];
+    const KEY = 0, VALUE = 1;
+
+    argumentsWithoutId.forEach(function(arg) {
+        if (arg[VALUE] != undefined) {
+            params.push(arg[VALUE]);
+            querySet.push(` ${arg[KEY]} = $${params.length} `);
+        }
+    });
+
+    if(params.length > 0){
+        query += querySet.join(',');
+        params.push(id);
+        query += ` WHERE drink_id = $${params.length};`;
+
+        return client.query(query, params);
+    } else {
+        throw new Error("No field to update");
+    }
 };
 
 module.exports.getAllDrinks = async (client) => {

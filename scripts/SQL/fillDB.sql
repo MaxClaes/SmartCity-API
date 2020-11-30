@@ -11,7 +11,7 @@ INSERT INTO client (name, firstname, birthdate, email, password, registration_da
 
 INSERT INTO drink (label, prc_alcohol, quantity, nb_reports, created_by) VALUES
 ('Jupiler', 5.2, 0.33, 0, 1),
-('Jack Daniel''s', 40, 0.70, 0, 2),
+('Jack Daniel''s', 40, 0.025, 0, 2),
 ('Kriek Bellevue', 5.2, 0.33, 0, 3);
 
 INSERT INTO drink (label, prc_alcohol, quantity, nb_reports) VALUES

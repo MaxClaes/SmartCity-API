@@ -9,7 +9,7 @@ router.get('/', drinkControleur.getAllDrinks);
 router.get('/name/:label', drinkControleur.getDrinksByName);
 router.get('/user/:id', JWTMiddleWare.identification, authoMiddleware.mustBeManagerOrCreator, drinkControleur.getDrinksByCreatedBy);
 router.post('/', JWTMiddleWare.identification, drinkControleur.createDrink);
-router.patch('/', JWTMiddleWare.identification, authoMiddleware.mustBeManagerOrCreator, drinkControleur.updateDrink);
+router.patch('/', JWTMiddleWare.identification, drinkControleur.updateDrink);
 router.delete('/:id', JWTMiddleWare.identification, authoMiddleware.canDelete, drinkControleur.deleteDrink);
 router.patch('/:drinkId/report/reset', JWTMiddleWare.identification, authoMiddleware.mustBeManager, drinkControleur.resetReport);
 router.patch('/:drinkId/report/increment', JWTMiddleWare.identification, drinkControleur.incrementReport);
