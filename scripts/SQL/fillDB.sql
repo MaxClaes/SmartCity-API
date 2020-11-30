@@ -3,10 +3,10 @@ INSERT INTO address (country, postal_code, city, street, number) VALUES
 ('Belgium', 2000, 'Anvers', 'par là', '123'),
 ('Belgium', 4000, 'Liège', 'par où', '10a');
 
-INSERT INTO client (name, firstname, birthdate, email, password, registration_date, sexe, height, weight, gsm, role, address) VALUES
-('AdminName', 'AdminFirstname', TO_DATE('17/12/1992', 'DD/MM/YYYY'), 'administrator@gmail.com', '$2a$10$fiKILzSQn2YvA.mbmxhqa.7f8pErrnl4qofZY7nE/a5Vq8KakfPKG', TO_DATE('04/10/2020', 'DD/MM/YYYY'), 'H', 178, 80.0, '+32475254163', 'ADMINISTRATOR', 1),
-('ModoName', 'ModoFirstname', TO_DATE('01/01/1985', 'DD/MM/YYYY'), 'moderator@gmail.com', '$2a$10$fiKILzSQn2YvA.mbmxhqa.7f8pErrnl4qofZY7nE/a5Vq8KakfPKG', TO_DATE('04/10/2020', 'DD/MM/YYYY'), 'H', 195, 110.5, '+32479456525', 'MODERATOR', 2),
-('ClientName', 'ClientFirstname', TO_DATE('10/09/1995', 'DD/MM/YYYY'), 'client@gmail.com', '$2a$10$fiKILzSQn2YvA.mbmxhqa.7f8pErrnl4qofZY7nE/a5Vq8KakfPKG', TO_DATE('04/10/2020', 'DD/MM/YYYY'), 'H', 162, 59.9, '+32475136479', 'CLIENT', 3);
+INSERT INTO client (name, firstname, birthdate, email, password, registration_date, gender, height, weight, gsm, role, address) VALUES
+('AdminName', 'AdminFirstname', TO_DATE('17/12/1992', 'DD/MM/YYYY'), 'administrator@gmail.com', '$2a$10$fiKILzSQn2YvA.mbmxhqa.7f8pErrnl4qofZY7nE/a5Vq8KakfPKG', TO_DATE('04/10/2020', 'DD/MM/YYYY'), 'M', 170, 80.0, '+32475254163', 'ADMINISTRATOR', 1),
+('ModoName', 'ModoFirstname', TO_DATE('01/01/1985', 'DD/MM/YYYY'), 'moderator@gmail.com', '$2a$10$fiKILzSQn2YvA.mbmxhqa.7f8pErrnl4qofZY7nE/a5Vq8KakfPKG', TO_DATE('04/10/2020', 'DD/MM/YYYY'), 'M', 195, 110.5, '+32479456525', 'MODERATOR', 2),
+('ClientName', 'ClientFirstname', TO_DATE('10/09/1995', 'DD/MM/YYYY'), 'client@gmail.com', '$2a$10$fiKILzSQn2YvA.mbmxhqa.7f8pErrnl4qofZY7nE/a5Vq8KakfPKG', TO_DATE('04/10/2020', 'DD/MM/YYYY'), 'M', 162, 59.9, '+32475136479', 'CLIENT', 3);
 --password
 
 INSERT INTO drink (label, prc_alcohol, quantity, nb_reports, created_by) VALUES

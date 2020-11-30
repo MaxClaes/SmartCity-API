@@ -35,7 +35,7 @@ module.exports.userDTO = (clientEntity) => {
         birthdate : clientEntity.birthdate,
         email : clientEntity.email,
         registrationDate : clientEntity.registration_date,
-        sexe : clientEntity.sexe,
+        gender : clientEntity.gender,
         height : clientEntity.height,
         weight : clientEntity.weight,
         gsm : clientEntity.gsm,

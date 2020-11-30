@@ -23,14 +23,14 @@ module.exports.getAllConsumptionByUserId = async (client, userId) => {
     );
 }
 
-// module.exports.getAllConsumptionByDate = async (client, date) => {
-//     return await client.query(`
-//         SELECT consumption.consumption_id, consumption.date, drink.drink_id, drink.label, drink.prc_alcohol, drink.quantity
-//         FROM consumption INNER JOIN drink on consumption.drink_id = drink.drink_id WHERE consumption.date = $1
-//         ORDER BY consumption.consumption_id DESC;
-//         `, [date]
-//     );
-// }
+module.exports.getAllConsumptionByDate = async (client, date) => {
+    return await client.query(`
+        SELECT consumption.consumption_id, consumption.date, drink.drink_id, drink.label, drink.prc_alcohol, drink.quantity
+        FROM consumption INNER JOIN drink on consumption.drink_id = drink.drink_id WHERE consumption.date = $1
+        ORDER BY consumption.consumption_id DESC;
+        `, [date]
+    );
+}
 
 module.exports.deleteConsumption = async (client, consumptionId) => {
     return await client.query(`

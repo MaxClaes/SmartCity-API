@@ -18,7 +18,7 @@ CREATE TABLE client (
     email VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
     registration_date TIMESTAMP NOT NULL,
-    sexe CHAR(1) NOT NULL,
+    gender CHAR(1) NOT NULL,
     height INTEGER NOT NULL check (height >= 0),
     weight FLOAT NOT NULL check (height >= 0),
     gsm VARCHAR(255),

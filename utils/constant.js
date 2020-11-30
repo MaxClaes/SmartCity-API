@@ -11,6 +11,9 @@ module.exports = {
     STATUS_REJECTED : 'R',
     STATUS_WAITING : 'W',
 
-    SEXE_HOMME : 'H',
-    SEXE_FEMME : 'F'
+    GENDER_MAN : 'M',
+    GENDER_WOMAN : 'W',
+
+    ALCOHOL_TIME_MIN_HIGHEST_LEVEL : 30,
+    ALCOHOL_ELIMINATION_SPEED : 0.10
 };

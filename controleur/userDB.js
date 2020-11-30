@@ -38,10 +38,10 @@ module.exports.login = async (req, res) => {
 };
 
 module.exports.createUser = async (req, res) => {
-    const {name, firstname, birthdate, email, password, sexe, height, weight, gsm, address:addressObj} = req.body;
+    const {name, firstname, birthdate, email, password, gender, height, weight, gsm, address:addressObj} = req.body;
 
     if (name === undefined || firstname === undefined || birthdate === undefined || email === undefined ||
-        password === undefined || password.trim() === "" || sexe === undefined || (sexe !== constant.SEXE_HOMME && sexe !== constant.SEXE_FEMME) ||
+        password === undefined || password.trim() === "" || gender === undefined || (gender !== constant.GENDER_MAN && gender !== constant.GENDER_WOMAN) ||
         height === undefined || weight === undefined || gsm === undefined || addressObj.country === undefined ||
         addressObj.postalCode === undefined || addressObj.city === undefined || addressObj.street === undefined ||
         addressObj.number === undefined) {
@@ -58,7 +58,7 @@ module.exports.createUser = async (req, res) => {
 
                 const {rows: addresses} = await addressModel.createAddress(client, addressObj.country, addressObj.postalCode, addressObj.city, addressObj.street, addressObj.number);
                 const addressId = addresses[0].address_id;
-                await userModel.createUser(client, name, firstname, birthdate, email, password, new Date(), sexe, height, weight, gsm, addressId);
+                await userModel.createUser(client, name, firstname, birthdate, email, password, new Date(), gender, height, weight, gsm, addressId);
 
                 client.query("COMMIT;");
                 res.sendStatus(201);

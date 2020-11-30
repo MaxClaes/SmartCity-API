@@ -25,7 +25,7 @@ module.exports.getUserByEmail = async (client, email) => {
 module.exports.getAllUsers = async (client) => {
     return await client.query(`
         SELECT client.client_id, client.name, client.firstname, client.birthdate, 
-        client.email, client.registration_date, client.sexe, client.height, client.weight, 
+        client.email, client.registration_date, client.gender, client.height, client.weight, 
         client.gsm, client.role, address.address_id, address.country, address.postal_code, 
         address.city, address.street, address.number
         FROM client INNER JOIN address ON client.address = address.address_id;`
@@ -35,17 +35,17 @@ module.exports.getAllUsers = async (client) => {
 module.exports.getUser = async (client, id) => {
     return await client.query(`
         SELECT client.client_id, client.name, client.firstname, client.birthdate, 
-        client.email, client.registration_date, client.sexe, client.height, client.weight, 
+        client.email, client.registration_date, client.gender, client.height, client.weight, 
         client.gsm, client.role, address.address_id, address.country, address.postal_code, 
         address.city, address.street, address.number 
         FROM client INNER JOIN address ON client.address = address.address_id WHERE client.client_id = $1;`, [id]
     );
 }
 
-module.exports.createUser = async (client, name, firstname, birthdate, email, password, registrationDate, sexe, height, weight, gsm, addressId) => {
+module.exports.createUser = async (client, name, firstname, birthdate, email, password, registrationDate, gender, height, weight, gsm, addressId) => {
     return await client.query(`
-        INSERT INTO client(name, firstname, birthdate, email, password, registration_date, sexe, height, weight, gsm, role, address) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);`, [name, firstname, birthdate, email, await getHash(password), registrationDate, sexe, height, weight, gsm, constant.ROLE_CLIENT, addressId]
+        INSERT INTO client(name, firstname, birthdate, email, password, registration_date, gender, height, weight, gsm, role, address) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);`, [name, firstname, birthdate, email, await getHash(password), registrationDate, gender, height, weight, gsm, constant.ROLE_CLIENT, addressId]
     );
 };
 
