@@ -59,12 +59,6 @@ module.exports = {
         body("password")
             .isLength({min : 8}).withMessage("Password is to short")
     ],
-    idValidation : [
-        param("id")
-            .exists().withMessage("Id is empty.")
-            .toInt().not().isIn([null]).withMessage("Id is not a number.")
-            .isInt({min : 0}).withMessage("Id is less than 0"),
-    ],
     userUpdateValidation : [
         body("name")
             .trim().not().isEmpty().withMessage("Name is empty.")

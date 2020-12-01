@@ -5,7 +5,7 @@ const validatorDrink = require('../middleware/ValidatorDrink');
 const Router = require("express-promise-router");
 const router = new Router;
 
-router.post('/:drinkId', JWTMiddleWare.identification, validatorDrink.drinkExists, consumptionController.createConsumption);
+router.post('/:id', JWTMiddleWare.identification, validatorDrink.drinkExists, consumptionController.createConsumption);
 router.patch('/', JWTMiddleWare.identification, consumptionController.updateConsumption);
 router.get('/', JWTMiddleWare.identification, consumptionController.getAllConsumptionsByUserId);
 //router.get('/date', JWTMiddleWare.identification, consumptionController.getAllConsumptionsByDate);

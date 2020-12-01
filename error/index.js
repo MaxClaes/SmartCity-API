@@ -21,6 +21,10 @@ module.exports = {
         code : 203,
         msg : "User not found."
     },
+    DRINK_NOT_FOUND : {
+        code : 204,
+        message : "Drink not found."
+    },
 
 
 
@@ -63,10 +67,7 @@ module.exports = {
         message : "Access restricted to the item's owner."
     },
 
-    DRINK_NOT_FOUND : {
-        code : 220,
-        message : "Drink not found."
-    },
+
     BAND_NOT_FOUND : {
         code : 221,
         message : "Band not found."

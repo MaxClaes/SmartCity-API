@@ -21,15 +21,14 @@
   <component name="ChangeListManager">
     <list default="true" id="084b7899-cb0a-4e00-98be-82cfd2e99716" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controleur/drinkDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/controleur/drinkDB.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controleur/userDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/controleur/userDB.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/error/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/error/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/middleware/Authorization.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/Authorization.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middleware/ValidatorBand.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/ValidatorBand.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware/ValidatorDrink.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/ValidatorDrink.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/middleware/ValidatorUser.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/ValidatorUser.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/bandDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/model/bandDB.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/userDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/model/userDB.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/route/consumption.js" beforeDir="false" afterPath="$PROJECT_DIR$/route/consumption.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/route/drink.js" beforeDir="false" afterPath="$PROJECT_DIR$/route/drink.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/route/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/route/user.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -83,7 +82,7 @@
       <workItem from="1606130340244" duration="83094000" />
       <workItem from="1606561539323" duration="49082000" />
       <workItem from="1606735853918" duration="12366000" />
-      <workItem from="1606757605698" duration="27226000" />
+      <workItem from="1606757605698" duration="30821000" />
     </task>
     <servers />
   </component>
@@ -130,25 +129,25 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="572" y="127" key="FileChooserDialogImpl/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1606063442323" />
-    <state width="1345" height="161" key="GridCell.Tab.0.bottom" timestamp="1606840096341">
+    <state width="1345" height="161" key="GridCell.Tab.0.bottom" timestamp="1606841272530">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1345" height="161" key="GridCell.Tab.0.bottom/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1606840096341" />
+    <state width="1345" height="161" key="GridCell.Tab.0.bottom/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1606841272530" />
     <state width="1345" height="125" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1606670810793" />
-    <state width="1345" height="161" key="GridCell.Tab.0.center" timestamp="1606840096340">
+    <state width="1345" height="161" key="GridCell.Tab.0.center" timestamp="1606841272530">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1345" height="161" key="GridCell.Tab.0.center/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1606840096340" />
+    <state width="1345" height="161" key="GridCell.Tab.0.center/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1606841272530" />
     <state width="1345" height="125" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1606670810793" />
-    <state width="1345" height="161" key="GridCell.Tab.0.left" timestamp="1606840096340">
+    <state width="1345" height="161" key="GridCell.Tab.0.left" timestamp="1606841272530">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1345" height="161" key="GridCell.Tab.0.left/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1606840096340" />
+    <state width="1345" height="161" key="GridCell.Tab.0.left/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1606841272530" />
     <state width="1345" height="125" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1606670810793" />
-    <state width="1345" height="161" key="GridCell.Tab.0.right" timestamp="1606840096341">
+    <state width="1345" height="161" key="GridCell.Tab.0.right" timestamp="1606841272530">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1345" height="161" key="GridCell.Tab.0.right/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1606840096341" />
+    <state width="1345" height="161" key="GridCell.Tab.0.right/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1606841272530" />
     <state width="1345" height="125" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1606670810793" />
     <state width="1345" height="89" key="GridCell.Tab.1.bottom" timestamp="1606829267248">
       <screen x="0" y="0" width="1366" height="728" />
@@ -214,10 +213,10 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state width="498" height="446" key="SwitcherDM/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1606236004897" />
-    <state x="616" y="91" width="581" height="556" key="find.popup" timestamp="1606839265079">
+    <state x="616" y="91" width="581" height="556" key="find.popup" timestamp="1606843769341">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="616" y="91" width="581" height="556" key="find.popup/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1606839265079" />
+    <state x="616" y="91" width="581" height="556" key="find.popup/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1606843769341" />
     <state x="616" y="91" width="581" height="556" key="find.popup/0.0.1366.728@0.0.1366.728" timestamp="1606670642491" />
     <state x="339" y="162" key="run.anything.popup" timestamp="1606838487926">
       <screen x="0" y="0" width="1366" height="728" />
