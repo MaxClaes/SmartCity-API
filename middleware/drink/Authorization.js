@@ -29,7 +29,7 @@ module.exports.canModifyOrDeleteDrink = async (req, res, next) => {
                         if (parseInt(drink.created_by) === req.session.id) {
                             next();
                         } else {
-                            res.status(403).json({error: error.ACCESS_RESTRICTED});
+                            res.status(403).json({error: error.ACCESS_DENIED});
                         }
                     } else {
                         res.status(404).json({error: error.DRINK_NOT_FOUND});

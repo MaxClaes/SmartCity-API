@@ -41,10 +41,10 @@ module.exports.getAllDrinks = async (client) => {
     return await client.query(`SELECT * FROM drink;`);
 }
 
-module.exports.getDrinksByName = async (client, label) => {
+module.exports.getDrinksByName = async (client, label, nbFirstLetters) => {
     return await client.query(`
-        SELECT * FROM drink WHERE UPPER(label) = $1;
-        `, [label]
+        SELECT SUBSTRING(label, 1, $1), prc_alcohol, quantity, created_by, nb_reports, popularity FROM drink WHERE UPPER(label) = $2;
+        `, [nbFirstLetters, label]
     );
 };
 

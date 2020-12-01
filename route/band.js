@@ -1,16 +1,16 @@
-const authoMiddleware = require("../middleware/Authorization");
 const JWTMiddleWare = require("../middleware/IdentificationJWT");
 const bandControleur = require("../controleur/bandDB");
 const validatorUser = require("../middleware/user/Validator");
 const validatorBand = require("../middleware/band/ValidatorBand");
 const authorizationBand = require("../middleware/band/Authorization");
+const authorizationUser = require("../middleware/user/Authorization");
 
 const Router = require("express-promise-router");
 const router = new Router;
 
-router.get('/all', JWTMiddleWare.identification, authoMiddleware.mustBeManager, bandControleur.getAllBands);
-router.get('/bandid/:bandId', JWTMiddleWare.identification, authoMiddleware.mustBeManager, validatorBand.bandIdValidation, bandControleur.getBandById);
-router.delete('/bandid/:bandId', JWTMiddleWare.identification, authoMiddleware.mustBeManager, validatorBand.bandIdValidation, bandControleur.deleteBand);
+router.get('/all', JWTMiddleWare.identification, authorizationUser.mustBeManager, bandControleur.getAllBands);
+router.get('/bandid/:bandId', JWTMiddleWare.identification, authorizationUser.mustBeManager, validatorBand.bandIdValidation, bandControleur.getBandById);
+router.delete('/bandid/:bandId', JWTMiddleWare.identification, authorizationUser.mustBeManager, validatorBand.bandIdValidation, bandControleur.deleteBand);
 
 router.post('/mybands', JWTMiddleWare.identification, validatorBand.createBandValidation, bandControleur.createBand);
 router.get('/mybands', JWTMiddleWare.identification, bandControleur.getMyBands);

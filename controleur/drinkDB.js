@@ -80,11 +80,11 @@ module.exports.getDrinksByName = async (req, res) => {
         return res.status(400).json({error: errors.array()});
     } else {
         const label = req.params.label;
-        const labelWithoutSpace = label.trim();
+        //const labelWithoutSpace = label.trim();
         const client = await pool.connect();
 
         try {
-            const {rows: drinksEntities} = await drinkModel.getDrinksByName(client, labelWithoutSpace.toUpperCase());
+            const {rows: drinksEntities} = await drinkModel.getDrinksByName(client, label.toUpperCase(), label.length);
             const drinkEntity = drinksEntities[0];
 
             if (drinkEntity !== undefined) {
@@ -154,32 +154,6 @@ module.exports.deleteDrink = async (req, res) => {
         }
     }
 }
-
-// module.exports.getDrinkById = async (req, res) => {
-//     const idTexte = req.params.id;
-//     const id = parseInt(idTexte);
-//     const client = await pool.connect();
-//
-//     try{
-//         if(isNaN(id)){
-//             res.sendStatus(400);
-//         } else {
-//             const {rows: drinksEntities} = await drinkModel.getDrinkById(client, id);
-//             const drinkEntity = drinksEntities[0];
-//
-//             if(drinkEntity !== undefined){
-//                 res.json(dto.drinkDTO(drinkEntity));
-//             } else {
-//                 res.sendStatus(404);
-//             }
-//         }
-//     } catch (error) {
-//         console.log(error);
-//         res.sendStatus(500);
-//     } finally {
-//         client.release();
-//     }
-// }
 
 module.exports.resetReport = async (req, res) => {
     const errors = validationResult(req);

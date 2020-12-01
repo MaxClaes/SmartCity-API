@@ -54,12 +54,11 @@ module.exports.createUser = async (req, res) => {
         const client = await pool.connect();
 
         try {
+            client.query("BEGIN;");
             const {rows: usersEntities} = await userModel.getUserByEmail(client, email);
             const userEntity = usersEntities[0];
 
             if (userEntity === undefined) {
-                client.query("BEGIN;");
-
                 const {rows: addresses} = await addressModel.createAddress(client, addressObj.country, addressObj.postalCode, addressObj.city, addressObj.street, addressObj.number);
                 const addressId = addresses[0].address_id;
                 await userModel.createUser(client, name, firstname, birthdate, email, password, new Date(), gender, height, weight, gsm, addressId);
@@ -177,18 +176,6 @@ module.exports.emailExists = async (email) => {
 
     try {
         return await userModel.emailExists(client, email);
-    } catch (error){
-        res.sendStatus(500);
-    } finally {
-        client.release();
-    }
-}
-
-module.exports.userExists = async (id) => {
-    const client = await pool.connect();
-
-    try {
-        return await userModel.userExists(client, id);
     } catch (error){
         res.sendStatus(500);
     } finally {

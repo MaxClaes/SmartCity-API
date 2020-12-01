@@ -22,9 +22,19 @@
     <list default="true" id="084b7899-cb0a-4e00-98be-82cfd2e99716" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controleur/bandDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/controleur/bandDB.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controleur/drinkDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/controleur/drinkDB.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controleur/userDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/controleur/userDB.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/error/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/error/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware/Authorization.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/middleware/band/ValidatorBand.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/band/ValidatorBand.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware/drink/Authorization.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/drink/Authorization.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware/drink/Validator.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/drink/Validator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware/user/Authorization.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/user/Authorization.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/drinkDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/model/drinkDB.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/user.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/route/band.js" beforeDir="false" afterPath="$PROJECT_DIR$/route/band.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/route/drink.js" beforeDir="false" afterPath="$PROJECT_DIR$/route/drink.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/route/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/route/user.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,7 +95,7 @@
       <workItem from="1606130340244" duration="83094000" />
       <workItem from="1606561539323" duration="49082000" />
       <workItem from="1606735853918" duration="12366000" />
-      <workItem from="1606757605698" duration="41503000" />
+      <workItem from="1606757605698" duration="43450000" />
     </task>
     <servers />
   </component>
@@ -120,10 +130,10 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="447" y="173" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1605732686110" />
-    <state x="413" y="113" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1606856098063">
+    <state x="413" y="113" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1606861447572">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="413" y="113" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1606856098063" />
+    <state x="413" y="113" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1606861447572" />
     <state width="569" height="438" key="DebuggerActiveHint" timestamp="1606741707242">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -216,10 +226,10 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state width="498" height="446" key="SwitcherDM/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1606236004897" />
-    <state x="616" y="91" width="581" height="556" key="find.popup" timestamp="1606858575057">
+    <state x="616" y="91" width="581" height="556" key="find.popup" timestamp="1606862800799">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="616" y="91" width="581" height="556" key="find.popup/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1606858575057" />
+    <state x="616" y="91" width="581" height="556" key="find.popup/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1606862800799" />
     <state x="616" y="91" width="581" height="556" key="find.popup/0.0.1366.728@0.0.1366.728" timestamp="1606670642491" />
     <state x="339" y="162" key="run.anything.popup" timestamp="1606845378246">
       <screen x="0" y="0" width="1366" height="728" />

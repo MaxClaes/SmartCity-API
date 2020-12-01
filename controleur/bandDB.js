@@ -78,27 +78,6 @@ module.exports.getAllBands = async (req, res) => {
     }
 }
 
-// module.exports.getDrinksByName = async (req, res) => {
-//     const label = req.params.label;
-//     const labelWithoutSpace = label.trim();
-//     const client = await pool.connect();
-//
-//     try {
-//         const {rows: drinks} = await DrinkModele.getDrinksByName(client, labelWithoutSpace);
-//         const drink = drinks[0];
-//
-//         if(drink !== undefined){
-//             res.json(drinks);
-//         } else {
-//             res.sendStatus(404);
-//         }
-//     } catch (error){
-//         res.sendStatus(500);
-//     } finally {
-//         client.release();
-//     }
-// }
-//
 module.exports.deleteBand = async (req, res) => {
     const errors = validationResult(req);
 
