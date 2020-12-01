@@ -86,10 +86,17 @@ module.exports.changeRole = async (client, role, id) => {
     return await client.query(`UPDATE client SET role = $1 WHERE client_id = $2;`, [role, id]);
 };
 
-module.exports.userExist = async (client, userId) => {
+module.exports.userExists = async (client, id) => {
     const {rows} = await client.query(
         "SELECT count(client_id) AS nbr FROM client WHERE client_id = $1",
-        [userId]
+        [id]
     );
+    return rows[0].nbr > 0;
+};
+
+module.exports.emailExists = async (client, email) => {
+    const {rows} = await client.query(`
+        SELECT count(client_id) AS nbr FROM client WHERE email = $1;
+    `, [email]);
     return rows[0].nbr > 0;
 };

@@ -42,7 +42,7 @@ module.exports.authUserExistsInBand = async (req, res, next) => {
             const client = await pool.connect();
 
             try {
-                if (await bandModel.userExist(client, bandId, req.session.id)) {
+                if (await bandModel.userExists(client, bandId, req.session.id)) {
                     next();
                 } else {
                     res.status(404).json({error: error.IDENTIFIED_USER_NOT_FOUND_IN_BAND});
@@ -72,7 +72,7 @@ module.exports.userExistsInBand = async (req, res, next) => {
             const client = await pool.connect();
 
             try {
-                if (await bandModel.userExist(client, bandId, userId)) {
+                if (await bandModel.userExists(client, bandId, userId)) {
                     next();
                 } else {
                     res.status(404).json({error: error.USER_NOT_FOUND_IN_BAND});
@@ -144,7 +144,7 @@ module.exports.userIsNotInBand = async (req, res, next) => {
             const client = await pool.connect();
 
             try {
-                if (!await bandModel.userExist(client, bandId, userId)) {
+                if (!await bandModel.userExists(client, bandId, userId)) {
                     next();
                 } else {
                     res.status(409).json({error: error.USER_CONFLICT});

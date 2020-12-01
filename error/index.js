@@ -9,14 +9,26 @@
 // }
 
 module.exports = {
+    ACCESS_DENIED : {
+        code : 201,
+        msg : "The user does not have sufficient access rights."
+    },
+    UNAUTHENTICATED : {
+        code : 202,
+        msg : "The caller is not authenticated."
+    },
+    USER_NOT_FOUND : {
+        code : 203,
+        msg : "User not found."
+    },
+
+
+
     MISSING_PARAMETER : {
         code : 201,
         message : "One or more parameters are missing."
     },
-    UNAUTHENTICATED : {
-        code : 202,
-        message : "The caller is not authenticated."
-    },
+
     BAD_AUTHENTICATION : {
         code : 211,
         message : "Bad Authentication data."
@@ -45,18 +57,12 @@ module.exports = {
         code : 217,
         message : "One or more parameters are not numbers."
     },
-    ACCESS_DENIED : {
-        code : 217,
-        message : "The user does not have sufficient access rights."
-    },
+
     ACCESS_RESTRICTED : {
         code : 218,
         message : "Access restricted to the item's owner."
     },
-    USER_NOT_FOUND : {
-        code : 219,
-        message : "User not found."
-    },
+
     DRINK_NOT_FOUND : {
         code : 220,
         message : "Drink not found."
