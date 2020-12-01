@@ -59,7 +59,7 @@ module.exports.getBandsByUserId = async (client, userId) => {
     );
 }
 
-module.exports.bandExist = async (client, bandId) => {
+module.exports.bandExists = async (client, bandId) => {
     const {rows} = await client.query(
         "SELECT count(band_id) AS nbr FROM band_client WHERE band_id = $1",
         [bandId]

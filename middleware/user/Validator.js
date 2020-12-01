@@ -1,8 +1,8 @@
-const pool = require("../model/database");
-const userModel = require('../model/userDB')
-const userController = require('../controleur/userDB');
-const constant = require('../utils/constant');
-const error = require('../error/index');
+const pool = require("../../model/database");
+const userModel = require('../../model/userDB')
+const userController = require('../../controleur/userDB');
+const constant = require('../../utils/constant');
+const error = require('../../error');
 const { body , param , check} = require('express-validator');
 
 module.exports = {
@@ -90,9 +90,9 @@ module.exports = {
             .isString().withMessage("GSM is not a string."),
     ],
     changeRoleValidation : [
-        body("id")
-            .not().isString().withMessage("Id is not a number.")
-            .isInt({min : 0}).withMessage("Id is less than 0.")
+        body("userId")
+            .not().isString().withMessage("userId is not a number.")
+            .isInt({min : 0}).withMessage("userId is less than 0.")
             .custom(value => {
                 return userModel.userExists(value).then(user => {
                     if (!user) {
@@ -103,36 +103,42 @@ module.exports = {
         body("role")
             .isString().withMessage("Role is not a string.")
             .toUpperCase().isIn([constant.ROLE_CLIENT, constant.ROLE_MODERATOR, constant.ROLE_ADMINISTRATOR]),
-    ]
+    ],
+    userIdValidation: [
+        param("userId")
+            .exists().withMessage("UserId is empty.")
+            .toInt().not().isIn([null]).withMessage("UserId is not a number.")
+            .isInt({min: 0}).withMessage("UserId is less than 0."),
+    ],
 };
-//
-// module.exports.userExists = async (req, res, next) => {
-//     if (req.session) {
-//         const userIdTexte = req.params.userId;
-//         const userId = parseInt(userIdTexte);
-//
-//         if (isNaN(userId)) {
-//             res.status(400).json({error: error.INVALID_PARAMETER});
-//         } else {
-//             const client = await pool.connect();
-//
-//             try {
-//                 if(await userModel.userExists(client, userId)) {
-//                     next();
-//                 } else {
-//                     res.status(404).json({error: error.USER_NOT_FOUND});
-//                 }
-//             } catch (error) {
-//                 console.log(error);
-//                 res.sendStatus(500);
-//             } finally {
-//                 client.release();
-//             }
-//         }
-//     } else {
-//         res.status(403).json({error: error.UNAUTHENTICATED});
-//     }
-// }
+
+module.exports.userExists = async (req, res, next) => {
+    if (req.session) {
+        const userIdTexte = req.params.userId;
+        const userId = parseInt(userIdTexte);
+
+        if (isNaN(userId)) {
+            res.status(400).json({error: error.INVALID_PARAMETER});
+        } else {
+            const client = await pool.connect();
+
+            try {
+                if(await userModel.userExists(client, userId)) {
+                    next();
+                } else {
+                    res.status(404).json({error: error.USER_NOT_FOUND});
+                }
+            } catch (error) {
+                console.log(error);
+                res.sendStatus(500);
+            } finally {
+                client.release();
+            }
+        }
+    } else {
+        res.status(403).json({error: error.UNAUTHENTICATED});
+    }
+}
 
 module.exports.roleIsValid = (req, res, next) => {
     if (req.session) {

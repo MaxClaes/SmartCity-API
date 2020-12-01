@@ -1,7 +1,6 @@
 const JWTMiddleWare = require("../middleware/IdentificationJWT");
 const consumptionController = require("../controleur/consumptionDB");
-const validatorConsumption = require("../middleware/ValidatorConsumption");
-const validatorUtil = require("../middleware/ValidatorUtil");
+const validatorConsumption = require("../middleware/consumption/ValidatorConsumption");
 
 const Router = require("express-promise-router");
 const router = new Router;

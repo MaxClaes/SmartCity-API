@@ -32,11 +32,13 @@ module.exports.updateDrink = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({error: errors.array()});
     } else {
-        const {label, prcAlcohol, quantity, id} = req.body;
+        const {label, prcAlcohol, quantity} = req.body;
+        const drinkIdTexte = req.params.drinkId;
+        const drinkId = parseInt(drinkIdTexte);
         const client = await pool.connect();
 
         try {
-            await drinkModel.updateDrink(client, label, prcAlcohol, quantity, id);
+            await drinkModel.updateDrink(client, label, prcAlcohol, quantity, drinkId);
             res.sendStatus(204);
         } catch (error) {
             console.log(error);
@@ -105,8 +107,8 @@ module.exports.getDrinksByCreatedBy = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({error: errors.array()});
     } else {
-        const idTexte = req.params.id;
-        const createdBy = parseInt(idTexte);
+        const userIdTexte = req.params.userId;
+        const createdBy = parseInt(userIdTexte);
         const client = await pool.connect();
 
         try {
@@ -137,12 +139,12 @@ module.exports.deleteDrink = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({error: errors.array()});
     } else {
-        const idTexte = req.params.id;
-        const id = parseInt(idTexte);
+        const drinkIdTexte = req.params.drinkId;
+        const drinkId = parseInt(drinkIdTexte);
         const client = await pool.connect();
 
         try {
-            await drinkModel.deleteDrink(client, id);
+            await drinkModel.deleteDrink(client, drinkId);
             res.sendStatus(204);
         } catch (error) {
             console.log(error);
@@ -185,7 +187,7 @@ module.exports.resetReport = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({error: errors.array()});
     } else {
-        const drinkIdTexte = req.params.id;
+        const drinkIdTexte = req.params.drinkId;
         const drinkId = parseInt(drinkIdTexte);
         const client = await pool.connect();
 
@@ -207,7 +209,7 @@ module.exports.incrementReport = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({error: errors.array()});
     } else {
-        const drinkIdTexte = req.params.id;
+        const drinkIdTexte = req.params.drinkId;
         const drinkId = parseInt(drinkIdTexte);
         const client = await pool.connect();
 

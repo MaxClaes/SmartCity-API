@@ -5,27 +5,33 @@ const dto = require('../dto');
 const error = require('../error/index');
 
 module.exports.createBand = async (req, res) => {
-    const {label} = req.body;
-    const client = await pool.connect();
+    const errors = validationResult(req);
 
-    try {
-        client.query("BEGIN;");
-        const {rows: bands} = await bandModel.createBand(client, label, new Date());
-        const bandId = bands[0].id;
+    if (!errors.isEmpty()) {
+        return res.status(400).json({error: errors.array()});
+    } else {
+        const {label} = req.body;
+        const client = await pool.connect();
 
-        if (bandId !== undefined) {
-            await bandModel.addMember(client, req.session.id, bandId, null, constant.STATUS_ACCEPTED, constant.ROLE_ADMINISTRATOR, null)
-            client.query("COMMIT;");
-            res.sendStatus(201);
-        } else {
+        try {
+            client.query("BEGIN;");
+            const {rows: bands} = await bandModel.createBand(client, label, new Date());
+            const bandId = bands[0].id;
+
+            if (bandId !== undefined) {
+                await bandModel.addMember(client, req.session.id, bandId, null, constant.STATUS_ACCEPTED, constant.ROLE_ADMINISTRATOR, null)
+                client.query("COMMIT;");
+                res.sendStatus(201);
+            } else {
+                res.sendStatus(500);
+            }
+        } catch (error) {
+            client.query("ROLLBACK;");
+            console.log(error);
             res.sendStatus(500);
+        } finally {
+            client.release();
         }
-    } catch (error){
-        client.query("ROLLBACK;");
-        console.log(error);
-        res.sendStatus(500);
-    } finally {
-        client.release();
     }
 }
 
@@ -98,12 +104,14 @@ module.exports.getAllBands = async (req, res) => {
 // }
 //
 module.exports.deleteBand = async (req, res) => {
-    const bandIdTexte = req.params.bandId;
-    const bandId = parseInt(bandIdTexte);
+    const errors = validationResult(req);
 
-    if (isNaN(bandId)) {
-        res.status(400).json({error: error.NAN_PARAMETER});
+    if (!errors.isEmpty()) {
+        return res.status(400).json({error: errors.array()});
     } else {
+        const bandIdTexte = req.params.bandId;
+        const bandId = parseInt(bandIdTexte);
+
         const client = await pool.connect();
 
         try {
@@ -168,61 +176,58 @@ module.exports.deleteMember = async (req, res) => {
 module.exports.leaveBand = async (req, res) => {
     const bandIdTexte = req.params.bandId;
     const bandId = parseInt(bandIdTexte);
+    const client = await pool.connect();
 
-    if (isNaN(bandId)) {
-        res.status(400).json({error: error.NAN_PARAMETER});
-    } else {
-        const client = await pool.connect();
+    try {
+        client.query("BEGIN;");
+        await bandModel.deleteMember(client, bandId, req.session.id);
 
-        try {
-            client.query("BEGIN;");
-            await bandModel.deleteMember(client, bandId, req.session.id);
+        if (await bandModel.bandIsEmpty(client, bandId)) {
+            await bandModel.deleteBand(client, bandId);
+        } else {
+            if (!await bandModel.administratorExistsInBand(client, bandId)) {
+                const {rows: users} = await bandModel.getFirstUserIdWithStatusAccepted(client, bandId);
+                const userIdWithStatusAccepted = users[0].id
 
-            if (await bandModel.bandIsEmpty(client, bandId)) {
-                await bandModel.deleteBand(client, bandId);
-            } else {
-                if (!await bandModel.administratorExistsInBand(client, bandId)) {
-                    const {rows: users} = await bandModel.getFirstUserIdWithStatusAccepted(client, bandId);
-                    const userIdWithStatusAccepted = users[0].id
-
-                    if (userIdWithStatusAccepted !== undefined) {
-                        //On lui assigne le rôle administrator
-                        await bandModel.changeRole(client, bandId, userIdWithStatusAccepted, constant.ROLE_ADMINISTRATOR);
-                    }
-                    //Si pas de user avec status accepted
-                    //Alors on ne fait rien et on assignera le role admin lors de l'acceptation d'une invitation
+                if (userIdWithStatusAccepted !== undefined) {
+                    //On lui assigne le rôle administrator
+                    await bandModel.changeRole(client, bandId, userIdWithStatusAccepted, constant.ROLE_ADMINISTRATOR);
                 }
+                //Si pas de user avec status accepted
+                //Alors on ne fait rien et on assignera le role admin lors de l'acceptation d'une invitation
             }
-            client.query("COMMIT;");
-            res.sendStatus(204);
-        } catch (error) {
-            client.query("ROLLBACK;");
-            console.log(error);
-            res.sendStatus(500);
-        } finally {
-            client.release();
         }
+        client.query("COMMIT;");
+        res.sendStatus(204);
+    } catch (error) {
+        client.query("ROLLBACK;");
+        console.log(error);
+        res.sendStatus(500);
+    } finally {
+        client.release();
     }
 }
 
 module.exports.getBandById = async (req, res) => {
-    const bandIdTexte = req.params.bandId;
-    const bandId = parseInt(bandIdTexte);
-    const client = await pool.connect();
+    const errors = validationResult(req);
 
-    if(isNaN(bandId)){
-        res.status(400).json({error: error.NAN_PARAMETER});
+    if (!errors.isEmpty()) {
+        return res.status(400).json({error: errors.array()});
     } else {
+        const bandIdTexte = req.params.bandId;
+        const bandId = parseInt(bandIdTexte);
+        const client = await pool.connect();
+
         try {
             const {rows: bandsEntities} = await bandModel.getBandById(client, bandId);
             const bandEntity = bandsEntities[0];
 
-            if (bandEntity !== undefined){
+            if (bandEntity !== undefined) {
                 res.json(dto.bandClientDTO(bandEntity));
             } else {
-                res.sendStatus(404);
+                res.status(404).json({error: error.BAND_NOT_FOUND});
             }
-        } catch (error){
+        } catch (error) {
             console.log(error);
             res.sendStatus(500);
         } finally {
@@ -239,7 +244,6 @@ module.exports.getBandsByUserId = async (req, res) => {
         const bandEntity = bandsEntities[0];
 
         if (bandEntity !== undefined) {
-            //const bandsAccepted = bandsEntities.filter(band => band.status === constant.STATUS_ACCEPTED || band.status === null);
             const bandsAccepted = [];
             bandsEntities.forEach(function(b) {
                 if (b.status === constant.STATUS_ACCEPTED || b.status === null) {
@@ -248,7 +252,7 @@ module.exports.getBandsByUserId = async (req, res) => {
             });
             res.json(bandsAccepted);
         } else {
-            res.sendStatus(404);
+            res.status(404).json({error: error.BAND_NOT_FOUND});
         }
     } catch (error) {
         console.log(error);
@@ -332,6 +336,18 @@ module.exports.responseInvitation = async (req, res) => {
     } catch (error) {
         client.query("ROLLBACK;");
         console.log(error);
+        res.sendStatus(500);
+    } finally {
+        client.release();
+    }
+}
+
+module.exports.bandExists = async (id) => {
+    const client = await pool.connect();
+
+    try {
+        return await bandModel.bandExists(client, id);
+    } catch (error){
         res.sendStatus(500);
     } finally {
         client.release();

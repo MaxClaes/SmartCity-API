@@ -23,12 +23,29 @@ module.exports = {
     },
     DRINK_NOT_FOUND : {
         code : 204,
-        message : "Drink not found."
+        msg : "Drink not found."
     },
     CONSUMPTION_NOT_FOUND : {
         code : 205,
-        message : "Consumption not found."
+        msg : "Consumption not found."
     },
+    BAND_NOT_FOUND : {
+        code : 206,
+        msg : "Band not found."
+    },
+    IDENTIFIED_USER_NOT_FOUND_IN_BAND : {
+        code : 207,
+        msg : "Identified user not found in band."
+    },
+    ACCESS_DENIED_IN_BAND : {
+        code : 208,
+        msg : "The user does not have sufficient access rights in band."
+    },
+    STATUS_NOT_ACCEPTED_IN_BAND : {
+        code : 209,
+        msg : "The user does not have accepted band invitation."
+    },
+
 
 
 
@@ -72,27 +89,15 @@ module.exports = {
     },
 
 
-    BAND_NOT_FOUND : {
-        code : 221,
-        message : "Band not found."
-    },
+
 
     USER_NOT_FOUND_IN_BAND : {
         code : 222,
         message : "User not found in band."
     },
-    IDENTIFIED_USER_NOT_FOUND_IN_BAND : {
-        code : 223,
-        message : "Identified user not found in band."
-    },
-    ACCESS_DENIED_IN_BAND : {
-        code : 224,
-        message : "The user does not have sufficient access rights in band."
-    },
-    STATUS_NOT_ACCEPTED_IN_BAND : {
-        code : 225,
-        message : "The user does not have accepted band invitation."
-    },
+
+
+
     STATUS_ALREADY_CHANGED_IN_BAND : {
         code : 226,
         message : "Status in band is already accepted/refused."

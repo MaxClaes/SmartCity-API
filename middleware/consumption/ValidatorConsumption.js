@@ -1,8 +1,8 @@
-const pool = require("../model/database");
-const drinkModel = require('../model/drinkDB');
-const constant = require('../utils/constant');
-const error = require('../error/index');
-const consumptionController = require('../controleur/consumptionDB');
+const pool = require("../../model/database");
+const drinkModel = require('../../model/drinkDB');
+const constant = require('../../utils/constant');
+const error = require('../../error');
+const consumptionController = require('../../controleur/consumptionDB');
 const { body , param , check} = require('express-validator');
 
 module.exports = {

@@ -129,7 +129,7 @@ module.exports.getUser = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({error: errors.array()});
     } else {
-        const idTexte = req.params.id;
+        const idTexte = req.params.userId;
         const id = parseInt(idTexte);
         const client = await pool.connect();
 
