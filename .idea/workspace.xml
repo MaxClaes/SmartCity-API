@@ -21,12 +21,10 @@
   <component name="ChangeListManager">
     <list default="true" id="084b7899-cb0a-4e00-98be-82cfd2e99716" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controleur/consumptionDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/controleur/consumptionDB.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middleware/consumption/ValidatorConsumption.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/consumption/ValidatorConsumption.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middleware/user/Authorization.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/user/Authorization.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middleware/user/Validator.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/user/Validator.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/route/consumption.js" beforeDir="false" afterPath="$PROJECT_DIR$/route/consumption.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/route/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/route/user.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controleur/bandDB.js" beforeDir="false" afterPath="$PROJECT_DIR$/controleur/bandDB.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/error/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/error/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware/band/ValidatorBand.js" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/band/ValidatorBand.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/route/band.js" beforeDir="false" afterPath="$PROJECT_DIR$/route/band.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,7 +85,7 @@
       <workItem from="1606130340244" duration="83094000" />
       <workItem from="1606561539323" duration="49082000" />
       <workItem from="1606735853918" duration="12366000" />
-      <workItem from="1606757605698" duration="38981000" />
+      <workItem from="1606757605698" duration="41503000" />
     </task>
     <servers />
   </component>
@@ -218,10 +216,10 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state width="498" height="446" key="SwitcherDM/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1606236004897" />
-    <state x="616" y="91" width="581" height="556" key="find.popup" timestamp="1606857961361">
+    <state x="616" y="91" width="581" height="556" key="find.popup" timestamp="1606858575057">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="616" y="91" width="581" height="556" key="find.popup/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1606857961361" />
+    <state x="616" y="91" width="581" height="556" key="find.popup/0.0.1366.728/-1360.0.1360.728@0.0.1366.728" timestamp="1606858575057" />
     <state x="616" y="91" width="581" height="556" key="find.popup/0.0.1366.728@0.0.1366.728" timestamp="1606670642491" />
     <state x="339" y="162" key="run.anything.popup" timestamp="1606845378246">
       <screen x="0" y="0" width="1366" height="728" />

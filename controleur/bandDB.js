@@ -37,24 +37,20 @@ module.exports.createBand = async (req, res) => {
 
 module.exports.addMember = async (req, res) => {
     const bandIdTexte = req.params.bandId;
-    const bandId = parseInt(bandIdTexte);
     const userIdTexte = req.params.userId;
+    const bandId = parseInt(bandIdTexte);
     const userId = parseInt(userIdTexte);
+    const client = await pool.connect();
 
-    if (bandId !== undefined && userId !== undefined) {
-        try {
-            const client = await pool.connect();
+    try {
 
-            await bandModel.addMember(client, userId, bandId, new Date(), constant.STATUS_WAITING, constant.ROLE_CLIENT, req.session.id);
-            res.sendStatus(201);
-        } catch (error) {
-            console.log(error);
-            res.sendStatus(500);
-        } finally {
-            client.release();
-        }
-    } else {
-        res.status(400).json({error: error.EMPTY_PARAMETER});
+        await bandModel.addMember(client, userId, bandId, new Date(), constant.STATUS_WAITING, constant.ROLE_CLIENT, req.session.id);
+        res.sendStatus(201);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    } finally {
+        client.release();
     }
 }
 
@@ -130,46 +126,40 @@ module.exports.deleteBand = async (req, res) => {
     }
 }
 
-//Modifier pour faire deux routes différentes si on veut supprimer un membre
 module.exports.deleteMember = async (req, res) => {
     const bandIdTexte = req.params.bandId;
-    const bandId = parseInt(bandIdTexte);
     const userIdTexte = req.params.userId;
+    const bandId = parseInt(bandIdTexte);
     const userId = parseInt(userIdTexte);
+    const client = await pool.connect();
 
-    if (isNaN(bandId) || isNaN(userId)) {
-        res.status(400).json({error: error.NAN_PARAMETER});
-    } else {
-        const client = await pool.connect();
+    try {
+        client.query("BEGIN;");
+        await bandModel.deleteMember(client, bandId, userId);
 
-        try {
-            client.query("BEGIN;");
-            await bandModel.deleteMember(client, bandId, userId);
+        if (await bandModel.bandIsEmpty(client, bandId)) {
+            await bandModel.deleteBand(client, bandId);
+        } else {
+            if (!await bandModel.administratorExistsInBand(client, bandId)) {
+                const {rows: users} = await bandModel.getFirstUserIdWithStatusAccepted(client, bandId);
+                const userIdWithStatusAccepted = users[0].id
 
-            if (await bandModel.bandIsEmpty(client, bandId)) {
-                await bandModel.deleteBand(client, bandId);
-            } else {
-                if (!await bandModel.administratorExistsInBand(client, bandId)) {
-                    const {rows: users} = await bandModel.getFirstUserIdWithStatusAccepted(client, bandId);
-                    const userIdWithStatusAccepted = users[0].id
-
-                    if (userIdWithStatusAccepted !== undefined) {
-                        //On lui assigne le rôle administrator
-                        await bandModel.changeRole(client, bandId, userIdWithStatusAccepted, constant.ROLE_ADMINISTRATOR);
-                    }
-                    //Si pas de user avec status accepted
-                    //Alors on ne fait rien et on assignera le role admin lors de l'acceptation d'une invitation
+                if (userIdWithStatusAccepted !== undefined) {
+                    //On lui assigne le rôle administrator
+                    await bandModel.changeRole(client, bandId, userIdWithStatusAccepted, constant.ROLE_ADMINISTRATOR);
                 }
+                //Si pas de user avec status accepted
+                //Alors on ne fait rien et on assignera le role admin lors de l'acceptation d'une invitation
             }
-            client.query("COMMIT;");
-            res.sendStatus(204);
-        } catch (error) {
-            client.query("ROLLBACK;");
-            console.log(error);
-            res.sendStatus(500);
-        } finally {
-            client.release();
         }
+        client.query("COMMIT;");
+        res.sendStatus(204);
+    } catch (error) {
+        client.query("ROLLBACK;");
+        console.log(error);
+        res.sendStatus(500);
+    } finally {
+        client.release();
     }
 }
 
@@ -236,7 +226,7 @@ module.exports.getBandById = async (req, res) => {
     }
 }
 
-module.exports.getBandsByUserId = async (req, res) => {
+module.exports.getMyBands = async (req, res) => {
     const client = await pool.connect();
 
     try {

@@ -45,6 +45,17 @@ module.exports = {
         code : 209,
         msg : "The user does not have accepted band invitation."
     },
+    USER_NOT_FOUND_IN_BAND : {
+        code : 210,
+        msg : "User not found in band."
+    },
+    STATUS_ALREADY_CHANGED_IN_BAND : {
+        code : 226,
+        message : "Status in band is already accepted/refused."
+    },
+
+
+
 
 
 
@@ -91,15 +102,9 @@ module.exports = {
 
 
 
-    USER_NOT_FOUND_IN_BAND : {
-        code : 222,
-        message : "User not found in band."
-    },
 
 
 
-    STATUS_ALREADY_CHANGED_IN_BAND : {
-        code : 226,
-        message : "Status in band is already accepted/refused."
-    }
+
+
 };
