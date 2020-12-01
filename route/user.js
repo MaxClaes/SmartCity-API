@@ -12,6 +12,6 @@ router.post('/registration', validatorUser.userRegistrationValidation, userContr
 router.get('/', JWTMiddleWare.identification, authoMiddleware.mustBeManager, userController.getAllUsers);
 router.get('/:userId', JWTMiddleWare.identification, validatorUser.userIdValidation, authoMiddleware.mustBeManagerOrCreator, userController.getUser);
 router.patch('/update', JWTMiddleWare.identification, validatorUser.userUpdateValidation, userController.updateUser);
-router.patch('/:userId/role', JWTMiddleWare.identification, validatorUser.userIdValidation, authorizationUser.canChangeRole, userController.changeRole)
+router.patch('/:userId/role', JWTMiddleWare.identification, validatorUser.userIdValidation, validatorUser.roleValidation, authorizationUser.canChangeRole, userController.changeRole)
 
 module.exports = router;

@@ -13,7 +13,8 @@ module.exports.createConsumption = async (req, res) => {
         return res.status(400).json({error: errors.array()});
     } else {
         const {date} = req.body;
-        const drinkId = req.params.id;
+        const drinkIdTexte = req.params.drinkId;
+        const drinkId = parseInt(drinkIdTexte);
         const client = await pool.connect();
 
         try {

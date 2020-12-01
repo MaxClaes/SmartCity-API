@@ -89,17 +89,7 @@ module.exports = {
             .trim().not().isEmpty().withMessage("GSM is empty.")
             .isString().withMessage("GSM is not a string."),
     ],
-    changeRoleValidation : [
-        body("userId")
-            .not().isString().withMessage("userId is not a number.")
-            .isInt({min : 0}).withMessage("userId is less than 0.")
-            .custom(value => {
-                return userModel.userExists(value).then(user => {
-                    if (!user) {
-                        return Promise.reject("User does not exist.");
-                    }
-                });
-            }),
+    roleValidation : [
         body("role")
             .isString().withMessage("Role is not a string.")
             .toUpperCase().isIn([constant.ROLE_CLIENT, constant.ROLE_MODERATOR, constant.ROLE_ADMINISTRATOR]),
@@ -111,45 +101,3 @@ module.exports = {
             .isInt({min: 0}).withMessage("UserId is less than 0."),
     ],
 };
-
-module.exports.userExists = async (req, res, next) => {
-    if (req.session) {
-        const userIdTexte = req.params.userId;
-        const userId = parseInt(userIdTexte);
-
-        if (isNaN(userId)) {
-            res.status(400).json({error: error.INVALID_PARAMETER});
-        } else {
-            const client = await pool.connect();
-
-            try {
-                if(await userModel.userExists(client, userId)) {
-                    next();
-                } else {
-                    res.status(404).json({error: error.USER_NOT_FOUND});
-                }
-            } catch (error) {
-                console.log(error);
-                res.sendStatus(500);
-            } finally {
-                client.release();
-            }
-        }
-    } else {
-        res.status(403).json({error: error.UNAUTHENTICATED});
-    }
-}
-
-module.exports.roleIsValid = (req, res, next) => {
-    if (req.session) {
-        const {role} = req.body;
-
-        if (role !== undefined && (role.toUpperCase() === constant.ROLE_ADMINISTRATOR || role.toUpperCase() === constant.ROLE_MODERATOR|| role.toUpperCase() === constant.ROLE_CLIENT)) {
-            next();
-        } else {
-            res.status(400).json({error: error.INVALID_PARAMETER});
-        }
-    } else {
-        res.status(403).json({error: error.UNAUTHENTICATED});
-    }
-}

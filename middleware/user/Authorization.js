@@ -48,3 +48,31 @@ module.exports.canChangeRole = async (req, res, next) => {
         }
     }
 }
+
+module.exports.userExists = async (req, res, next) => {
+    if (req.session) {
+        const userIdTexte = req.params.userId;
+        const userId = parseInt(userIdTexte);
+
+        if (isNaN(userId)) {
+            res.status(400).json({error: error.INVALID_PARAMETER});
+        } else {
+            const client = await pool.connect();
+
+            try {
+                if(await userModel.userExists(client, userId)) {
+                    next();
+                } else {
+                    res.status(404).json({error: error.USER_NOT_FOUND});
+                }
+            } catch (error) {
+                console.log(error);
+                res.sendStatus(500);
+            } finally {
+                client.release();
+            }
+        }
+    } else {
+        res.status(403).json({error: error.UNAUTHENTICATED});
+    }
+}

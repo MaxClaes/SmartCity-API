@@ -10,10 +10,10 @@ module.exports = {
         body("date")
             .if(body("date").exists)
             .isISO8601().toDate().withMessage("Date is not a date."),
-        param("id")
-            .exists().withMessage("Id is empty.")
-            .toInt().not().isIn([null]).withMessage("Id is not a number.")
-            .isInt({min: 0}).withMessage("Id is less than 0."),
+        param("drinkId")
+            .exists().withMessage("DrinkId is empty.")
+            .toInt().not().isIn([null]).withMessage("DrinkId is not a number.")
+            .isInt({min: 0}).withMessage("DrinkId is less than 0."),
     ],
     updateConsumptionValidation : [
         body("date")
@@ -31,14 +31,14 @@ module.exports = {
             }),
     ],
     deleteConsumptionValidation : [
-        param("id")
-            .exists().withMessage("Id is empty.")
-            .toInt().not().isIn([null]).withMessage("Id is not a number.")
-            .isInt({min: 0}).withMessage("Id is less than 0.")
+        param("drinkId")
+            .exists().withMessage("DrinkId is empty.")
+            .toInt().not().isIn([null]).withMessage("DrinkId is not a number.")
+            .isInt({min: 0}).withMessage("DrinkId is less than 0.")
             .custom(value => {
                 return consumptionController.consumptionExists(value).then(consumption => {
                     if (!consumption) {
-                        return Promise.reject("Consumption does not exists.");
+                        return Promise.reject("Consumption does not exist.");
                     }
                 });
             }),
