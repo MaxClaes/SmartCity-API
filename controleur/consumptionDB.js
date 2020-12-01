@@ -21,6 +21,7 @@ module.exports.createConsumption = async (req, res) => {
             client.query("BEGIN;");
             if (await drinkModel.drinkExists(client, drinkId)) {
                 await consumptionModel.createConsumption(client, date === undefined ? new Date() : date, req.session.id, drinkId);
+                await drinkModel.changePopularityByOne(client, id, 1);
                 res.sendStatus(201);
                 client.query("COMMIT;");
             } else {
@@ -121,9 +122,21 @@ module.exports.deleteConsumption = async (req, res) => {
         const client = await pool.connect();
 
         try {
-            await consumptionModel.deleteConsumption(client, consumptionId);
-            res.sendStatus(204);
+            client.query("BEGIN;");
+            const {rows: consumptionsEntities} = await consumptionModel.getConsumptionByConsumptionIdAndUserId(client, consumptionId, req.session.id);
+
+            if (consumptionsEntities[0] !== undefined) {
+                let drink = dto.drinkDTO(consumptionsEntities[0]);
+
+                await consumptionModel.deleteConsumption(client, consumptionId);
+                await drinkModel.changePopularityByOne(client, drink.drinkId, -1);
+                res.sendStatus(204);
+                client.query("COMMIT;");
+            } else {
+                res.status(404).json({error: error.CONSUMPTION_NOT_FOUND});
+            }
         } catch (error) {
+            client.query("ROLLBACK;");
             console.log(error);
             res.sendStatus(500);
         } finally {

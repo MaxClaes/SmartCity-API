@@ -43,6 +43,13 @@ module.exports.getAllConsumptionsAfterDate = async (client, userId, date) => {
     );
 }
 
+module.exports.getConsumptionByConsumptionIdAndUserId = async (client, consumptionId, userId) => {
+    return await client.query(`
+        SELECT * FROM consumption WHERE consumption.consumption.consumption_id = $1 AND consumption.client_id = $2 
+        `, [consumptionId, userId]
+    );
+}
+
 module.exports.deleteConsumption = async (client, consumptionId) => {
     return await client.query(`
         DELETE from consumption WHERE consumption_id = $1;

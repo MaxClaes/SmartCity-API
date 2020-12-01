@@ -95,3 +95,11 @@ module.exports.incrementReport = async (client, id) => {
         `, [id]
     );
 }
+
+module.exports.changePopularityByOne = async (client, id, nb) => {
+    return await client.query(`
+        UPDATE drink SET popularity = (nb_reports + $1)
+        WHERE drink_id = $2;
+        `, [nb, id]
+    );
+}
