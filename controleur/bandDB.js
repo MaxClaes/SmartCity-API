@@ -2,6 +2,7 @@ const bandModel = require("../model/bandDB");
 const pool = require("../model/database");
 const constant = require("../utils/constant");
 const dto = require('../dto');
+const error = require('../error/index');
 
 module.exports.createBand = async (req, res) => {
     const {label} = req.body;
@@ -12,12 +13,12 @@ module.exports.createBand = async (req, res) => {
         const {rows: bands} = await bandModel.createBand(client, label, new Date());
         const bandId = bands[0].id;
 
-        if (bandId !== undefined && bandId !== null) {
+        if (bandId !== undefined) {
             await bandModel.addMember(client, req.session.id, bandId, null, constant.STATUS_ACCEPTED, constant.ROLE_ADMINISTRATOR, null)
             client.query("COMMIT;");
             res.sendStatus(201);
         } else {
-            res.sendStatus(404);
+            res.sendStatus(500);
         }
     } catch (error){
         client.query("ROLLBACK;");
@@ -33,16 +34,21 @@ module.exports.addMember = async (req, res) => {
     const bandId = parseInt(bandIdTexte);
     const userIdTexte = req.params.userId;
     const userId = parseInt(userIdTexte);
-    const client = await pool.connect();
 
-    try {
-        await bandModel.addMember(client, userId, bandId, new Date(), constant.STATUS_WAITING, constant.ROLE_CLIENT, req.session.id);
-        res.sendStatus(201);
-    } catch (error){
-        console.log(error);
-        res.sendStatus(500);
-    } finally {
-        client.release();
+    if (bandId !== undefined && userId !== undefined) {
+        try {
+            const client = await pool.connect();
+
+            await bandModel.addMember(client, userId, bandId, new Date(), constant.STATUS_WAITING, constant.ROLE_CLIENT, req.session.id);
+            res.sendStatus(201);
+        } catch (error) {
+            console.log(error);
+            res.sendStatus(500);
+        } finally {
+            client.release();
+        }
+    } else {
+        res.status(400).json({error: error.EMPTY_PARAMETER});
     }
 }
 
@@ -60,7 +66,7 @@ module.exports.getAllBands = async (req, res) => {
             });
             res.json(bands);
         } else {
-            res.sendStatus(404);
+            res.status(404).json({error: error.BAND_NOT_FOUND});
         }
     } catch (error) {
         console.log(error);
@@ -94,11 +100,12 @@ module.exports.getAllBands = async (req, res) => {
 module.exports.deleteBand = async (req, res) => {
     const bandIdTexte = req.params.bandId;
     const bandId = parseInt(bandIdTexte);
-    const client = await pool.connect();
 
     if (isNaN(bandId)) {
-        res.sendStatus(400);
+        res.status(400).json({error: error.NAN_PARAMETER});
     } else {
+        const client = await pool.connect();
+
         try {
             client.query("BEGIN;");
             await bandModel.deleteAllMemberOfBand(client, bandId);
@@ -115,19 +122,21 @@ module.exports.deleteBand = async (req, res) => {
     }
 }
 
+//Modifier pour faire deux routes différentes si on veut supprimer un membre
 module.exports.deleteMember = async (req, res) => {
     const bandIdTexte = req.params.bandId;
     const bandId = parseInt(bandIdTexte);
     const userIdTexte = req.params.userId;
     const userId = parseInt(userIdTexte);
-    const client = await pool.connect();
 
-    if (isNaN(bandId)) {
-        res.sendStatus(400);
+    if (isNaN(bandId) || isNaN(userId)) {
+        res.status(400).json({error: error.NAN_PARAMETER});
     } else {
+        const client = await pool.connect();
+
         try {
             client.query("BEGIN;");
-            await bandModel.deleteMember(client, bandId, isNaN(userId) ? req.session.id : userId);
+            await bandModel.deleteMember(client, bandId, userId);
 
             if (await bandModel.bandIsEmpty(client, bandId)) {
                 await bandModel.deleteBand(client, bandId);
@@ -144,7 +153,46 @@ module.exports.deleteMember = async (req, res) => {
                     //Alors on ne fait rien et on assignera le role admin lors de l'acceptation d'une invitation
                 }
             }
+            client.query("COMMIT;");
+            res.sendStatus(204);
+        } catch (error) {
+            client.query("ROLLBACK;");
+            console.log(error);
+            res.sendStatus(500);
+        } finally {
+            client.release();
+        }
+    }
+}
 
+module.exports.leaveBand = async (req, res) => {
+    const bandIdTexte = req.params.bandId;
+    const bandId = parseInt(bandIdTexte);
+
+    if (isNaN(bandId)) {
+        res.status(400).json({error: error.NAN_PARAMETER});
+    } else {
+        const client = await pool.connect();
+
+        try {
+            client.query("BEGIN;");
+            await bandModel.deleteMember(client, bandId, req.session.id);
+
+            if (await bandModel.bandIsEmpty(client, bandId)) {
+                await bandModel.deleteBand(client, bandId);
+            } else {
+                if (!await bandModel.administratorExistsInBand(client, bandId)) {
+                    const {rows: users} = await bandModel.getFirstUserIdWithStatusAccepted(client, bandId);
+                    const userIdWithStatusAccepted = users[0].id
+
+                    if (userIdWithStatusAccepted !== undefined) {
+                        //On lui assigne le rôle administrator
+                        await bandModel.changeRole(client, bandId, userIdWithStatusAccepted, constant.ROLE_ADMINISTRATOR);
+                    }
+                    //Si pas de user avec status accepted
+                    //Alors on ne fait rien et on assignera le role admin lors de l'acceptation d'une invitation
+                }
+            }
             client.query("COMMIT;");
             res.sendStatus(204);
         } catch (error) {
@@ -163,7 +211,7 @@ module.exports.getBandById = async (req, res) => {
     const client = await pool.connect();
 
     if(isNaN(bandId)){
-        res.sendStatus(400);
+        res.status(400).json({error: error.NAN_PARAMETER});
     } else {
         try {
             const {rows: bandsEntities} = await bandModel.getBandById(client, bandId);

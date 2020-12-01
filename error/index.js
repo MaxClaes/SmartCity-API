@@ -3,6 +3,11 @@
 //     message;
 // }
 
+// class Error {
+//     constructor(parameter) {
+//     }
+// }
+
 module.exports = {
     MISSING_PARAMETER : {
         code : 201,
@@ -35,6 +40,10 @@ module.exports = {
     TYPE_PARAMETER : {
         code : 216,
         message : "One or more parameters have no valid type."
+    },
+    NAN_PARAMETER : {
+        code : 217,
+        message : "One or more parameters are not numbers."
     },
     ACCESS_DENIED : {
         code : 217,
