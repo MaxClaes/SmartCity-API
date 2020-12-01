@@ -1,38 +1,59 @@
 const consumptionModel = require("../model/consumptionDB");
 const userModel = require("../model/userDB");
+const drinkModel = require("../model/drinkDB");
 const pool = require("../model/database");
 const constant = require('../utils/constant');
 const dto = require('../dto');
 const error = require('../error/index');
 
 module.exports.createConsumption = async (req, res) => {
-    const {date} = req.body;
-    const drinkId = req.params.drinkId;
-    const client = await pool.connect();
+    const errors = validationResult(req);
 
-    try {
-        await consumptionModel.createConsumption(client, date === undefined ? new Date() : date, req.session.id, drinkId);
-        res.sendStatus(201);
-    } catch (error) {
-        console.log(error);
-        res.sendStatus(500);
-    } finally {
-        client.release();
+    if (!errors.isEmpty()) {
+        return res.status(400).json({error: errors.array()});
+    } else {
+        const {date} = req.body;
+        const drinkId = req.params.id;
+        const client = await pool.connect();
+
+        try {
+            client.query("BEGIN;");
+            if (await drinkModel.drinkExists(client, drinkId)) {
+                await consumptionModel.createConsumption(client, date === undefined ? new Date() : date, req.session.id, drinkId);
+                res.sendStatus(201);
+                client.query("COMMIT;");
+            } else {
+                res.status(404).json({error: error.DRINK_NOT_FOUND});
+                client.query("ROLLBACK;");
+            }
+        } catch (error) {
+            client.query("ROLLBACK;");
+            console.log(error);
+            res.sendStatus(500);
+        } finally {
+            client.release();
+        }
     }
 }
 
 module.exports.updateConsumption = async (req, res) => {
-    const {consumptionId, date} = req.body;
-    const client = await pool.connect();
+    const errors = validationResult(req);
 
-    try {
-        await consumptionModel.updateConsumption(client, consumptionId, date);
-        res.sendStatus(204);
-    } catch (error) {
-        console.log(error);
-        res.sendStatus(500);
-    } finally {
-        client.release();
+    if (!errors.isEmpty()) {
+        return res.status(400).json({error: errors.array()});
+    } else {
+        const {consumptionId, date} = req.body;
+        const client = await pool.connect();
+
+        try {
+            await consumptionModel.updateConsumption(client, consumptionId, date);
+            res.sendStatus(204);
+        } catch (error) {
+            console.log(error);
+            res.sendStatus(500);
+        } finally {
+            client.release();
+        }
     }
 }
 
@@ -89,12 +110,13 @@ module.exports.getAllConsumptionsByUserId = async (req, res) => {
 // }
 
 module.exports.deleteConsumption = async (req, res) => {
-    const consumptionIdTexte = req.params.consumptionId;
-    const consumptionId = parseInt(consumptionIdTexte);
+    const errors = validationResult(req);
 
-    if (isNaN(consumptionId)) {
-        res.status(400).json({error: error.INVALID_PARAMETER});
+    if (!errors.isEmpty()) {
+        return res.status(400).json({error: errors.array()});
     } else {
+        const consumptionIdTexte = req.params.id;
+        const consumptionId = parseInt(consumptionIdTexte);
         const client = await pool.connect();
 
         try {
@@ -273,4 +295,16 @@ module.exports.getAlcoholLevel = async (req, res) => {
         client.release();
     }
 
+}
+
+module.exports.consumptionExists = async (id) => {
+    const client = await pool.connect();
+
+    try {
+        return await consumptionModel.consumptionExists(client, id);
+    } catch (error){
+        res.sendStatus(500);
+    } finally {
+        client.release();
+    }
 }

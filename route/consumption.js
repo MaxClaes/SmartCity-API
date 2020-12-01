@@ -1,15 +1,16 @@
 const JWTMiddleWare = require("../middleware/IdentificationJWT");
-const consumptionController = require('../controleur/consumptionDB');
-const validatorDrink = require('../middleware/ValidatorDrink');
+const consumptionController = require("../controleur/consumptionDB");
+const validatorConsumption = require("../middleware/ValidatorConsumption");
+const validatorUtil = require("../middleware/ValidatorUtil");
 
 const Router = require("express-promise-router");
 const router = new Router;
 
-router.post('/:id', JWTMiddleWare.identification, validatorDrink.drinkExists, consumptionController.createConsumption);
-router.patch('/', JWTMiddleWare.identification, consumptionController.updateConsumption);
+router.post('/:id', JWTMiddleWare.identification, validatorConsumption.createConsumptionValidation, consumptionController.createConsumption);
+router.patch('/', JWTMiddleWare.identification, validatorConsumption.updateConsumptionValidation, consumptionController.updateConsumption);
 router.get('/', JWTMiddleWare.identification, consumptionController.getAllConsumptionsByUserId);
 //router.get('/date', JWTMiddleWare.identification, consumptionController.getAllConsumptionsByDate);
-router.delete('/:consumptionId', JWTMiddleWare.identification, consumptionController.deleteConsumption);
+router.delete('/:id', JWTMiddleWare.identification, validatorConsumption.deleteConsumptionValidation, consumptionController.deleteConsumption);
 router.get('/alcohollevel', JWTMiddleWare.identification, consumptionController.getAlcoholLevel);
 
 module.exports = router;

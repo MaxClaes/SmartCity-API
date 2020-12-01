@@ -50,4 +50,10 @@ module.exports.deleteConsumption = async (client, consumptionId) => {
     );
 }
 
-
+module.exports.consumptionExists = async (client, id) => {
+    const {rows} = await client.query(
+        "SELECT count(consumption_id) AS nbr FROM consumption WHERE consumption_id = $1",
+        [id]
+    );
+    return rows[0].nbr > 0;
+};
