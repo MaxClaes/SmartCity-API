@@ -1,2 +1,4 @@
 .env
 .idea
+swagger
+node_modules
