@@ -1,12 +1,3 @@
-// interface Error {
-//     error;
-//     message;
-// }
-
-// class Error {
-//     constructor(parameter) {
-//     }
-// }
 
 module.exports = {
     ACCESS_DENIED : {

@@ -4,6 +4,15 @@ const constant = require('../utils/constant');
 const error = require('../error/index');
 const { validationResult } = require('express-validator');
 
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      MustBeManager:
+ *          description: The current user must be manager
+ *      Unauthenticated:
+ *          description: The user is not authenticated
+ */
 module.exports.mustBeManager = (req, res, next) => {
     const errors = validationResult(req);
 
@@ -21,7 +30,15 @@ module.exports.mustBeManager = (req, res, next) => {
         }
     }
 }
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      MustBeManagerOrCreator:
+ *          description: The current user must be manager or creator
+ *      Unauthenticated:
+ *          description: The user is not authenticated
+ */
 module.exports.mustBeManagerOrCreator = (req, res, next) => {
     const errors = validationResult(req);
 
@@ -42,7 +59,21 @@ module.exports.mustBeManagerOrCreator = (req, res, next) => {
         }
     }
 }
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      InputErrors:
+ *          description: There is one or more input errors
+ *      Unauthenticated:
+ *          description: The user is not autenticated
+ *      MustBeAdmin:
+ *          description: The user must be administrator
+ *      UserNotFound:
+ *          description: Can't find the current user
+ *      InternalServorError:
+ *          description: Internal servor error
+ */
 module.exports.canChangeRole = async (req, res, next) => {
     const errors = validationResult(req);
 

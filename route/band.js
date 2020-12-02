@@ -1,4 +1,4 @@
-const JWTMiddleWare = require("../middleware/IdentificationJWT");
+const JWTMiddleWare = require("../middleware/identification/IdentificationJWT");
 const bandControleur = require("../controleur/bandDB");
 const validatorUser = require("../middleware/user/Validator");
 const validatorBand = require("../middleware/band/ValidatorBand");

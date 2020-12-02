@@ -1,4 +1,4 @@
-const JWTMiddleWare = require("../middleware/IdentificationJWT");
+const JWTMiddleWare = require("../middleware/identification/IdentificationJWT");
 const consumptionController = require("../controleur/consumptionDB");
 const validatorConsumption = require("../middleware/consumption/ValidatorConsumption");
 

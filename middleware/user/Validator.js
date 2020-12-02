@@ -39,17 +39,22 @@ module.exports = {
             .trim().not().isEmpty().withMessage("GSM is empty.")
             .isString().withMessage("GSM is not a string."),
         check("address.country")
+            .optional({nullable: true})
             .trim().not().isEmpty().withMessage("Country is empty.")
             .trim().isString().withMessage("Country is not a string."),
         body("address.postalCode")
+            .optional({nullable: true})
             .not().isString().withMessage("PostalCode is not a number."),
         body("address.city")
+            .optional({nullable: true})
             .trim().not().isEmpty().withMessage("City is empty.")
             .trim().isString().withMessage("City is not a string."),
         body("address.street")
+            .optional({nullable: true})
             .trim().not().isEmpty().withMessage("Street is empty.")
             .trim().isString().withMessage("Street is not a string."),
         body("address.number")
+            .optional({nullable: true})
             .trim().not().isEmpty().withMessage("Number is empty.")
             .trim().isString().withMessage("Number is not a string.")
     ],
@@ -68,15 +73,6 @@ module.exports = {
             .trim().isString().withMessage("Firstname is not a string."),
         body("birthdate")
             .isISO8601().toDate().withMessage("Birthdate is not a date."),
-        body("email")
-            .normalizeEmail().isEmail().withMessage("Email is not an email.")
-            .custom(value => {
-                return userController.emailExists(value).then(user => {
-                    if (user) {
-                        return Promise.reject("Email already in use");
-                    }
-                });
-            }),
         body("password")
             .isLength({min : 8}).withMessage("Password is to short"),
         body("height")

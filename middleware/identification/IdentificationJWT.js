@@ -1,8 +1,24 @@
 require('dotenv').config();
 const process = require('process');
 const jwt = require('jsonwebtoken');
-const error = require('../error/index');
+const error = require('../../error');
 
+/**
+ * @swagger
+ * components:
+ *  securitySchemes:
+ *      bearerAuth:
+ *          type: http
+ *          scheme: bearer
+ *          bearerFormat: JWT
+ *  responses:
+ *      InternalServorError:
+ *          description: Internal servor error
+ *      MissingJWT:
+ *          description: JWT is missing
+ *      Unauthenticated:
+ *          description: The user is not authenticated
+ */
 module.exports.identification = async (req, res, next) => {
     const headerAuth = req.get('authorization');
 
@@ -16,7 +32,7 @@ module.exports.identification = async (req, res, next) => {
             next();
         } catch (error) {
             console.log(error);
-            res.sendStatus(400);
+            res.status(500);
         }
     } else {
         console.log();

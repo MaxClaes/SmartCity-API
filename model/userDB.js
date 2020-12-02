@@ -49,13 +49,12 @@ module.exports.createUser = async (client, name, firstname, birthdate, email, pa
     );
 };
 
-module.exports.updateUser = async (client, name, firstname, birthdate, email, password, height, weight, gsm, id) => {
+module.exports.updateUser = async (client, name, firstname, birthdate, password, height, weight, gsm, id) => {
     let query = "UPDATE client SET ";
     let argumentsWithoutId = [
         ['name', name],
         ['firstname', firstname],
         ['birthdate', birthdate],
-        ['email', email],
         ['password', password != undefined ? await getHash(password) : password],
         ['height', height],
         ['weight', weight],

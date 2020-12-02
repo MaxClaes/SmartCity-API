@@ -10,6 +10,68 @@ const dto = require('../dto');
 const error = require('../error/index');
 const { validationResult } = require('express-validator');
 
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *      User:
+ *          type: object
+ *          properties:
+ *              id:
+ *                  type: number
+ *              name:
+ *                  type: string
+ *              firstname:
+ *                  type: string
+ *              birthdate:
+ *                  type: string
+ *              email:
+ *                  type: string
+ *              registrationDate:
+ *                  type: string
+ *              gender:
+ *                  type: string
+ *              height:
+ *                  type: number
+ *              weight:
+ *                  type: number
+ *              gsm:
+ *                  type: string
+ *              role:
+ *                  type: string
+ *              address:
+ *                  type: object
+ *                  properties:
+ *                      id:
+ *                          type: number
+ *                      country:
+ *                          type: string
+ *                      postalCode:
+ *                          type: integer
+ *                      city:
+ *                          type: string
+ *                      street:
+ *                          type: string
+ *                      number:
+ *                          type: string
+ */
+
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *      Login:
+ *          type: object
+ *          properties:
+ *              email:
+ *                  type: string
+ *              password:
+ *                  type: string
+ *                  format: password
+ *          required:
+ *              - email
+ *              - password
+ */
 module.exports.login = async (req, res) => {
     const errors = validationResult(req);
 
@@ -43,7 +105,60 @@ module.exports.login = async (req, res) => {
         }
     }
 };
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      UserInsert:
+ *          description: the user has been added to database
+ *  requestBodies:
+ *      UserToInsert:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      properties:
+ *                          name:
+ *                              type: string
+ *                          firstname:
+ *                              type: string
+ *                          birthdate:
+ *                              type: string
+ *                          email:
+ *                              type: string
+ *                          password:
+ *                              type: string
+ *                              format: password
+ *                          gender:
+ *                              type: string
+ *                          height:
+ *                              type: number
+ *                          weight:
+ *                              type: number
+ *                          gsm:
+ *                              type: string
+ *                          address:
+ *                              type: object
+ *                              properties:
+ *                                  country:
+ *                                      type: string
+ *                                  postalCode:
+ *                                      type: integer
+ *                                  city:
+ *                                      type: string
+ *                                  street:
+ *                                      type: string
+ *                                  number:
+ *                                      type: string
+ *                      required:
+ *                          - name
+ *                          - firstname
+ *                          - birthdate
+ *                          - email
+ *                          - password
+ *                          - gender
+ *                          - height
+ *                          - weight
+ */
 module.exports.createUser = async (req, res) => {
     const errors = validationResult(req);
 
@@ -77,18 +192,45 @@ module.exports.createUser = async (req, res) => {
         }
     }
 };
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      UserUpdated:
+ *          description: the user has been updated
+ *  requestBodies:
+ *      UserToUpdate:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      properties:
+ *                          name:
+ *                              type: string
+ *                          firstname:
+ *                              type: string
+ *                          birthdate:
+ *                              type: string
+ *                          password:
+ *                              type: string
+ *                              format: password
+ *                          height:
+ *                              type: number
+ *                          weight:
+ *                              type: number
+ *                          gsm:
+ *                              type: string
+ */
 module.exports.updateUser = async (req, res) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         return res.status(400).json({error: errors.array()});
     } else {
-        const {name, firstname, birthdate, email, password, height, weight, gsm} = req.body;
+        const {name, firstname, birthdate, password, height, weight, gsm} = req.body;
         const client = await pool.connect();
 
         try {
-            await userModel.updateUser(client, name, firstname, birthdate, email, password, height, weight, gsm, req.session.id);
+            await userModel.updateUser(client, name, firstname, birthdate, password, height, weight, gsm, req.session.id);
             res.sendStatus(204);
         } catch (error) {
             console.log(error);
@@ -98,7 +240,17 @@ module.exports.updateUser = async (req, res) => {
         }
     }
 };
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      UsersFound:
+ *          description: send back a list of users
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/User'
+ */
 module.exports.getAllUsers = async (req, res) => {
     const client = await pool.connect();
 
@@ -121,7 +273,19 @@ module.exports.getAllUsers = async (req, res) => {
         client.release();
     }
 }
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      UserFound:
+ *          description: Send the user
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/User'
+ *      InternalError:
+ *          description: Internal servor error
+ */
 module.exports.getUser = async (req, res) => {
     const errors = validationResult(req);
 
@@ -149,14 +313,32 @@ module.exports.getUser = async (req, res) => {
         }
     }
 }
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      RoleChanged:
+ *          description: The role has been changed
+ *      InternalServorError:
+ *          description: Internal servor error
+ *  requestBodies:
+ *      RoleToChangeTo:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      properties:
+ *                          role:
+ *                              type: string
+ */
 module.exports.changeRole = async (req, res) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         return res.status(400).json({error: errors.array()});
     } else {
-        const {userId, role} = req.body;
+        const {role} = req.body;
+        const userIdTexte = req.param.userId;
+        const userId = parseInt(userIdTexte);
         const client = await pool.connect();
 
         try {
