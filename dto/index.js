@@ -73,7 +73,7 @@ module.exports.bandClientDTO = (bandClientEntity) => {
         band : this.bandDTO(bandClientEntity),
         //userId : bandClientEntity.client_id,
         //bandId : bandClientEntity.band_id,
-        dateInvitation : bandClientEntity.date_invitation,
+        dateInvitation : bandClientEntity.invitation_date,
         status : bandClientEntity.status,
         role : bandClientEntity.role,
         invitedBy : bandClientEntity.invited_by

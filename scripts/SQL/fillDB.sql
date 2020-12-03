@@ -17,18 +17,14 @@ INSERT INTO drink (label, prc_alcohol, quantity, nb_reports, created_by) VALUES
 INSERT INTO drink (label, prc_alcohol, quantity, nb_reports) VALUES
 ('Eau', 0, 0.25, 0);
 
---INSERT INTO band (label, creation_date) VALUES
---('Les buveurs fous', TO_DATE('18/07/2020', 'DD/MM/YYYY')),
---('Les buveurs calmes', TO_DATE('24/05/2020', 'DD/MM/YYYY'));
---
---INSERT INTO band_client (client_id, band_id, creation_date, status, role, invited_by) VALUES
---(3, 2, TO_DATE('17/11/2020', 'DD/MM/YYYY'), null, 'ADMINISTRATOR', null),
---(2, 1, TO_DATE('17/11/2020', 'DD/MM/YYYY'), null, 'ADMINISTRATOR', null),
---(2, 2, TO_DATE('17/11/2020', 'DD/MM/YYYY'), 'W', 'CLIENT', 3),
---(1, 1, TO_DATE('17/11/2020', 'DD/MM/YYYY'), 'A', 'ADMINISTRATOR', 2),
---(1, 2, TO_DATE('17/11/2020', 'DD/MM/YYYY'), 'W', 'CLIENT', 3),
---(3, 1, TO_DATE('17/11/2020', 'DD/MM/YYYY'), 'R', 'CLIENT', 1);
+INSERT INTO band (label, creation_date) VALUES
+('Les buveurs fous', TO_DATE('18/07/2020', 'DD/MM/YYYY')),
+('Les buveurs calmes', TO_DATE('24/05/2020', 'DD/MM/YYYY'));
 
---INSERT INTO band_client (client_id, band_id, creation_date, role) VALUES
---(2, 1, TO_DATE('17/11/2020', 'DD/MM/YYYY'), 'CLIENT');
---(3, 2, TO_DATE('17/11/2020', 'DD/MM/YYYY'), 'ADMINISTRATOR'
+INSERT INTO band_client (client_id, band_id, invitation_date, status, role, invited_by) VALUES
+(3, 2, null, 'A', 'ADMINISTRATOR', null),
+(2, 1, null, 'A', 'ADMINISTRATOR', null),
+(2, 2, TO_DATE('17/11/2020', 'DD/MM/YYYY'), 'W', 'CLIENT', 3),
+(1, 1, TO_DATE('17/11/2020', 'DD/MM/YYYY'), 'A', 'ADMINISTRATOR', 2),
+(1, 2, TO_DATE('17/11/2020', 'DD/MM/YYYY'), 'W', 'CLIENT', 3),
+(3, 1, TO_DATE('17/11/2020', 'DD/MM/YYYY'), 'R', 'CLIENT', 1);

@@ -48,7 +48,7 @@ DROP TABLE IF EXISTS band_client CASCADE;
 CREATE TABLE band_client (
     client_id INTEGER REFERENCES client(client_id) DEFERRABLE INITIALLY IMMEDIATE,
     band_id INTEGER REFERENCES band(band_id) DEFERRABLE INITIALLY IMMEDIATE,
-    date_invitation TIMESTAMP,
+    invitation_date TIMESTAMP,
     status CHAR(1) NOT NULL,
     role VARCHAR(255) NOT NULL,
     invited_by INTEGER REFERENCES client(client_id) DEFERRABLE INITIALLY IMMEDIATE,
