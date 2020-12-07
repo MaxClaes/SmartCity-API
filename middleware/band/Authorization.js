@@ -1,7 +1,7 @@
-const drinkModel = require("../model/drinkDB");
-const pool = require("../model/database");
-const constant = require("../utils/constant");
-const error = require("../error/index");
+const drinkModel = require("../../model/drinkDB");
+const pool = require("../../model/database");
+const constant = require("../../utils/constant");
+const error = require("../../error/index");
 const bandModel = require("../../model/bandDB");
 const { validationResult } = require("express-validator");
 

@@ -1,7 +1,7 @@
-const userModel = require('../model/userDB');
-const pool = require("../model/database");
-const constant = require('../utils/constant');
-const error = require('../error/index');
+const userModel = require('../../model/userDB');
+const pool = require("../../model/database");
+const constant = require('../../utils/constant');
+const error = require('../../error/index');
 const { validationResult } = require('express-validator');
 
 /**

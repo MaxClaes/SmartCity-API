@@ -6,6 +6,12 @@ const authorizationUser = require("../middleware/user/Authorization");
 const Router = require("express-promise-router");
 const router = new Router;
 
+const cors = require('cors')
+router.use(cors())
+
+// const cookieParser = require('cookie-parser');
+// router.use(cookieParser());
+
 /**
  * @swagger
  * /user/login:

@@ -1,10 +1,10 @@
-const Router = require('./route');
+const Router = require('./route')
 const express = require('express')
 const app = express()
 const port = 3001
 
-app.use(express.json());
-app.use(Router);
+app.use(express.json())
+app.use(Router)
 
 app.get('/', (req, res) => {
     res.send('API is running !');

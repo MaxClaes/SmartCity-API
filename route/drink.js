@@ -4,10 +4,12 @@ const validatorDrink = require("../middleware/drink/Validator");
 const validatorUser = require("../middleware/user/Validator");
 const authorizationDrink = require("../middleware/drink/Authorization");
 const authorizationUser = require("../middleware/user/Authorization");
-const validatorUtil = require("../middleware/ValidatorUtil");
 
 const Router = require("express-promise-router");
 const router = new Router;
+
+const cors = require('cors')
+router.use(cors())
 
 router.get('/', JWTMiddleWare.identification, drinkControleur.getAllDrinks);
 router.get('/name/:label', JWTMiddleWare.identification, validatorDrink.labelValidation,drinkControleur.getDrinksByName);
