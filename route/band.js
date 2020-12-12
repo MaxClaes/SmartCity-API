@@ -8,6 +8,9 @@ const authorizationUser = require("../middleware/user/Authorization");
 const Router = require("express-promise-router");
 const router = new Router;
 
+const cors = require('cors')
+router.use(cors())
+
 router.get('/all', JWTMiddleWare.identification, authorizationUser.mustBeManager, bandControleur.getAllBands);
 router.get('/bandid/:bandId', JWTMiddleWare.identification, authorizationUser.mustBeManager, validatorBand.bandIdValidation, bandControleur.getBandById);
 router.delete('/bandid/:bandId', JWTMiddleWare.identification, authorizationUser.mustBeManager, validatorBand.bandIdValidation, bandControleur.deleteBand);

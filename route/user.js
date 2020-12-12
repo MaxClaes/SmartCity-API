@@ -9,9 +9,6 @@ const router = new Router;
 const cors = require('cors')
 router.use(cors())
 
-// const cookieParser = require('cookie-parser');
-// router.use(cookieParser());
-
 /**
  * @swagger
  * /user/login:
@@ -132,7 +129,7 @@ router.get('/:userId', JWTMiddleWare.identification, validatorUser.userIdValidat
  *          500:
  *              description: Internal servor error
  */
-router.patch('/update', JWTMiddleWare.identification, validatorUser.userUpdateValidation, userController.updateUser);
+router.patch('/update/:userId', JWTMiddleWare.identification, validatorUser.userUpdateValidation, validatorUser.addressUpdateValidation, authorizationUser.mustBeManagerOrCreator, userController.updateUser);
 /**
  * @swagger
  * /user/{userId}/role:
@@ -164,6 +161,6 @@ router.patch('/update', JWTMiddleWare.identification, validatorUser.userUpdateVa
  *          500:
  *              description: Internal servor error
  */
-router.patch('/:userId/role', JWTMiddleWare.identification, validatorUser.userIdValidation, validatorUser.roleValidation, authorizationUser.canChangeRole, userController.changeRole)
+router.patch('/role/:userId', JWTMiddleWare.identification, validatorUser.userIdValidation, validatorUser.roleValidation, authorizationUser.canChangeRole, userController.changeRole)
 
 module.exports = router;

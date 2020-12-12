@@ -24,10 +24,10 @@ module.exports.hasJoinedBand = async (req, res, next) => {
                     if (userStatus === constant.STATUS_ACCEPTED) {
                         next();
                     } else {
-                        res.status(400).json({error: error.STATUS_NOT_ACCEPTED_IN_BAND});
+                        res.status(400).json({error: [error.STATUS_NOT_ACCEPTED_IN_BAND]});
                     }
                 } else {
-                    res.status(404).json({error: error.IDENTIFIED_USER_NOT_FOUND_IN_BAND});
+                    res.status(404).json({error: [error.IDENTIFIED_USER_NOT_FOUND_IN_BAND]});
                 }
             } catch (error) {
                 console.log(error);
@@ -36,7 +36,7 @@ module.exports.hasJoinedBand = async (req, res, next) => {
                 client.release();
             }
         } else {
-            res.status(403).json({error: error.UNAUTHENTICATED});
+            res.status(403).json({error: [error.UNAUTHENTICATED]});
         }
     }
 }
@@ -61,13 +61,13 @@ module.exports.isAdminAndUserSearchExists = async (req, res, next) => {
                         if (await bandModel.userExists(client, bandId, userId)) {
                             next();
                         } else {
-                            res.status(404).json({error: error.USER_NOT_FOUND_IN_BAND});
+                            res.status(404).json({error: [error.USER_NOT_FOUND_IN_BAND]});
                         }
                     } else {
-                        res.status(403).json({error: error.ACCESS_DENIED_IN_BAND});
+                        res.status(403).json({error: [error.ACCESS_DENIED_IN_BAND]});
                     }
                 } else {
-                    res.status(404).json({error: error.IDENTIFIED_USER_NOT_FOUND_IN_BAND});
+                    res.status(404).json({error: [error.IDENTIFIED_USER_NOT_FOUND_IN_BAND]});
                 }
             } catch (error) {
                 console.log(error);
@@ -76,7 +76,7 @@ module.exports.isAdminAndUserSearchExists = async (req, res, next) => {
                 client.release();
             }
         } else {
-            res.status(403).json({error: error.UNAUTHENTICATED});
+            res.status(403).json({error: [error.UNAUTHENTICATED]});
         }
     }
 }
@@ -102,13 +102,13 @@ module.exports.canAnswerInvitation = async (req, res, next) => {
                         if (userStatus === constant.STATUS_WAITING) {
                             next()
                         } else {
-                            res.status(403).json({error: error.STATUS_ALREADY_CHANGED_IN_BAND});
+                            res.status(403).json({error: [error.STATUS_ALREADY_CHANGED_IN_BAND]});
                         }
                     } else {
-                        res.status(404).json({error: error.IDENTIFIED_USER_NOT_FOUND_IN_BAND});
+                        res.status(404).json({error: [error.IDENTIFIED_USER_NOT_FOUND_IN_BAND]});
                     }
                 } else {
-                    res.status(404).json({error: error.BAND_NOT_FOUND});
+                    res.status(404).json({error: [error.BAND_NOT_FOUND]});
                 }
             } catch (error) {
                 console.log(error);
@@ -117,7 +117,7 @@ module.exports.canAnswerInvitation = async (req, res, next) => {
                 client.release();
             }
         } else {
-            res.status(403).json({error: error.UNAUTHENTICATED});
+            res.status(403).json({error: [error.UNAUTHENTICATED]});
         }
     }
 }

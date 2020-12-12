@@ -6,9 +6,32 @@ module.exports.createAddress = async (client, country, postalCode, city, street,
     );
 };
 
-// module.exports.getAddress = async (client, country, postalCode, city, street, number) => {
-//     return await client.query(`
-//         SELECT id FROM address WHERE country = $1 AND postal_code = $2 AND city = $3 AND street = $4 AND number = $5;
-//         `, [country, postalCode, city, street, number]
-//     );
-// };
+module.exports.updateAddress = async (client, country, postalCode, city, street, number, id) => {
+    let query = "UPDATE address SET ";
+    let argumentsWithoutId = [
+        ['country', country],
+        ['postal_code', postalCode],
+        ['city', city],
+        ['street', street],
+        ['number', number]
+    ];
+    const params = [], querySet = [];
+    const KEY = 0, VALUE = 1;
+
+    argumentsWithoutId.forEach(function(arg) {
+        if (arg[VALUE] != undefined) {
+            params.push(arg[VALUE]);
+            querySet.push(` ${arg[KEY]} = $${params.length} `);
+        }
+    });
+
+    if(params.length > 0){
+        query += querySet.join(',');
+        params.push(id);
+        query += ` WHERE address_id = $${params.length};`;
+
+        return client.query(query, params);
+    } else {
+        throw new Error("No field to update");
+    }
+};

@@ -5,6 +5,7 @@ const pool = require("../model/database");
 const constant = require('../utils/constant');
 const dto = require('../dto');
 const error = require('../error/index');
+const { validationResult } = require('express-validator');
 
 module.exports.createConsumption = async (req, res) => {
     const errors = validationResult(req);
@@ -12,21 +13,40 @@ module.exports.createConsumption = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({error: errors.array()});
     } else {
-        const {date} = req.body;
-        const drinkIdTexte = req.params.drinkId;
-        const drinkId = parseInt(drinkIdTexte);
+        const {drinkId, date, label, quantity, prcAlcohol} = req.body;
         const client = await pool.connect();
 
         try {
             client.query("BEGIN;");
-            if (await drinkModel.drinkExists(client, drinkId)) {
-                await consumptionModel.createConsumption(client, date === undefined ? new Date() : date, req.session.id, drinkId);
-                await drinkModel.changePopularityByOne(client, id, 1);
+            if (drinkId !== undefined) {
+                const {rows: drinksEntities} = await drinkModel.getDrinkById(client, drinkId);
+                const drinkEntity = drinksEntities[0];
+                let tempDrinkId = drinkId;
+
+                if (drinkEntity !== undefined) {
+                    //Verifier si les informations sont les mêmes
+                    //Si elles sont les mêmes alors on crée la consommation
+                    let drink = dto.drinkDTO(drinksEntities[0]);
+
+                    if (drink.id !== drinkId || drink.label !== label || drink.quantity !== quantity || drink.prcAlcohol !== prcAlcohol) {
+                        tempDrinkId = await drinkModel.createDrink(client, label, prcAlcohol, quantity, req.session.id);
+                    }
+                } else {
+                    //Sinon on crée la boisson et la consommation
+                    tempDrinkId = await drinkModel.createDrink(client, label, prcAlcohol, quantity, req.session.id);
+                }
+
+                await consumptionModel.createConsumption(client, date === undefined ? new Date() : date, req.session.id, tempDrinkId);
+                await drinkModel.changePopularityByOne(client, tempDrinkId, 1);
+
                 res.sendStatus(201);
                 client.query("COMMIT;");
             } else {
-                res.status(404).json({error: error.DRINK_NOT_FOUND});
-                client.query("ROLLBACK;");
+                //Sinon on crée la boisson + la consommation
+                await consumptionModel.createConsumption(client, date === undefined ? new Date() : date, req.session.id, drinkId);
+                await drinkModel.changePopularityByOne(client, drinkId, 1);
+                res.sendStatus(201);
+                client.query("COMMIT;");
             }
         } catch (error) {
             client.query("ROLLBACK;");
@@ -72,7 +92,7 @@ module.exports.getAllConsumptionsByUserId = async (req, res) => {
             });
             res.json(consumptions);
         } else {
-            res.status(404).json({error: error.CONSUMPTION_NOT_FOUND});
+            res.json([]);
         }
     } catch (error) {
         console.log(error);
@@ -100,7 +120,7 @@ module.exports.getAllConsumptionsByUserId = async (req, res) => {
 //                 });
 //                 res.json(consumptions);
 //             } else {
-//                 res.status(404).json({error: error.CONSUMPTION_NOT_FOUND});
+//                 res.status(404).json({error: [error.CONSUMPTION_NOT_FOUND]});
 //             }
 //         } catch (error) {
 //             console.log(error);
@@ -126,14 +146,12 @@ module.exports.deleteConsumption = async (req, res) => {
             const {rows: consumptionsEntities} = await consumptionModel.getConsumptionByConsumptionIdAndUserId(client, consumptionId, req.session.id);
 
             if (consumptionsEntities[0] !== undefined) {
-                let drink = dto.drinkDTO(consumptionsEntities[0]);
-
                 await consumptionModel.deleteConsumption(client, consumptionId);
-                await drinkModel.changePopularityByOne(client, drink.drinkId, -1);
+                await drinkModel.changePopularityByOne(client, consumptionsEntities[0].drink_id, -1);
                 res.sendStatus(204);
                 client.query("COMMIT;");
             } else {
-                res.status(404).json({error: error.CONSUMPTION_NOT_FOUND});
+                res.status(404).json({error: [error.CONSUMPTION_NOT_FOUND]});
             }
         } catch (error) {
             client.query("ROLLBACK;");
@@ -156,7 +174,6 @@ module.exports.getAlcoholLevel = async (req, res) => {
 
 
     try {
-        while (1 === 1) {
             const {rows: usersEntities} = await userModel.getUser(client, req.session.id);
             const userEntity = usersEntities[0];
 
@@ -171,66 +188,6 @@ module.exports.getAlcoholLevel = async (req, res) => {
                 let minutesLeftBeforeDrinkAbsorption;
                 let totalMinutesLeftBeforeAbsorption = 0;
 
-                // if (consumptionsEntities[0] !== undefined) {
-                //     const user = dto.userDTO(userEntity);
-                //     let alcoholLevelDrink;
-                //     let consumption;
-                //     let minutesForEliminateDrink;
-                //     let minutesSinceConsumption;
-                //     let alcoholLevelActual;
-                //     var totalAlcoholLevel = 0;
-                //     let nbConsumptionsActives = 0;
-                //     let minutesFromConst;
-                //
-                //     consumptionsEntities.forEach(function (c) {
-                //         consumption = dto.consumptionDTO(c);
-                //
-                //         if (consumption.drink.prcAlcohol > 0) {
-                //             alcoholLevelDrink = (((consumption.drink.quantity * 1000) * (consumption.drink.prcAlcohol / 100) * 0.8) / ((user.gender === constant.GENDER_MAN ? 0.7 : 0.6) * user.weight));
-                //
-                //             // minutesForEliminateDrink = constant.ALCOHOL_TIME_MOY_HIGHEST_LEVEL + (alcoholLevelDrink / ((user.gender === constant.GENDER_MAN ? constant.ALCOHOL_MOY_ELIMINATION_SPEED_MAN : constant.ALCOHOL_MOY_ELIMINATION_SPEED_WOMAN) / 60));
-                //             // minutesSinceConsumption = (new Date() - consumption.date) / (1000 * 60);
-                //             // minutesLeftBeforeDrinkAbsorption = minutesForEliminateDrink - minutesSinceConsumption;
-                //             minutesForEliminateDrink = alcoholLevelDrink / ((user.gender === constant.GENDER_MAN ? constant.ALCOHOL_MOY_ELIMINATION_SPEED_MAN : constant.ALCOHOL_MOY_ELIMINATION_SPEED_WOMAN) / 60);
-                //             minutesSinceConsumption = (new Date() - consumption.date) / (1000 * 60);
-                //             minutesLeftBeforeDrinkAbsorption = minutesForEliminateDrink - minutesSinceConsumption + constant.ALCOHOL_TIME_MOY_HIGHEST_LEVEL;
-                //
-                //             alcoholLevelActual = alcoholLevelDrink * (minutesSinceConsumption / constant.ALCOHOL_TIME_MOY_HIGHEST_LEVEL);
-                //
-                //             if (minutesLeftBeforeDrinkAbsorption > 0) {
-                //                 if (alcoholLevelActual > alcoholLevelDrink) {
-                //                     //Le taux diminiue
-                //                     alcoholLevelNetMax += minutesLeftBeforeDrinkAbsorption * ((user.gender === constant.GENDER_MAN ? constant.ALCOHOL_MOY_ELIMINATION_SPEED_MAN : constant.ALCOHOL_MOY_ELIMINATION_SPEED_WOMAN) / 60);
-                //                 } else {
-                //                     //Le taux augmente
-                //                     alcoholLevelNetMax += alcoholLevelActual;
-                //                     //alcoholLevelNetMax += alcoholLevelActual / ((user.gender === constant.GENDER_MAN ? constant.ALCOHOL_MOY_ELIMINATION_SPEED_MAN : constant.ALCOHOL_MOY_ELIMINATION_SPEED_WOMAN) / 60);
-                //                 }
-                //                 totalMinutesLeftBeforeAbsorption += minutesLeftBeforeDrinkAbsorption;
-                //                 totalAlcoholLevel += alcoholLevelDrink;
-                //
-                //                 // minutesFromConst = minutesSinceConsumption - constant.ALCOHOL_TIME_MOY_HIGHEST_LEVEL;
-                //                 // if (minutesFromConst < 0) {
-                //                 //     totalMinutesLeftBeforeAbsorption += minutesFromConst;
-                //                 // }
-                //                 // totalMinutesLeftBeforeAbsorption += minutesForEliminateDrink;
-                //
-                //                 nbConsumptionsActives++;
-                //             }
-                //         }
-                //     });
-                //
-                //     //totalMinutesLeftBeforeAbsorption = totalMinutesLeftBeforeAbsorption / nbConsumptionsActives;
-                //     var minutesMaxConvert = new Date(0);
-                //     minutesMaxConvert.setMinutes(Math.trunc(totalMinutesLeftBeforeAbsorption), (totalMinutesLeftBeforeAbsorption % 1) * 60);
-                //
-                //     // res.json({
-                //     //     totalAlcoholLevel: totalAlcoholLevel,
-                //     //     actualAlcoholLevel: alcoholLevelNetMax,
-                //     //     timeLeftBeforeAbsorption: minutesMaxConvert.toISOString().substr(11, 8)
-                //     // });
-                //
-
                 if (consumptionsEntities[0] !== undefined) {
                     const user = dto.userDTO(userEntity);
                     let alcoholLevelDrink;
@@ -241,7 +198,6 @@ module.exports.getAlcoholLevel = async (req, res) => {
                     var totalAlcoholLevel = 0;
                     let nbConsumptionsActives = 0;
                     let minutesFromConst;
-                    let minutesLeftBeforeDrinkTotalAbsorption
 
                     consumptionsEntities.forEach(function (c) {
                         consumption = dto.consumptionDTO(c);
@@ -249,23 +205,25 @@ module.exports.getAlcoholLevel = async (req, res) => {
                         if (consumption.drink.prcAlcohol > 0) {
                             alcoholLevelDrink = (((consumption.drink.quantity * 1000) * (consumption.drink.prcAlcohol / 100) * 0.8) / ((user.gender === constant.GENDER_MAN ? 0.7 : 0.6) * user.weight));
 
+                            // minutesForEliminateDrink = constant.ALCOHOL_TIME_MOY_HIGHEST_LEVEL + (alcoholLevelDrink / ((user.gender === constant.GENDER_MAN ? constant.ALCOHOL_MOY_ELIMINATION_SPEED_MAN : constant.ALCOHOL_MOY_ELIMINATION_SPEED_WOMAN) / 60));
+                            // minutesSinceConsumption = (new Date() - consumption.date) / (1000 * 60);
+                            // minutesLeftBeforeDrinkAbsorption = minutesForEliminateDrink - minutesSinceConsumption;
                             minutesForEliminateDrink = alcoholLevelDrink / ((user.gender === constant.GENDER_MAN ? constant.ALCOHOL_MOY_ELIMINATION_SPEED_MAN : constant.ALCOHOL_MOY_ELIMINATION_SPEED_WOMAN) / 60);
                             minutesSinceConsumption = (new Date() - consumption.date) / (1000 * 60);
-                            minutesLeftBeforeDrinkTotalAbsorption = minutesForEliminateDrink - minutesSinceConsumption + constant.ALCOHOL_TIME_MOY_HIGHEST_LEVEL;
-                            //Si la ligne du dessus est négative alors la boisson a déjà été absorbée
+                            minutesLeftBeforeDrinkAbsorption = minutesForEliminateDrink - minutesSinceConsumption + constant.ALCOHOL_TIME_MOY_HIGHEST_LEVEL;
 
-                            if (minutesLeftBeforeDrinkTotalAbsorption > 0) {
-                                alcoholLevelActual = alcoholLevelDrink * (minutesSinceConsumption / constant.ALCOHOL_TIME_MOY_HIGHEST_LEVEL);
+                            alcoholLevelActual = alcoholLevelDrink * (minutesSinceConsumption / constant.ALCOHOL_TIME_MOY_HIGHEST_LEVEL);
 
-                                if (alcoholLevelActual >= alcoholLevelDrink) {
+                            if (minutesLeftBeforeDrinkAbsorption > 0) {
+                                if (alcoholLevelActual > alcoholLevelDrink) {
                                     //Le taux diminiue
-                                    alcoholLevelNetMax += (alcoholLevelDrink - ((minutesSinceConsumption - constant.ALCOHOL_TIME_MOY_HIGHEST_LEVEL) * ((user.gender === constant.GENDER_MAN ? constant.ALCOHOL_MOY_ELIMINATION_SPEED_MAN : constant.ALCOHOL_MOY_ELIMINATION_SPEED_WOMAN) / 60)));
+                                    alcoholLevelNetMax += minutesLeftBeforeDrinkAbsorption * ((user.gender === constant.GENDER_MAN ? constant.ALCOHOL_MOY_ELIMINATION_SPEED_MAN : constant.ALCOHOL_MOY_ELIMINATION_SPEED_WOMAN) / 60);
                                 } else {
                                     //Le taux augmente
                                     alcoholLevelNetMax += alcoholLevelActual;
                                     //alcoholLevelNetMax += alcoholLevelActual / ((user.gender === constant.GENDER_MAN ? constant.ALCOHOL_MOY_ELIMINATION_SPEED_MAN : constant.ALCOHOL_MOY_ELIMINATION_SPEED_WOMAN) / 60);
                                 }
-                                totalMinutesLeftBeforeAbsorption += minutesLeftBeforeDrinkTotalAbsorption;
+                                totalMinutesLeftBeforeAbsorption += minutesLeftBeforeDrinkAbsorption;
                                 totalAlcoholLevel += alcoholLevelDrink;
 
                                 // minutesFromConst = minutesSinceConsumption - constant.ALCOHOL_TIME_MOY_HIGHEST_LEVEL;
@@ -279,29 +237,87 @@ module.exports.getAlcoholLevel = async (req, res) => {
                         }
                     });
 
+                    //totalMinutesLeftBeforeAbsorption = totalMinutesLeftBeforeAbsorption / nbConsumptionsActives;
                     var minutesMaxConvert = new Date(0);
                     minutesMaxConvert.setMinutes(Math.trunc(totalMinutesLeftBeforeAbsorption), (totalMinutesLeftBeforeAbsorption % 1) * 60);
 
-                } else {
                     res.json({
-                        totalAlcoholLevel: 0,
-                        actualAlcoholLevel: 0,
-                        timeLeftBeforeAbsorption: 0
+                        totalAlcoholLevel: totalAlcoholLevel,
+                        actualAlcoholLevel: alcoholLevelNetMax,
+                        timeLeftBeforeAbsorption: minutesMaxConvert.toISOString().substr(11, 8)
                     });
-                }
-            } else {
-                res.sendStatus(404);
-            }
-            if (Date.parse(today) >= (Date.parse(d) + (1000 * i))) {
-                console.log({
-                    totalAlcoholLevel: totalAlcoholLevel,
-                    actualAlcoholLevel: alcoholLevelNetMax,
-                    timeLeftBeforeAbsorption: minutesMaxConvert.toISOString().substr(11, 8)
-                });
-                i++;
-            }
-        }
 
+
+                    // if (consumptionsEntities[0] !== undefined) {
+                    //     const user = dto.userDTO(userEntity);
+                    //     let alcoholLevelDrink;
+                    //     let consumption;
+                    //     let minutesForEliminateDrink;
+                    //     let minutesSinceConsumption;
+                    //     let alcoholLevelActual;
+                    //     var totalAlcoholLevel = 0;
+                    //     let nbConsumptionsActives = 0;
+                    //     let minutesFromConst;
+                    //     let minutesLeftBeforeDrinkTotalAbsorption
+                    //
+                    //     consumptionsEntities.forEach(function (c) {
+                    //         consumption = dto.consumptionDTO(c);
+                    //
+                    //         if (consumption.drink.prcAlcohol > 0) {
+                    //             alcoholLevelDrink = (((consumption.drink.quantity * 1000) * (consumption.drink.prcAlcohol / 100) * 0.8) / ((user.gender === constant.GENDER_MAN ? 0.7 : 0.6) * user.weight));
+                    //
+                    //             minutesForEliminateDrink = alcoholLevelDrink / ((user.gender === constant.GENDER_MAN ? constant.ALCOHOL_MOY_ELIMINATION_SPEED_MAN : constant.ALCOHOL_MOY_ELIMINATION_SPEED_WOMAN) / 60);
+                    //             minutesSinceConsumption = (new Date() - consumption.date) / (1000 * 60);
+                    //             minutesLeftBeforeDrinkTotalAbsorption = minutesForEliminateDrink - minutesSinceConsumption + constant.ALCOHOL_TIME_MOY_HIGHEST_LEVEL;
+                    //             //Si la ligne du dessus est négative alors la boisson a déjà été absorbée
+                    //
+                    //             if (minutesLeftBeforeDrinkTotalAbsorption > 0) {
+                    //                 alcoholLevelActual = alcoholLevelDrink * (minutesSinceConsumption / constant.ALCOHOL_TIME_MOY_HIGHEST_LEVEL);
+                    //
+                    //                 if (alcoholLevelActual >= alcoholLevelDrink) {
+                    //                     //Le taux diminiue
+                    //                     alcoholLevelNetMax += (alcoholLevelDrink - ((minutesSinceConsumption - constant.ALCOHOL_TIME_MOY_HIGHEST_LEVEL) * ((user.gender === constant.GENDER_MAN ? constant.ALCOHOL_MOY_ELIMINATION_SPEED_MAN : constant.ALCOHOL_MOY_ELIMINATION_SPEED_WOMAN) / 60)));
+                    //                 } else {
+                    //                     //Le taux augmente
+                    //                     alcoholLevelNetMax += alcoholLevelActual;
+                    //                     //alcoholLevelNetMax += alcoholLevelActual / ((user.gender === constant.GENDER_MAN ? constant.ALCOHOL_MOY_ELIMINATION_SPEED_MAN : constant.ALCOHOL_MOY_ELIMINATION_SPEED_WOMAN) / 60);
+                    //                 }
+                    //                 totalMinutesLeftBeforeAbsorption += minutesLeftBeforeDrinkTotalAbsorption;
+                    //                 totalAlcoholLevel += alcoholLevelDrink;
+                    //
+                    //                 // minutesFromConst = minutesSinceConsumption - constant.ALCOHOL_TIME_MOY_HIGHEST_LEVEL;
+                    //                 // if (minutesFromConst < 0) {
+                    //                 //     totalMinutesLeftBeforeAbsorption += minutesFromConst;
+                    //                 // }
+                    //                 // totalMinutesLeftBeforeAbsorption += minutesForEliminateDrink;
+                    //
+                    //                 nbConsumptionsActives++;
+                    //             }
+                    //         }
+                    //     });
+                    //
+                    //     var minutesMaxConvert = new Date(0);
+                    //     minutesMaxConvert.setMinutes(Math.trunc(totalMinutesLeftBeforeAbsorption), (totalMinutesLeftBeforeAbsorption % 1) * 60);
+                    //
+                    // } else {
+                    //     res.json({
+                    //         totalAlcoholLevel: 0,
+                    //         actualAlcoholLevel: 0,
+                    //         timeLeftBeforeAbsorption: 0
+                    //     });
+                    // }
+                } else {
+                    res.sendStatus(404);
+                }
+                // if (Date.parse(today) >= (Date.parse(d) + (1000 * i)) && totalAlcoholLevel !== undefined && actualAlcoholLevel !== undefined && timeLeftBeforeAbsorption !== undefined) {
+                //     console.log({
+                //         totalAlcoholLevel: totalAlcoholLevel,
+                //         actualAlcoholLevel: alcoholLevelNetMax,
+                //         timeLeftBeforeAbsorption: minutesMaxConvert.toISOString().substr(11, 8)
+                //     });
+                //     i++;
+                // }
+            }
     } catch (error) {
         console.log(error);
         res.sendStatus(500);

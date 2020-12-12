@@ -27,6 +27,11 @@ module.exports = {
             .toInt().not().isIn([null]).withMessage("DrinkId is not a number.")
             .isInt({min: 0}).withMessage("DrinkId is less than 0."),
     ],
+    drinkNumberReportValidation: [
+        param("number")
+            .exists().withMessage("Number of increment is empty.")
+            .isIn(["1", "-1"]).withMessage("Number must be 1/-1"),
+    ]
 };
 
 

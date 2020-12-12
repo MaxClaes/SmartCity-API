@@ -23,7 +23,7 @@ CREATE TABLE client (
     weight FLOAT NOT NULL check (height >= 0),
     gsm VARCHAR(255),
     role VARCHAR(255) NOT NULL,
-    address INTEGER NOT NULL REFERENCES address(address_id) DEFERRABLE INITIALLY IMMEDIATE
+    address INTEGER REFERENCES address(address_id) DEFERRABLE INITIALLY IMMEDIATE
 );
 
 DROP TABLE IF EXISTS drink CASCADE;
@@ -34,6 +34,7 @@ CREATE TABLE drink (
     quantity FLOAT NOT NULL,
     nb_reports INTEGER default 0,
     popularity INTEGER default 0,
+    disabled BOOLEAN default FALSE,
     created_by INTEGER REFERENCES client(client_id) DEFERRABLE INITIALLY IMMEDIATE
 );
 

@@ -36,6 +36,6 @@ module.exports.identification = async (req, res, next) => {
         }
     } else {
         console.log();
-        res.status(401).json({error: error.UNAUTHENTICATED});
+        res.status(401).json({error: [error.UNAUTHENTICATED]});
     }
 };

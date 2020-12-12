@@ -23,10 +23,10 @@ module.exports.mustBeManager = (req, res, next) => {
             if (req.session.authLevel === constant.ROLE_ADMINISTRATOR || req.session.authLevel === constant.ROLE_MODERATOR) {
                 next();
             } else {
-                res.status(403).json({error: error.ACCESS_DENIED});
+                res.status(403).json({error: [error.ACCESS_DENIED]});
             }
         } else {
-            res.status(401).json({error: error.UNAUTHENTICATED});
+            res.status(401).json({error: [error.UNAUTHENTICATED]});
         }
     }
 }
@@ -52,10 +52,10 @@ module.exports.mustBeManagerOrCreator = (req, res, next) => {
             if (req.session.authLevel === constant.ROLE_ADMINISTRATOR || req.session.authLevel === constant.ROLE_MODERATOR || (userId === req.session.id)) {
                 next();
             } else {
-                res.status(403).json({error: error.ACCESS_DENIED});
+                res.status(403).json({error: [error.ACCESS_DENIED]});
             }
         } else {
-            res.status(401).json({error: error.UNAUTHENTICATED});
+            res.status(401).json({error: [error.UNAUTHENTICATED]});
         }
     }
 }
@@ -81,7 +81,7 @@ module.exports.canChangeRole = async (req, res, next) => {
         return res.status(400).json({error: errors.array()});
     } else {
         if (!req.session) {
-            res.status(401).json({error: error.UNAUTHENTICATED});
+            res.status(401).json({error: [error.UNAUTHENTICATED]});
         } else {
             const {role} = req.body;
             const userIdTexte = req.params.userId;
@@ -94,20 +94,20 @@ module.exports.canChangeRole = async (req, res, next) => {
 
                 if (userEntity !== undefined) {
                     if (req.session.authLevel === constant.ROLE_CLIENT) {
-                        res.status(403).json({error: error.ACCESS_DENIED});
+                        res.status(403).json({error: [error.ACCESS_DENIED]});
                     } else {
                         if (req.session.authLevel === constant.ROLE_ADMINISTRATOR) {
                             next();
                         } else {
                             if (userEntity.role === constant.ROLE_ADMINISTRATOR || role.toUpperCase() === constant.ROLE_ADMINISTRATOR) {
-                                res.status(403).json({error: error.ACCESS_DENIED});
+                                res.status(403).json({error: [error.ACCESS_DENIED]});
                             } else {
                                 next();
                             }
                         }
                     }
                 } else {
-                    res.status(404).json({error: error.USER_NOT_FOUND});
+                    res.status(404).json({error: [error.USER_NOT_FOUND]});
                 }
             } catch (error) {
                 console.log(error);

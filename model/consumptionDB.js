@@ -45,7 +45,7 @@ module.exports.getAllConsumptionsAfterDate = async (client, userId, date) => {
 
 module.exports.getConsumptionByConsumptionIdAndUserId = async (client, consumptionId, userId) => {
     return await client.query(`
-        SELECT * FROM consumption WHERE consumption.consumption.consumption_id = $1 AND consumption.client_id = $2 
+        SELECT * FROM consumption WHERE consumption.consumption_id = $1 AND consumption.client_id = $2 
         `, [consumptionId, userId]
     );
 }
@@ -64,3 +64,11 @@ module.exports.consumptionExists = async (client, id) => {
     );
     return rows[0].nbr > 0;
 };
+
+module.exports.consumptionByDrinkIdExists = async (client, drinkId) => {
+    const {rows} = await client.query(
+        "SELECT count(drink_id) AS nbr FROM consumption WHERE drink_id = $1",
+        [drinkId]
+    );
+    return rows[0].nbr > 0;
+}

@@ -68,7 +68,7 @@ module.exports.getAllBands = async (req, res) => {
             });
             res.json(bands);
         } else {
-            res.status(404).json({error: error.BAND_NOT_FOUND});
+            res.status(404).json({error: [error.BAND_NOT_FOUND]});
         }
     } catch (error) {
         console.log(error);
@@ -194,7 +194,7 @@ module.exports.getBandById = async (req, res) => {
             if (bandEntity !== undefined) {
                 res.json(dto.bandClientDTO(bandEntity));
             } else {
-                res.status(404).json({error: error.BAND_NOT_FOUND});
+                res.status(404).json({error: [error.BAND_NOT_FOUND]});
             }
         } catch (error) {
             console.log(error);
@@ -221,7 +221,7 @@ module.exports.getMyBands = async (req, res) => {
             });
             res.json(bandsAccepted);
         } else {
-            res.status(404).json({error: error.BAND_NOT_FOUND});
+            res.status(404).json({error: [error.BAND_NOT_FOUND]});
         }
     } catch (error) {
         console.log(error);
@@ -265,7 +265,8 @@ module.exports.getAllInvitations = async (req, res) => {
             });
             res.json(invitations);
         } else {
-            res.sendStatus(404);
+            // res.json([]);
+            res.status(404).json({error: [error.BAND_INVITATIONS_NOT_FOUND]});
         }
     } catch (error) {
         console.log(error);

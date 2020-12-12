@@ -93,9 +93,14 @@ module.exports.login = async (req, res) => {
                     process.env.SECRET_TOKEN,
                     {expiresIn: '1d'}   //Peut etre modifier
                 );
-                res.json(token);
+                res.json({
+                    token: token,
+                    id: id,
+                    name: name,
+                    firstname: firstname
+                });
             } else {
-                res.status(404).json({error: error.USER_NOT_FOUND});
+                res.status(404).json({error: [error.USER_NOT_FOUND]});
             }
         } catch (error) {
             console.log(error);
@@ -174,14 +179,19 @@ module.exports.createUser = async (req, res) => {
             const userEntity = usersEntities[0];
 
             if (userEntity === undefined) {
-                const {rows: addresses} = await addressModel.createAddress(client, addressObj.country, addressObj.postalCode, addressObj.city, addressObj.street, addressObj.number);
-                const addressId = addresses[0].address_id;
+                let addressId = null;
+
+                if (addressObj !== undefined) {
+                    const {rows: addresses} = await addressModel.createAddress(client, addressObj.country, addressObj.postalCode, addressObj.city, addressObj.street, addressObj.number);
+                    addressId = addresses[0].address_id;
+                }
+
                 await userModel.createUser(client, name, firstname, birthdate, email, password, new Date(), gender, height, weight, gsm, addressId);
 
                 client.query("COMMIT;");
                 res.sendStatus(201);
             } else {
-                res.status(409).json({error: error.EMAIL_CONFLICT});
+                res.status(409).json({error: [error.EMAIL_CONFLICT]});
             }
         } catch (error) {
             client.query("ROLLBACK;");
@@ -226,13 +236,23 @@ module.exports.updateUser = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({error: errors.array()});
     } else {
-        const {name, firstname, birthdate, password, height, weight, gsm} = req.body;
+        const {user:userObj, address:addressObj} = req.body;
+        const userIdTexte = req.params.userId;
+        const userId = parseInt(userIdTexte);
         const client = await pool.connect();
 
         try {
-            await userModel.updateUser(client, name, firstname, birthdate, password, height, weight, gsm, req.session.id);
+            client.query("BEGIN;");
+            if (addressObj !== undefined) {
+                await addressModel.updateAddress(client, addressObj.country, addressObj.postalCode, addressObj.city, addressObj.street, addressObj.number, addressObj.id);
+            }
+            if (userObj !== undefined) {
+                await userModel.updateUser(client, userObj.name, userObj.firstname, userObj.gender, userObj.height, userObj.weight, userObj.gsm, userId);
+            }
+            client.query("COMMIT;");
             res.sendStatus(204);
         } catch (error) {
+            client.query("ROLLBACK;");
             console.log(error);
             res.sendStatus(500);
         } finally {
@@ -337,7 +357,7 @@ module.exports.changeRole = async (req, res) => {
         return res.status(400).json({error: errors.array()});
     } else {
         const {role} = req.body;
-        const userIdTexte = req.param.userId;
+        const userIdTexte = req.params.userId;
         const userId = parseInt(userIdTexte);
         const client = await pool.connect();
 
@@ -359,7 +379,7 @@ module.exports.emailExists = async (email) => {
     try {
         return await userModel.emailExists(client, email);
     } catch (error){
-        res.sendStatus(500);
+        console.log(error);
     } finally {
         client.release();
     }

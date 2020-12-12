@@ -45,17 +45,16 @@ module.exports.getUser = async (client, id) => {
 module.exports.createUser = async (client, name, firstname, birthdate, email, password, registrationDate, gender, height, weight, gsm, addressId) => {
     return await client.query(`
         INSERT INTO client(name, firstname, birthdate, email, password, registration_date, gender, height, weight, gsm, role, address) 
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);`, [name, firstname, birthdate, email, await getHash(password), registrationDate, gender, height, weight, gsm, constant.ROLE_CLIENT, addressId]
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12);`, [name, firstname, birthdate, email, await getHash(password), registrationDate, gender, height, weight, gsm, constant.ROLE_CLIENT, addressId]
     );
 };
 
-module.exports.updateUser = async (client, name, firstname, birthdate, password, height, weight, gsm, id) => {
+module.exports.updateUser = async (client, name, firstname, gender, height, weight, gsm, id) => {
     let query = "UPDATE client SET ";
     let argumentsWithoutId = [
         ['name', name],
         ['firstname', firstname],
-        ['birthdate', birthdate],
-        ['password', password != undefined ? await getHash(password) : password],
+        ['gender', gender],
         ['height', height],
         ['weight', weight],
         ['gsm', gsm]

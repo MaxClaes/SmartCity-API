@@ -1,4 +1,5 @@
 const drinkModel = require("../model/drinkDB");
+const consumptionModel = require("../model/consumptionDB");
 const pool = require("../model/database");
 const dto = require('../dto');
 const error = require('../error/index');
@@ -80,7 +81,7 @@ module.exports.getDrinksByName = async (req, res) => {
         return res.status(400).json({error: errors.array()});
     } else {
         const label = req.params.label;
-        //const labelWithoutSpace = label.trim();
+        // const labelWithoutSpace = label.trim();
         const client = await pool.connect();
 
         try {
@@ -88,9 +89,13 @@ module.exports.getDrinksByName = async (req, res) => {
             const drinkEntity = drinksEntities[0];
 
             if (drinkEntity !== undefined) {
-                res.json(dto.drinkDTO(drinkEntity));
+                const drinks = [];
+                drinksEntities.forEach(function(d) {
+                    drinks.push(dto.drinkDTO(d));
+                });
+                res.json(drinks);
             } else {
-                res.status(404).json({error: error.DRINK_NOT_FOUND});
+                res.status(404).json({error: [error.DRINK_NOT_FOUND]});
             }
         } catch (error) {
             console.log(error);
@@ -144,7 +149,12 @@ module.exports.deleteDrink = async (req, res) => {
         const client = await pool.connect();
 
         try {
-            await drinkModel.deleteDrink(client, drinkId);
+            if (await consumptionModel.consumptionByDrinkIdExists(client, drinkId)) {
+                await drinkModel.setDisabledByDrinkId(client, drinkId);
+            } else {
+                await drinkModel.deleteDrink(client, drinkId);
+            }
+
             res.sendStatus(204);
         } catch (error) {
             console.log(error);
@@ -177,19 +187,34 @@ module.exports.resetReport = async (req, res) => {
     }
 }
 
-module.exports.incrementReport = async (req, res) => {
+module.exports.manageReport = async (req, res) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         return res.status(400).json({error: errors.array()});
     } else {
         const drinkIdTexte = req.params.drinkId;
+        const numberTexte = req.params.number;
         const drinkId = parseInt(drinkIdTexte);
+        const number = parseInt(numberTexte);
         const client = await pool.connect();
 
         try {
-            await drinkModel.incrementReport(client, drinkId);
-            res.sendStatus(204);
+            const {rows: drinksEntities} = await drinkModel.getDrinkById(client, drinkId);
+            const drinkEntity = drinksEntities[0];
+
+            if (drinkEntity !== undefined) {
+                const drink = dto.drinkDTO(drinkEntity);
+
+                if (drink.nbReports <= 0 && number === -1) {
+                    res.status(400).json({error: [error.DRINK_HAS_MINIMUM_REPORTS]});
+                } else {
+                    await drinkModel.manageReport(client, drinkId, number);
+                    res.sendStatus(204);
+                }
+            } else {
+                res.status(404).json({error: [error.DRINK_NOT_FOUND]});
+            }
         } catch (error) {
             console.log(error);
             res.sendStatus(500);

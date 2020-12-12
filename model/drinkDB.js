@@ -1,14 +1,11 @@
 module.exports.createDrink = async (client, label, prcAlcohol, quantity, createdBy) => {
     return await client.query(`
         INSERT INTO drink(label, prc_alcohol, quantity, created_by) 
-        VALUES ($1, $2, $3, $4);
+        VALUES ($1, $2, $3, $4) RETURNING drink_id;
         `, [label, prcAlcohol, quantity, createdBy]
     );
 };
 
-/*
- On ne permet pas de passer nbSignalement car ce sera trop risqué qu'un utilisateur puisse modifier cette variable comme il le souhaite
- */
 module.exports.updateDrink = async (client, label, prcAlcohol, quantity, id) => {
     let query = "UPDATE drink SET ";
     let argumentsWithoutId = [
@@ -38,19 +35,19 @@ module.exports.updateDrink = async (client, label, prcAlcohol, quantity, id) => 
 };
 
 module.exports.getAllDrinks = async (client) => {
-    return await client.query(`SELECT * FROM drink;`);
-}
+    return await client.query(`SELECT * FROM drink WHERE drink.disabled = FALSE ORDER BY drink.label ASC;`);
+};
 
 module.exports.getDrinksByName = async (client, label, nbFirstLetters) => {
     return await client.query(`
-        SELECT SUBSTRING(label, 1, $1), prc_alcohol, quantity, created_by, nb_reports, popularity FROM drink WHERE UPPER(label) = $2;
+        SELECT drink_id, label, prc_alcohol, quantity, created_by, nb_reports, popularity, created_by FROM drink WHERE SUBSTRING(UPPER(label), 1, $1) = $2 AND disabled = FALSE;
         `, [nbFirstLetters, label]
     );
 };
 
 module.exports.getDrinksByCreatedBy = async (client, createdBy) => {
     return await client.query(`
-        SELECT * FROM drink WHERE created_by = $1;
+        SELECT * FROM drink WHERE created_by = $1 AND disabled = FALSE;
         `, [createdBy]
     );
 };
@@ -60,14 +57,14 @@ module.exports.deleteDrink = async (client, id) => {
         DELETE from drink WHERE drink_id = $1;
         `, [id]
     );
-}
+};
 
 module.exports.getDrinkById = async (client, id) => {
     return await client.query(`
         SELECT * from drink WHERE drink_id = $1;
         `, [id]
     );
-}
+};
 
 module.exports.drinkExists = async (client, drinkId) => {
     const {rows} = await client.query(
@@ -86,20 +83,28 @@ module.exports.resetReport = async (client, id) => {
         WHERE drink_id = $2;
         `, [nbReportsInitial, id]
     );
-}
+};
 
-module.exports.incrementReport = async (client, id) => {
+module.exports.manageReport = async (client, id, number) => {
     return await client.query(`
-        UPDATE drink SET nb_reports = (nb_reports + 1)
-        WHERE drink_id = $1;
-        `, [id]
+        UPDATE drink SET nb_reports = (nb_reports + $1)
+        WHERE drink_id = $2;
+        `, [number, id]
     );
-}
+};
 
 module.exports.changePopularityByOne = async (client, id, nb) => {
     return await client.query(`
-        UPDATE drink SET popularity = (nb_reports + $1)
+        UPDATE drink SET popularity = (popularity + $1)
         WHERE drink_id = $2;
         `, [nb, id]
     );
-}
+};
+
+module.exports.setDisabledByDrinkId = async (client, drinkId) => {
+    return await client.query(`
+        UPDATE drink SET disabled = TRUE
+        WHERE drink_id = $1;
+        `, [drinkId]
+    );
+};

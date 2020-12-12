@@ -18,6 +18,6 @@ router.post('/', JWTMiddleWare.identification, validatorDrink.createModifyDrinkV
 router.patch('/:drinkId', JWTMiddleWare.identification, validatorDrink.drinkIdValidation, validatorDrink.createModifyDrinkValidation, authorizationDrink.canModifyOrDeleteDrink, drinkControleur.updateDrink);
 router.delete('/:drinkId', JWTMiddleWare.identification, validatorDrink.drinkIdValidation, authorizationDrink.canModifyOrDeleteDrink, drinkControleur.deleteDrink);
 router.patch('/:drinkId/report/reset', JWTMiddleWare.identification, validatorDrink.drinkIdValidation, authorizationUser.mustBeManager, drinkControleur.resetReport);
-router.patch('/:drinkId/report/increment', JWTMiddleWare.identification, validatorDrink.drinkIdValidation, drinkControleur.incrementReport);
+router.patch('/:drinkId/report/increment/:number', JWTMiddleWare.identification, validatorDrink.drinkIdValidation, validatorDrink.drinkNumberReportValidation, drinkControleur.manageReport);
 
 module.exports = router;

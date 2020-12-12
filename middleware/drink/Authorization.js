@@ -11,7 +11,7 @@ module.exports.canModifyOrDeleteDrink = async (req, res, next) => {
         return res.status(400).json({error: errors.array()});
     } else {
         if (!req.session) {
-            res.status(401).json({error: error.UNAUTHENTICATED});
+            res.status(401).json({error: [error.UNAUTHENTICATED]});
         } else {
             const drinkIdTexte = req.params.drinkId;
             const drinkId = parseInt(drinkIdTexte);
@@ -29,10 +29,10 @@ module.exports.canModifyOrDeleteDrink = async (req, res, next) => {
                         if (parseInt(drink.created_by) === req.session.id) {
                             next();
                         } else {
-                            res.status(403).json({error: error.ACCESS_DENIED});
+                            res.status(403).json({error: [error.ACCESS_DENIED]});
                         }
                     } else {
-                        res.status(404).json({error: error.DRINK_NOT_FOUND});
+                        res.status(404).json({error: [error.DRINK_NOT_FOUND]});
                     }
                 } catch (error) {
                     console.log(error);
