@@ -44,16 +44,20 @@ module.exports = {
         code : 211,
         msg : "User not found in band."
     },
-    STATUS_ALREADY_CHANGED_IN_BAND : {
+    USER_FOUND_IN_BAND : {
         code : 212,
+        msg : "User is already in band."
+    },
+    STATUS_ALREADY_CHANGED_IN_BAND : {
+        code : 213,
         msg : "Status in band is already accepted/refused."
     },
     EMAIL_CONFLICT : {
-        code : 213,
+        code : 214,
         msg : "Email already exists."
     },
     DRINK_HAS_MINIMUM_REPORTS : {
-        code : 214,
+        code : 215,
         msg : "Drink can't have nb reports < 0."
     }
 };

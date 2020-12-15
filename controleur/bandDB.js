@@ -3,6 +3,8 @@ const pool = require("../model/database");
 const constant = require("../utils/constant");
 const dto = require('../dto');
 const error = require('../error/index');
+const { validationResult } = require('express-validator');
+const utils = require('../utils/utils');
 
 module.exports.createBand = async (req, res) => {
     const errors = validationResult(req);
@@ -43,7 +45,6 @@ module.exports.addMember = async (req, res) => {
     const client = await pool.connect();
 
     try {
-
         await bandModel.addMember(client, userId, bandId, new Date(), constant.STATUS_WAITING, constant.ROLE_CLIENT, req.session.id);
         res.sendStatus(201);
     } catch (error) {
@@ -70,6 +71,98 @@ module.exports.getAllBands = async (req, res) => {
         } else {
             res.status(404).json({error: [error.BAND_NOT_FOUND]});
         }
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    } finally {
+        client.release();
+    }
+}
+
+module.exports.getAllMembers = async (req, res) => {
+    const bandIdTexte = req.params.bandId;
+    const bandId = parseInt(bandIdTexte);
+    const client = await pool.connect();
+
+    try {
+        const {rows: membersEntities} = await bandModel.getAllMembers(client, bandId);
+
+        if (membersEntities[0] !== undefined) {
+            const members = [];
+
+            membersEntities.forEach(function(m) {
+                members.push({
+                    id: m.client_id,
+                    name: m.name,
+                    firstname: m.firstname,
+                    invitationDate: m.invitation_date,
+                    status: m.status,
+                    role: m.role,
+                    invitedBy: m.invited_by,
+                    alcoholLevel: {
+                        totalAlcoholLevel: 1,
+                        actualAlcoholLevel: 2,
+                        timeLeftBeforeAbsorption: 3
+                    }
+                });
+            });
+            res.json(members);
+        }
+
+        // membersEntities.forEach(function(m) {
+        //     return utils.getAlcoholLevel(m.client_id).then(alcLevel => {
+        //         members.push({
+        //             id: m.client_id,
+        //             name: m.name,
+        //             firstname: m.firstname,
+        //             invitationDate: m.invitation_date,
+        //             status: m.status,
+        //             role: m.role,
+        //             invitedBy: m.invited_by,
+        //             alcoholLevel: alcoholLevel
+        //         })
+        //     });
+        // });
+            //
+            // Promise.all(membersEntities)
+
+            // membersEntities.forEach(function(m) {
+            //     let alcoholLevel = new Promise(() => utils.getAlcoholLevel(m.client_id));
+            //
+            //     members.push({
+            //         id: m.client_id,
+            //         name: m.name,
+            //         firstname: m.firstname,
+            //         invitationDate: m.invitation_date,
+            //         status: m.status,
+            //         role: m.role,
+            //         invitedBy: m.invited_by,
+            //         alcoholLevel: alcoholLevel
+            //     });
+            //     // let alcoholLevel = utils.getAlcoholLevel(m.client_id).then(alcoholLevel => {
+            //     //     members.push({
+            //     //         id: m.client_id,
+            //     //         name: m.name,
+            //     //         firstname: m.firstname,
+            //     //         invitationDate: m.invitation_date,
+            //     //         status: m.status,
+            //     //         role: m.role,
+            //     //         invitedBy: m.invited_by,
+            //     //         alcoholLevel: alcoholLevel
+            //     //     });
+            //     // });
+            // });
+
+            // utils.getAlcoholLevel(membersEntities[0].client_id).then(value => {
+            //     return value;
+            // })
+
+            // Promise.all(membersEntities.map((m) => utils.getAlcoholLevel(m)))
+            //     .then((data) => console.log(data));
+            // Promise.all(members).then(res.json(members));
+        // } else {
+        //     res.status(404).json({error: [error.MEMBER_NOT_FOUND]});
+        // }
     } catch (error) {
         console.log(error);
         res.sendStatus(500);
@@ -188,11 +281,46 @@ module.exports.getBandById = async (req, res) => {
         const client = await pool.connect();
 
         try {
-            const {rows: bandsEntities} = await bandModel.getBandById(client, bandId);
-            const bandEntity = bandsEntities[0];
+            if (await bandModel.userExists(client, bandId, req.session.id)) {
+                const {rows: bandsEntities} = await bandModel.getBandById(client, bandId);
+                const bandEntity = bandsEntities[0];
 
-            if (bandEntity !== undefined) {
-                res.json(dto.bandClientDTO(bandEntity));
+                if (bandEntity !== undefined) {
+                    res.json(dto.bandClientDTO(bandEntity));
+                } else {
+                    res.status(404).json({error: [error.BAND_NOT_FOUND]});
+                }
+            } else {
+                res.status(404).json({error: [error.IDENTIFIED_USER_NOT_FOUND_IN_BAND]});
+            }
+        } catch (error) {
+            console.log(error);
+            res.sendStatus(500);
+        } finally {
+            client.release();
+        }
+    }
+}
+
+module.exports.getBandsByUserId = async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({error: errors.array()});
+    } else {
+        const userIdtexte = req.params.userId;
+        const userId = parseInt(userIdtexte);
+        const client = await pool.connect();
+
+        try {
+            const {rows: bandsEntities} = await bandModel.getBandsByUserId(client, userId);
+
+            if(bandsEntities[0] !== undefined) {
+                const bands = [];
+                bandsEntities.forEach(function(b) {
+                    bands.push(dto.bandClientDTO(b));
+                });
+                res.json(bands);
             } else {
                 res.status(404).json({error: [error.BAND_NOT_FOUND]});
             }
@@ -221,7 +349,7 @@ module.exports.getMyBands = async (req, res) => {
             });
             res.json(bandsAccepted);
         } else {
-            res.status(404).json({error: [error.BAND_NOT_FOUND]});
+            res.json([]);
         }
     } catch (error) {
         console.log(error);
@@ -265,8 +393,8 @@ module.exports.getAllInvitations = async (req, res) => {
             });
             res.json(invitations);
         } else {
-            // res.json([]);
-            res.status(404).json({error: [error.BAND_INVITATIONS_NOT_FOUND]});
+            res.json([]);
+            // res.status(404).json({error: [error.BAND_INVITATIONS_NOT_FOUND]});
         }
     } catch (error) {
         console.log(error);

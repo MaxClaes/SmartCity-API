@@ -69,10 +69,7 @@ module.exports.drinkDTO = (drinkEntity) => {
 
 module.exports.bandClientDTO = (bandClientEntity) => {
     return {
-        user : this.userDTO(bandClientEntity),
         band : this.bandDTO(bandClientEntity),
-        //userId : bandClientEntity.client_id,
-        //bandId : bandClientEntity.band_id,
         dateInvitation : bandClientEntity.invitation_date,
         status : bandClientEntity.status,
         role : bandClientEntity.role,

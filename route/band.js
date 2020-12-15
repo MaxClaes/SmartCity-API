@@ -17,7 +17,7 @@ router.delete('/bandid/:bandId', JWTMiddleWare.identification, authorizationUser
 
 router.post('/mybands', JWTMiddleWare.identification, validatorBand.createBandValidation, bandControleur.createBand);
 router.get('/mybands', JWTMiddleWare.identification, bandControleur.getMyBands);
-router.get('/mybands/:bandId/members', JWTMiddleWare.identification, validatorBand.bandIdValidation, authorizationBand.hasJoinedBand, bandControleur.getBandById);
+router.get('/mybands/:bandId/members', JWTMiddleWare.identification, validatorBand.bandIdValidation, bandControleur.getAllMembers);
 router.delete('/mybands/:bandId/out', JWTMiddleWare.identification, validatorBand.bandIdValidation, authorizationBand.hasJoinedBand, bandControleur.leaveBand);
 router.post('/mybands/:bandId/members/:userId', JWTMiddleWare.identification, validatorBand.bandIdValidation, validatorUser.userIdValidation, authorizationBand.hasJoinedBand, bandControleur.addMember);
 router.delete('/mybands/:bandId/members/:userId', JWTMiddleWare.identification, validatorBand.bandIdValidation, validatorUser.userIdValidation, authorizationBand.isAdminAndUserSearchExists, bandControleur.deleteMember);

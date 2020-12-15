@@ -79,6 +79,8 @@ router.post('/registration', validatorUser.userRegistrationValidation, userContr
  *              description: Internal servor error
  */
 router.get('/', JWTMiddleWare.identification, authorizationUser.mustBeManager, userController.getAllUsers);
+
+router.get('/name/:name', JWTMiddleWare.identification, validatorUser.nameValidation, userController.getAllUsersByName);
 /**
  * @swagger
  * /user/{userId}:

@@ -120,4 +120,9 @@ module.exports = {
             .toInt().not().isIn([null]).withMessage("UserId is not a number.")
             .isInt({min: 0}).withMessage("UserId is less than 0."),
     ],
+    nameValidation: [
+        param("name")
+            .trim().not().isEmpty().withMessage("Name is empty.")
+            .trim().isString().withMessage("Name is not a string."),
+    ]
 };

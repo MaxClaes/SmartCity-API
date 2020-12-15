@@ -20,6 +20,16 @@ module.exports.getAllBands = async (client) => {
     return await client.query(`SELECT * FROM band;`);
 }
 
+module.exports.getAllMembers = async (client, bandId) => {
+    return await client.query(`
+        SELECT client.client_id, client.name, client.firstname, band_client.invitation_date, 
+        band_client.status, band_client.role, band_client.invited_by
+        FROM band_client INNER JOIN client on band_client.client_id = client.client_id WHERE band_client.band_id = $1
+        ORDER BY band_client.status ASC, client.firstname ASC;
+        `, [bandId]
+    );
+}
+
 module.exports.deleteAllMemberOfBand = async (client, bandId) => {
     return await client.query(`
         DELETE FROM band_client WHERE band_id = $1;

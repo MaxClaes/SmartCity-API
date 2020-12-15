@@ -8,9 +8,11 @@ const { body , param , check} = require('express-validator');
 module.exports = {
     createConsumptionValidation : [
         body("date")
+            .if(body("date").exists())
             .if(body("date").not().isEmpty())
             .isISO8601().toDate().withMessage("Date is not a date."),
         body("drinkId")
+            .if(body("drinkId").exists())
             .toInt().not().isIn([null]).withMessage("DrinkId is not a number.")
             .isInt({min: 0}).withMessage("DrinkId is less than 0."),
     ],

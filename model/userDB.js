@@ -32,6 +32,13 @@ module.exports.getAllUsers = async (client) => {
     );
 }
 
+module.exports.getUsersByName = async (client, name) => {
+    return await client.query(`
+        SELECT * FROM client WHERE SUBSTRING(UPPER(name), 1, $1) = $2 OR SUBSTRING(UPPER(firstname), 1, $1) = $2
+        ORDER BY client.firstname;
+    `, [name.length, name.toUpperCase()]);
+};
+
 module.exports.getUser = async (client, id) => {
     return await client.query(`
         SELECT client.client_id, client.name, client.firstname, client.birthdate, 

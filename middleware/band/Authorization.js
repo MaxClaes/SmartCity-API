@@ -22,7 +22,14 @@ module.exports.hasJoinedBand = async (req, res, next) => {
                     const userStatus = status[0].status;
 
                     if (userStatus === constant.STATUS_ACCEPTED) {
-                        next();
+                        const userIdTexte = req.params.userId;
+                        const userId = parseInt(userIdTexte);
+
+                        if (!await bandModel.userExists(client, bandId, userId)) {
+                            next();
+                        } else {
+                            res.status(400).json({error: [error.USER_FOUND_IN_BAND]});
+                        }
                     } else {
                         res.status(400).json({error: [error.STATUS_NOT_ACCEPTED_IN_BAND]});
                     }

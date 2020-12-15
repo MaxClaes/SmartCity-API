@@ -12,7 +12,8 @@ INSERT INTO client (name, firstname, birthdate, email, password, registration_da
 INSERT INTO drink (label, prc_alcohol, quantity, nb_reports, created_by) VALUES
 ('Jupiler', 5.2, 0.33, 0, 1),
 ('Jack Daniel''s', 40, 0.025, 0, 2),
-('Kriek Bellevue', 5.2, 0.33, 0, 3);
+('Kriek Bellevue', 5.2, 0.33, 0, 3),
+('Maes', 5, 0.33, 0, 1);
 
 INSERT INTO drink (label, prc_alcohol, quantity, nb_reports) VALUES
 ('Eau', 0, 0.25, 0);
@@ -26,5 +27,4 @@ INSERT INTO band_client (client_id, band_id, invitation_date, status, role, invi
 (2, 1, null, 'A', 'ADMINISTRATOR', null),
 (2, 2, TO_DATE('17/11/2020', 'DD/MM/YYYY'), 'W', 'CLIENT', 3),
 (1, 1, TO_DATE('17/11/2020', 'DD/MM/YYYY'), 'A', 'ADMINISTRATOR', 2),
-(1, 2, TO_DATE('17/11/2020', 'DD/MM/YYYY'), 'W', 'CLIENT', 3),
-(3, 1, TO_DATE('17/11/2020', 'DD/MM/YYYY'), 'R', 'CLIENT', 1);
+(1, 2, TO_DATE('17/11/2020', 'DD/MM/YYYY'), 'W', 'CLIENT', 3)

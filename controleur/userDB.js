@@ -293,6 +293,36 @@ module.exports.getAllUsers = async (req, res) => {
         client.release();
     }
 }
+
+module.exports.getAllUsersByName = async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({error: errors.array()});
+    } else {
+        const name = req.params.name;
+        const client = await pool.connect();
+
+        try {
+            const {rows: usersEntities} = await userModel.getUsersByName(client, name);
+
+            if (usersEntities[0] !== undefined) {
+                const users = [];
+                usersEntities.forEach(function (u) {
+                    users.push(dto.userDTO(u));
+                });
+
+                res.json(users);
+            } else {
+                res.status(404).json({error: [error.USER_NOT_FOUND]});
+            }
+        } catch (error) {
+            res.sendStatus(500);
+        } finally {
+            client.release();
+        }
+    }
+}
 /**
  * @swagger
  * components:
