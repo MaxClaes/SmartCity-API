@@ -1,32 +1,3 @@
-// class User {
-//     constructor(user) {
-//         this.id = user.id;
-//     }
-// }
-
-// module.exports.userEntityToModel = (user) => {
-//     return {
-//         id : user.id,
-//         name : user.name,
-//         firstname : user.firstname,
-//         birthdate : user.birthdate,
-//         email : user.email,
-//         registrationDate : user.registration_date,
-//         height : user.height,
-//         weight : user.weight,
-//         gsm : user.gsm,
-//         role : user.role,
-//         address : {
-//             country : user.country,
-//             postalCode : user.postal_code,
-//             city : user.city,
-//             street : user.street,
-//             number : user.number
-//         }
-//     }
-// }
-
-
 module.exports.userDTO = (clientEntity) => {
     return  {
         id : clientEntity.client_id,
@@ -87,9 +58,6 @@ module.exports.bandDTO = (bandEntity) => {
 
 module.exports.consumptionDTO = (consumptionEntity) => {
     return {
-        // userId : consumptionEntity.client_id,
-        // drinkId : consumptionEntity.drink_id,
-        // date : consumptionEntity.date
         id : consumptionEntity.consumption_id,
         date : consumptionEntity.date,
         userId : consumptionEntity.client_id,
