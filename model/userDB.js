@@ -30,7 +30,7 @@ module.exports.getAllUsers = async (client) => {
         address.city, address.street, address.number
         FROM client LEFT JOIN address ON client.address = address.address_id;`
     );
-}
+};
 
 module.exports.getUsersByName = async (client, name) => {
     return await client.query(`
@@ -47,7 +47,7 @@ module.exports.getUser = async (client, id) => {
         address.city, address.street, address.number 
         FROM client LEFT JOIN address ON client.address = address.address_id WHERE client.client_id = $1;`, [id]
     );
-}
+};
 
 module.exports.createUser = async (client, name, firstname, birthdate, email, password, registrationDate, gender, height, weight, gsm, addressId) => {
     return await client.query(`
