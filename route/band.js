@@ -26,6 +26,4 @@ router.patch('/mybands/:bandId/members/:userId/role', JWTMiddleWare.identificati
 router.get('/invitations', JWTMiddleWare.identification, bandControleur.getAllInvitations);
 router.patch('/invitations/:bandId/response', JWTMiddleWare.identification, validatorBand.bandIdValidation, validatorBand.statusValidation, authorizationBand.canAnswerInvitation, bandControleur.responseInvitation);
 
-//router.get('/name/:label', bandControleur.getBandByName); //Si on est manager
-
 module.exports = router;
