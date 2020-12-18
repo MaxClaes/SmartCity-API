@@ -17,18 +17,10 @@ router.use(cors())
  *          - User
  *      description: Send a token for authentication
  *      requestBody:
- *          description: Login for connexion
- *          content:
- *              application/json:
- *                  schema:
- *                      $ref: '#/components/schemas/Login'
+ *          $ref: '#/components/requestBodies/UserToLog'
  *      responses:
  *          200:
- *            description: a JWT token
- *            content:
- *                text/plain:
- *                    schema:
- *                        type: string
+ *              $ref: '#/components/responses/UserLogged'
  *          400:
  *              description: Input error(s)
  *          404:
@@ -84,7 +76,7 @@ router.get('/', JWTMiddleWare.identification, authorizationUser.mustBeManager, u
  * /user/name/{name}:
  *  get:
  *      tags:
- *         - User
+ *          - User
  *      security:
  *          - bearerAuth: []
  *      parameters:
@@ -112,7 +104,7 @@ router.get('/name/:name', JWTMiddleWare.identification, validatorUser.nameValida
  * /user/{userId}:
  *  get:
  *      tags:
- *         - User
+ *          - User
  *      security:
  *          - bearerAuth: []
  *      parameters:
@@ -145,6 +137,13 @@ router.get('/:userId', JWTMiddleWare.identification, validatorUser.userIdValidat
  *          - User
  *      security:
  *          - bearerAuth: []
+ *      parameters:
+ *          - name: userId
+ *            description: User identifier
+ *            in: path
+ *            required: true
+ *            schema:
+ *              type: integer
  *      requestBody:
  *          $ref: '#/components/requestBodies/UserToUpdate'
  *      responses:
@@ -163,7 +162,7 @@ router.patch('/update/:userId', JWTMiddleWare.identification, validatorUser.user
  * /user/role/{userId}:
  *  patch:
  *      tags:
- *         - User
+ *          - User
  *      requestBody:
  *          $ref: '#/components/requestBodies/RoleToChangeTo'
  *      security:

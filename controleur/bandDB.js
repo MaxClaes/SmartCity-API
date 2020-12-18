@@ -6,6 +6,44 @@ const error = require('../error/index');
 const { validationResult } = require('express-validator');
 const utils = require('../utils/utils');
 
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *      BandClient:
+ *          type: object
+ *          properties:
+ *              clientId:
+ *                  type: number
+ *              bandId:
+ *                  type: number
+ *              invitationDate:
+ *                  type: object
+ *              status:
+ *                  type: string
+ *              role:
+ *                  type: string
+ *              invitedBy:
+ *                  type: number
+ */
+
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      BandInserted:
+ *          description: the band has been added to database
+ *  requestBodies:
+ *      BandToInsert:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      properties:
+ *                          label:
+ *                              type: string
+ *                      required:
+ *                          - label
+ */
 module.exports.createBand = async (req, res) => {
     const errors = validationResult(req);
 
@@ -36,7 +74,17 @@ module.exports.createBand = async (req, res) => {
         }
     }
 }
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      NewMemberInserted:
+ *          description: the members has been added to database
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/BandClient'
+ */
 module.exports.addMember = async (req, res) => {
     const bandIdTexte = req.params.bandId;
     const userIdTexte = req.params.userId;
@@ -58,7 +106,17 @@ module.exports.addMember = async (req, res) => {
         client.release();
     }
 }
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      BandsFound:
+ *          description: send back a list of all bands
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/BandClient'
+ */
 module.exports.getAllBands = async (req, res) => {
     const client = await pool.connect();
 
@@ -82,7 +140,17 @@ module.exports.getAllBands = async (req, res) => {
         client.release();
     }
 }
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      MembersFoundByBandId:
+ *          description: send back a list of all members in a band
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/BandClient'
+ */
 module.exports.getAllMembers = async (req, res) => {
     const errors = validationResult(req);
 
@@ -120,7 +188,17 @@ module.exports.getAllMembers = async (req, res) => {
         }
     }
 }
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      BandDeleted:
+ *          description: delete a band by id
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/BandClient'
+ */
 module.exports.deleteBand = async (req, res) => {
     const errors = validationResult(req);
 
@@ -147,7 +225,17 @@ module.exports.deleteBand = async (req, res) => {
         }
     }
 }
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      MemberDeletedFromBand:
+ *          description: delete a member from band by userId and bandId
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/BandClient'
+ */
 module.exports.deleteMember = async (req, res) => {
     const bandIdTexte = req.params.bandId;
     const userIdTexte = req.params.userId;
@@ -184,7 +272,17 @@ module.exports.deleteMember = async (req, res) => {
         client.release();
     }
 }
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      CurrentUserDeleted:
+ *          description: delete the connected user from band by bandId
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/BandClient'
+ */
 module.exports.leaveBand = async (req, res) => {
     const bandIdTexte = req.params.bandId;
     const bandId = parseInt(bandIdTexte);
@@ -219,7 +317,17 @@ module.exports.leaveBand = async (req, res) => {
         client.release();
     }
 }
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      BandFoundByBandId:
+ *          description: send back a band by id
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/BandClient'
+ */
 module.exports.getBandById = async (req, res) => {
     const errors = validationResult(req);
 
@@ -251,38 +359,17 @@ module.exports.getBandById = async (req, res) => {
         }
     }
 }
-
-module.exports.getBandsByUserId = async (req, res) => {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-        return res.status(400).json({error: errors.array()});
-    } else {
-        const userIdtexte = req.params.userId;
-        const userId = parseInt(userIdtexte);
-        const client = await pool.connect();
-
-        try {
-            const {rows: bandsEntities} = await bandModel.getBandsByUserId(client, userId);
-
-            if(bandsEntities[0] !== undefined) {
-                const bands = [];
-                bandsEntities.forEach(function(b) {
-                    bands.push(dto.bandClientDTO(b));
-                });
-                res.json(bands);
-            } else {
-                res.status(404).json({error: [error.BAND_NOT_FOUND]});
-            }
-        } catch (error) {
-            console.log(error);
-            res.sendStatus(500);
-        } finally {
-            client.release();
-        }
-    }
-}
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      MybandsFound:
+ *          description: send back a list of band for the connected user
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/BandClient'
+ */
 module.exports.getMyBands = async (req, res) => {
     const client = await pool.connect();
 
@@ -308,7 +395,23 @@ module.exports.getMyBands = async (req, res) => {
         client.release();
     }
 }
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      RoleUpdatedToBandMember:
+ *          description: the role of member has been updated
+ *  requestBodies:
+ *      NewRoleToBandMember:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      properties:
+ *                          role:
+ *                              type: string
+ *                      required:
+ *                          - role
+ */
 module.exports.changeRole = async (req, res) => {
     const bandIdTexte = req.params.bandId;
     const bandId = parseInt(bandIdTexte);
@@ -328,7 +431,17 @@ module.exports.changeRole = async (req, res) => {
         client.release();
     }
 }
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      BandInvitationsFound:
+ *          description: send back a list of band invitation for the connected user
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/BandClient'
+ */
 module.exports.getAllInvitations = async (req, res) => {
     const client = await pool.connect();
 
@@ -352,7 +465,23 @@ module.exports.getAllInvitations = async (req, res) => {
         client.release();
     }
 }
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      ResponseSentToBandInvitation:
+ *          description: the band status has been updated
+ *  requestBodies:
+ *      ResponseToBandInvitation:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      properties:
+ *                          status:
+ *                              type: string
+ *                      required:
+ *                          - status
+ */
 module.exports.responseInvitation = async (req, res) => {
     const bandIdTexte = req.params.bandId;
     const bandId = parseInt(bandIdTexte);

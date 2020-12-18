@@ -55,7 +55,7 @@ router.patch('/', JWTMiddleWare.identification, validatorConsumption.updateConsu
  * /consumption:
  *  get:
  *      tags:
- *         - Consumption
+ *          - Consumption
  *      security:
  *          - bearerAuth: []
  *      responses:
@@ -100,7 +100,7 @@ router.delete('/:id', JWTMiddleWare.identification, validatorConsumption.deleteC
  * /consumption/alcohollevel/{userId}:
  *  get:
  *      tags:
- *         - Consumption
+ *          - Consumption
  *      security:
  *          - bearerAuth: []
  *      parameters:

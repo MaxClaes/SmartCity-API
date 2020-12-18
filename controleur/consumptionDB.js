@@ -17,7 +17,7 @@ const { validationResult } = require('express-validator');
  *              id:
  *                  type: number
  *              date:
- *                  type: date
+ *                  type: object
  *              client:
  *                  type: object
  *                  properties:
@@ -28,11 +28,11 @@ const { validationResult } = require('express-validator');
  *                      firstname:
  *                          type: string
  *                      birthdate:
- *                          type: string
+ *                          type: object
  *                      email:
  *                          type: string
  *                      registrationDate:
- *                          type: string
+ *                          type: object
  *                      gender:
  *                          type: string
  *                      height:
@@ -65,26 +65,30 @@ const { validationResult } = require('express-validator');
 /**
  * @swagger
  * components:
- *  schemas:
- *      Consumption:
- *          type: object
- *          properties:
- *              drinkId:
- *                  type: number
- *              date:
- *                  type: date
- *              label:
- *                  type: string
- *              quantity:
- *                  type: number
- *              prcAlcohol:
- *                  type: number
- *          required:
- *              - drinkId
- *              - date
- *              - label
- *              - quantity
- *              - prcAlcohol
+ *  responses:
+ *      ConsumptionInserted:
+ *          description: the consumption has been updated
+ *  requestBodies:
+ *      ConsumptionToInsert:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      properties:
+ *                          drinkId:
+ *                              type: number
+ *                          date:
+ *                              type: object
+ *                          label:
+ *                              type: string
+ *                          quantity:
+ *                              type: number
+ *                          prcAlcohol:
+ *                              type: number
+ *                      required:
+ *                          - drinkId
+ *                          - label
+ *                          - quantity
+ *                          - prcAlcohol
  */
 module.exports.createConsumption = async (req, res) => {
     const errors = validationResult(req);
@@ -127,7 +131,7 @@ module.exports.createConsumption = async (req, res) => {
                 const {rows: drinks} = await drinkModel.createDrink(client, label, prcAlcohol, quantity, req.session.id);
                 let tempDrinkId = drinks[0].drink_id;
                 await consumptionModel.createConsumption(client, date === undefined ? new Date() : date, req.session.id, tempDrinkId);
-                await drinkModel.changePopularityByOne(client, drinkId, 1);
+                await drinkModel.changePopularityByOne(client, tempDrinkId, 1);
                 res.sendStatus(201);
                 client.query("COMMIT;");
             }
@@ -155,7 +159,7 @@ module.exports.createConsumption = async (req, res) => {
  *                          consumptionId:
  *                              type: number
  *                          date:
- *                              type: date
+ *                              type: object
  */
 module.exports.updateConsumption = async (req, res) => {
     const errors = validationResult(req);

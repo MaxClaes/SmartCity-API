@@ -59,18 +59,23 @@ const { validationResult } = require('express-validator');
 /**
  * @swagger
  * components:
- *  schemas:
- *      Login:
- *          type: object
- *          properties:
- *              email:
- *                  type: string
- *              password:
- *                  type: string
- *                  format: password
- *          required:
- *              - email
- *              - password
+ *  responses:
+ *      UserLogged:
+ *          description: the user is logged
+ *  requestBodies:
+ *      UserToLog:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      properties:
+ *                          email:
+ *                              type: string
+ *                          password:
+ *                              type: string
+ *                              format: password
+ *                      required:
+ *                          - email
+ *                          - password
  */
 module.exports.login = async (req, res) => {
     const errors = validationResult(req);

@@ -16,7 +16,7 @@ router.use(cors())
  * /drink:
  *  get:
  *      tags:
- *         - Drink
+ *          - Drink
  *      security:
  *          - bearerAuth: []
  *      responses:
@@ -35,7 +35,7 @@ router.get('/', JWTMiddleWare.identification, drinkControleur.getAllDrinks);
  * /drink/name/{label}:
  *  get:
  *      tags:
- *         - User
+ *          - Drink
  *      security:
  *          - bearerAuth: []
  *      parameters:
@@ -63,7 +63,7 @@ router.get('/name/:label', JWTMiddleWare.identification, validatorDrink.labelVal
  * /drink/name/{userId}:
  *  get:
  *      tags:
- *         - User
+ *          - Drink
  *      security:
  *          - bearerAuth: []
  *      parameters:
@@ -201,7 +201,7 @@ router.delete('/:drinkId', JWTMiddleWare.identification, validatorDrink.drinkIdV
 router.patch('/:drinkId/report/reset', JWTMiddleWare.identification, validatorDrink.drinkIdValidation, authorizationUser.mustBeManager, drinkControleur.resetReport);
 /**
  * @swagger
- * /{drinkId}/report/increment/{number}:
+ * /drink/{drinkId}/report/increment/{number}:
  *  patch:
  *      tags:
  *          - Drink

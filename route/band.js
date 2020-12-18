@@ -16,12 +16,12 @@ router.use(cors())
  * /band/all:
  *  get:
  *      tags:
- *         - Band
+ *          - BandClient
  *      security:
  *          - bearerAuth: []
  *      responses:
  *          200:
- *              $ref: '#/components/responses/Bands'
+ *              $ref: '#/components/responses/BandsFound'
  *          400:
  *              description: Input error(s)
  *          401:
@@ -39,7 +39,7 @@ router.get('/all', JWTMiddleWare.identification, authorizationUser.mustBeManager
  * /band/bandid/{bandId}:
  *  get:
  *      tags:
- *         - Band
+ *          - BandClient
  *      security:
  *          - bearerAuth: []
  *      parameters:
@@ -69,7 +69,7 @@ router.get('/bandid/:bandId', JWTMiddleWare.identification, authorizationUser.mu
  * /band/bandid/{bandId}:
  *  delete:
  *      tags:
- *          - Band
+ *          - BandClient
  *      security:
  *          - bearerAuth: []
  *      parameters:
@@ -97,7 +97,7 @@ router.delete('/bandid/:bandId', JWTMiddleWare.identification, authorizationUser
  * /band/mybands:
  *  post:
  *      tags:
- *          - Band
+ *          - BandClient
  *      requestBody:
  *          $ref: '#/components/requestBodies/BandToInsert'
  *      responses:
@@ -116,12 +116,12 @@ router.post('/mybands', JWTMiddleWare.identification, validatorBand.createBandVa
  * /band/mybands:
  *  get:
  *      tags:
- *          - Band
+ *          - BandClient
  *      security:
  *          - bearerAuth: []
  *      responses:
  *          200:
- *              $ref: '#/components/responses/mybandsFound'
+ *              $ref: '#/components/responses/MybandsFound'
  *          401:
  *              description: The current user is not authenticated
  *          500:
@@ -133,7 +133,7 @@ router.get('/mybands', JWTMiddleWare.identification, bandControleur.getMyBands);
  * /band/mybands/{bandId}/members:
  *  get:
  *      tags:
- *          - Band
+ *          - BandClient
  *      security:
  *          - bearerAuth: []
  *      parameters:
@@ -159,7 +159,7 @@ router.get('/mybands/:bandId/members', JWTMiddleWare.identification, validatorBa
  * /band/mybands/{bandId}/out:
  *  delete:
  *      tags:
- *          - Band
+ *          - BandClient
  *      security:
  *          - bearerAuth: []
  *      parameters:
@@ -189,7 +189,7 @@ router.delete('/mybands/:bandId/out', JWTMiddleWare.identification, validatorBan
  * /band/mybands/{bandId}/members/{userId}:
  *  post:
  *      tags:
- *          - Band
+ *          - BandClient
  *      security:
  *          - bearerAuth: []
  *      parameters:
@@ -207,7 +207,7 @@ router.delete('/mybands/:bandId/out', JWTMiddleWare.identification, validatorBan
  *              type: integer
  *      responses:
  *          201:
- *              $ref: '#/components/responses/NewUserInserted'
+ *              $ref: '#/components/responses/NewMemberInserted'
  *          400:
  *              description: Input error(s)
  *          401:
@@ -225,7 +225,7 @@ router.post('/mybands/:bandId/members/:userId', JWTMiddleWare.identification, va
  * /band/mybands/{bandId}/members/{userId}:
  *  delete:
  *      tags:
- *          - Band
+ *          - BandClient
  *      security:
  *          - bearerAuth: []
  *      parameters:
@@ -243,7 +243,7 @@ router.post('/mybands/:bandId/members/:userId', JWTMiddleWare.identification, va
  *              type: integer
  *      responses:
  *          204:
- *              $ref: '#/components/responses/UserDeletedFromBand'
+ *              $ref: '#/components/responses/MemberDeletedFromBand'
  *          400:
  *              description: Input error(s)
  *          401:
@@ -261,7 +261,7 @@ router.delete('/mybands/:bandId/members/:userId', JWTMiddleWare.identification, 
  * /band/mybands/{bandId}/members/{userId}/role:
  *  patch:
  *      tags:
- *          - Band
+ *          - BandClient
  *      security:
  *          - bearerAuth: []
  *      parameters:
@@ -296,10 +296,10 @@ router.delete('/mybands/:bandId/members/:userId', JWTMiddleWare.identification, 
 router.patch('/mybands/:bandId/members/:userId/role', JWTMiddleWare.identification, validatorBand.bandIdValidation, validatorUser.userIdValidation, validatorBand.roleValidation, authorizationBand.isAdminAndUserSearchExists, bandControleur.changeRole);
 /**
  * @swagger
- * /mybands/invitations:
+ * /band/mybands/invitations:
  *  get:
  *      tags:
- *          - Band
+ *          - BandClient
  *      security:
  *          - bearerAuth: []
  *      responses:
@@ -316,7 +316,7 @@ router.get('/invitations', JWTMiddleWare.identification, bandControleur.getAllIn
  * /band/invitations/{bandId}/response:
  *  patch:
  *      tags:
- *          - Band
+ *          - BandClient
  *      security:
  *          - bearerAuth: []
  *      parameters:
@@ -330,7 +330,7 @@ router.get('/invitations', JWTMiddleWare.identification, bandControleur.getAllIn
  *          $ref: '#/components/requestBodies/ResponseToBandInvitation'
  *      responses:
  *          204:
- *              $ref: '#/components/responses/ReponseSentToBandInvitation'
+ *              $ref: '#/components/responses/ResponseSentToBandInvitation'
  *          400:
  *              description: Input error(s)
  *          401:
