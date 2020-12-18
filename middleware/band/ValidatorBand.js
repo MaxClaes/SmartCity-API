@@ -9,7 +9,7 @@ module.exports = {
         param("bandId")
             .exists().withMessage("BandId is empty.")
             .toInt().not().isIn([null]).withMessage("BandId is not a number.")
-            .isInt({min: 0}).withMessage("BandId is less than 0.")
+            .isInt({min: 0}).withMessage("BandId is less than 0."),
     ],
     createBandValidation : [
         body("label")
