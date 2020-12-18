@@ -79,7 +79,33 @@ router.post('/registration', validatorUser.userRegistrationValidation, userContr
  *              description: Internal servor error
  */
 router.get('/', JWTMiddleWare.identification, authorizationUser.mustBeManager, userController.getAllUsers);
-
+/**
+ * @swagger
+ * /user/{name}:
+ *  get:
+ *      tags:
+ *         - User
+ *      security:
+ *          - bearerAuth: []
+ *      parameters:
+ *          - name: name
+ *            description: Name of user
+ *            in: path
+ *            required: true
+ *            schema:
+ *              type: string
+ *      responses:
+ *          200:
+ *              $ref: '#/components/responses/UsersFoundByName'
+ *          400:
+ *              description: Input error(s)
+ *          401:
+ *              description: The current user is not authenticated
+ *          404:
+ *              description: User not found
+ *          500:
+ *              description: Internal servor error
+ */
 router.get('/name/:name', JWTMiddleWare.identification, validatorUser.nameValidation, userController.getAllUsersByName);
 /**
  * @swagger
@@ -113,7 +139,7 @@ router.get('/name/:name', JWTMiddleWare.identification, validatorUser.nameValida
 router.get('/:userId', JWTMiddleWare.identification, validatorUser.userIdValidation, authorizationUser.mustBeManagerOrCreator, userController.getUser);
 /**
  * @swagger
- * /user/update:
+ * /user/update/{userId}:
  *  patch:
  *      tags:
  *          - User

@@ -301,7 +301,17 @@ module.exports.getAllUsers = async (req, res) => {
         client.release();
     }
 }
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      UsersFoundByName:
+ *          description: send back the user
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/User'
+ */
 module.exports.getAllUsersByName = async (req, res) => {
     const errors = validationResult(req);
 

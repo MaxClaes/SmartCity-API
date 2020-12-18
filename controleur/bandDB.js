@@ -84,34 +84,40 @@ module.exports.getAllBands = async (req, res) => {
 }
 
 module.exports.getAllMembers = async (req, res) => {
-    const bandIdTexte = req.params.bandId;
-    const bandId = parseInt(bandIdTexte);
-    const client = await pool.connect();
+    const errors = validationResult(req);
 
-    try {
-        const {rows: membersEntities} = await bandModel.getAllMembers(client, bandId);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({error: errors.array()});
+    } else {
+        const bandIdTexte = req.params.bandId;
+        const bandId = parseInt(bandIdTexte);
+        const client = await pool.connect();
 
-        if (membersEntities[0] !== undefined) {
-            const members = [];
+        try {
+            const {rows: membersEntities} = await bandModel.getAllMembers(client, bandId);
 
-            membersEntities.forEach(function(m) {
-                members.push({
-                    id: m.client_id,
-                    name: m.name,
-                    firstname: m.firstname,
-                    invitationDate: m.invitation_date,
-                    status: m.status,
-                    role: m.role,
-                    invitedBy: m.invited_by
+            if (membersEntities[0] !== undefined) {
+                const members = [];
+
+                membersEntities.forEach(function (m) {
+                    members.push({
+                        id: m.client_id,
+                        name: m.name,
+                        firstname: m.firstname,
+                        invitationDate: m.invitation_date,
+                        status: m.status,
+                        role: m.role,
+                        invitedBy: m.invited_by
+                    });
                 });
-            });
-            res.json(members);
+                res.json(members);
+            }
+        } catch (error) {
+            console.log(error);
+            res.sendStatus(500);
+        } finally {
+            client.release();
         }
-    } catch (error) {
-        console.log(error);
-        res.sendStatus(500);
-    } finally {
-        client.release();
     }
 }
 
