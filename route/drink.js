@@ -184,8 +184,6 @@ router.delete('/:drinkId', JWTMiddleWare.identification, validatorDrink.drinkIdV
  *            required: true
  *            schema:
  *              type: integer
- *      requestBody:
- *          $ref: '#/components/requestBodies/DrinkResetReport'
  *      responses:
  *          204:
  *              $ref: '#/components/responses/DrinkReportReseted'

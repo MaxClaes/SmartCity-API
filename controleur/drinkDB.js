@@ -5,6 +5,75 @@ const dto = require('../dto');
 const error = require('../error/index');
 const { validationResult } = require('express-validator');
 
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *      Drink:
+ *          type: object
+ *          properties:
+ *              id:
+ *                  type: number
+ *              label:
+ *                  type: string
+ *              prcAlcohol:
+ *                  type: number
+ *              quantity:
+ *                  type: number
+ *              nbReports:
+ *                  type: number
+ *              popularity:
+ *                  type: number
+ *              createdBy:
+ *                  type: object
+ *                  properties:
+ *                      id:
+ *                          type: number
+ *                      name:
+ *                          type: string
+ *                      firstname:
+ *                          type: string
+ *                      birthdate:
+ *                          type: string
+ *                      email:
+ *                          type: string
+ *                      registrationDate:
+ *                          type: string
+ *                      gender:
+ *                          type: string
+ *                      height:
+ *                          type: number
+ *                      weight:
+ *                          type: number
+ *                      gsm:
+ *                          type: string
+ *                      role:
+ *                          type: string
+ */
+
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      DrinkInserted:
+ *          description: the drink has been added to database
+ *  requestBodies:
+ *      DrinkToInsert:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      properties:
+ *                          label:
+ *                              type: string
+ *                          prcAlcohol:
+ *                              type: number
+ *                          quantity:
+ *                              type: number
+ *                      required:
+ *                          - label
+ *                          - prcAlcohol
+ *                          - quantity
+ */
 module.exports.createDrink = async (req, res) => {
     const errors = validationResult(req);
 
@@ -26,7 +95,29 @@ module.exports.createDrink = async (req, res) => {
         }
     }
 }
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      DrinkUpdated:
+ *          description: the drink has been updated
+ *  requestBodies:
+ *      DrinkToUpdate:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      properties:
+ *                          label:
+ *                              type: string
+ *                          prcAlcohol:
+ *                              type: number
+ *                          quantity:
+ *                              type: number
+ *                      required:
+ *                          - label
+ *                          - prcAlcohol
+ *                          - quantity
+ */
 module.exports.updateDrink = async (req, res) => {
     const errors = validationResult(req);
 
@@ -49,7 +140,17 @@ module.exports.updateDrink = async (req, res) => {
         }
     }
 }
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      DrinksFound:
+ *          description: send back a list of drinks
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/Drink'
+ */
 module.exports.getAllDrinks = async (req, res) => {
     const client = await pool.connect();
 
@@ -73,7 +174,17 @@ module.exports.getAllDrinks = async (req, res) => {
         client.release();
     }
 }
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      DrinksFoundByLabel:
+ *          description: send back a list of drinks
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/Drink'
+ */
 module.exports.getDrinksByName = async (req, res) => {
     const errors = validationResult(req);
 
@@ -105,7 +216,17 @@ module.exports.getDrinksByName = async (req, res) => {
         }
     }
 }
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      DrinkFoundByUserId:
+ *          description: send back a list of drinks created by a user
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/Drink'
+ */
 module.exports.getDrinksByCreatedBy = async (req, res) => {
     const errors = validationResult(req);
 
@@ -137,7 +258,17 @@ module.exports.getDrinksByCreatedBy = async (req, res) => {
         }
     }
 }
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      DrinkDeleted:
+ *          description: delete a drink by id
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/Drink'
+ */
 module.exports.deleteDrink = async (req, res) => {
     const errors = validationResult(req);
 
@@ -163,7 +294,17 @@ module.exports.deleteDrink = async (req, res) => {
         }
     }
 }
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      DrinkReportReseted:
+ *          description: reset to 0 nb reports of a drink
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/Drink'
+ */
 module.exports.resetReport = async (req, res) => {
     const errors = validationResult(req);
 
@@ -185,7 +326,17 @@ module.exports.resetReport = async (req, res) => {
         }
     }
 }
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      DrinkReportIncremented:
+ *          description: Report of drink has been incremented
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/Drink'
+ */
 module.exports.manageReport = async (req, res) => {
     const errors = validationResult(req);
 

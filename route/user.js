@@ -81,7 +81,7 @@ router.post('/registration', validatorUser.userRegistrationValidation, userContr
 router.get('/', JWTMiddleWare.identification, authorizationUser.mustBeManager, userController.getAllUsers);
 /**
  * @swagger
- * /user/{name}:
+ * /user/name/{name}:
  *  get:
  *      tags:
  *         - User
@@ -160,7 +160,7 @@ router.get('/:userId', JWTMiddleWare.identification, validatorUser.userIdValidat
 router.patch('/update/:userId', JWTMiddleWare.identification, validatorUser.userUpdateValidation, validatorUser.addressUpdateValidation, authorizationUser.mustBeManagerOrCreator, userController.updateUser);
 /**
  * @swagger
- * /user/{userId}/role:
+ * /user/role/{userId}:
  *  patch:
  *      tags:
  *         - User
