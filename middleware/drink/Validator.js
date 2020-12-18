@@ -1,8 +1,4 @@
-const pool = require("../../model/database");
-const drinkModel = require('../../model/drinkDB');
-const constant = require('../../utils/constant');
-const error = require('../../error');
-const { body , param , check} = require('express-validator');
+const { body , param } = require('express-validator');
 
 module.exports = {
     labelValidation : [
