@@ -1,6 +1,6 @@
 const userController = require('../../controleur/userDB');
 const constant = require('../../utils/constant');
-const { body , param , check} = require('express-validator');
+const { body , param } = require('express-validator');
 
 module.exports = {
     userRegistrationValidation : [
