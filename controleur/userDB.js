@@ -91,7 +91,7 @@ module.exports.login = async (req, res) => {
                 const token = jwt.sign(
                     payload,
                     process.env.SECRET_TOKEN,
-                    {expiresIn: '1d'}   //Peut etre modifier
+                    {expiresIn: '1d'}
                 );
                 res.json({
                     token: token,
