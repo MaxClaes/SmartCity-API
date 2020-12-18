@@ -7,6 +7,85 @@ const dto = require('../dto');
 const error = require('../error/index');
 const { validationResult } = require('express-validator');
 
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *      Consumption:
+ *          type: object
+ *          properties:
+ *              id:
+ *                  type: number
+ *              date:
+ *                  type: date
+ *              client:
+ *                  type: object
+ *                  properties:
+ *                      id:
+ *                          type: number
+ *                      name:
+ *                          type: string
+ *                      firstname:
+ *                          type: string
+ *                      birthdate:
+ *                          type: string
+ *                      email:
+ *                          type: string
+ *                      registrationDate:
+ *                          type: string
+ *                      gender:
+ *                          type: string
+ *                      height:
+ *                          type: number
+ *                      weight:
+ *                          type: number
+ *                      gsm:
+ *                          type: string
+ *                      role:
+ *                          type: string
+ *              drink:
+ *                  type: object
+ *                  properties:
+ *                      id:
+ *                          type: number
+ *                      label:
+ *                          type: string
+ *                      prcAlcohol:
+ *                          type: number
+ *                      quantity:
+ *                          type: number
+ *                      nbReports:
+ *                          type: number
+ *                      popularity:
+ *                          type: number
+ *                      createdBy:
+ *                          type: number
+ */
+
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *      Consumption:
+ *          type: object
+ *          properties:
+ *              drinkId:
+ *                  type: number
+ *              date:
+ *                  type: date
+ *              label:
+ *                  type: string
+ *              quantity:
+ *                  type: number
+ *              prcAlcohol:
+ *                  type: number
+ *          required:
+ *              - drinkId
+ *              - date
+ *              - label
+ *              - quantity
+ *              - prcAlcohol
+ */
 module.exports.createConsumption = async (req, res) => {
     const errors = validationResult(req);
 
@@ -61,7 +140,23 @@ module.exports.createConsumption = async (req, res) => {
         }
     }
 }
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      ConsumptionUpdated:
+ *          description: the user has been updated
+ *  requestBodies:
+ *      ConsumptionToUpdate:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      properties:
+ *                          consumptionId:
+ *                              type: number
+ *                          date:
+ *                              type: date
+ */
 module.exports.updateConsumption = async (req, res) => {
     const errors = validationResult(req);
 
@@ -82,7 +177,17 @@ module.exports.updateConsumption = async (req, res) => {
         }
     }
 }
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      ConsumptionsFound:
+ *          description: send back a list of consumptions
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/Consumption'
+ */
 module.exports.getAllConsumptionsByUserId = async (req, res) => {
     const client = await pool.connect();
 
@@ -105,7 +210,17 @@ module.exports.getAllConsumptionsByUserId = async (req, res) => {
         client.release();
     }
 }
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      ConsumptionDeleted:
+ *          description: delete a consumption by id
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/Consumption'
+ */
 module.exports.deleteConsumption = async (req, res) => {
     const errors = validationResult(req);
 
@@ -137,7 +252,17 @@ module.exports.deleteConsumption = async (req, res) => {
         }
     }
 }
-
+/**
+ * @swagger
+ * components:
+ *  responses:
+ *      AlcoholLevelFoundByUserId:
+ *          description: send back alcohol level
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/Consumption'
+ */
 module.exports.getAlcoholLevel = async (req, res) => {
     const userIdTexte = req.params.userId;
     const userId = parseInt(userIdTexte);
