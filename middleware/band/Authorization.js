@@ -1,4 +1,3 @@
-const drinkModel = require("../../model/drinkDB");
 const pool = require("../../model/database");
 const constant = require("../../utils/constant");
 const error = require("../../error/index");
@@ -82,7 +81,6 @@ module.exports.isAdminAndUserSearchExists = async (req, res, next) => {
 }
 
 module.exports.canAnswerInvitation = async (req, res, next) => {
-    //Groupe exists
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
