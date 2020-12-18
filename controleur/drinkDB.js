@@ -154,7 +154,6 @@ module.exports.deleteDrink = async (req, res) => {
             } else {
                 await drinkModel.deleteDrink(client, drinkId);
             }
-
             res.sendStatus(204);
         } catch (error) {
             console.log(error);
