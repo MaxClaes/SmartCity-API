@@ -1,5 +1,4 @@
 const pool = require("../../model/database");
-const constant = require("../../utils/constant");
 const error = require("../../error/index");
 const bandModel = require("../../model/bandDB");
 const { validationResult } = require("express-validator");
@@ -19,7 +18,6 @@ module.exports.canGetAlcoholLevel = async (req, res, next) => {
             } else {
                 let sameBand = false;
                 const client = await pool.connect();
-                console.log("CONNECTION - canGetAlcoholLevel");
 
                 try {
                     const {rows: bandsEntities} = await bandModel.getBandsByUserId(client, req.session.id);
@@ -30,18 +28,6 @@ module.exports.canGetAlcoholLevel = async (req, res, next) => {
                                 sameBand = true;
                             }
                         }
-
-
-                        // bandsEntities.forEach(async b => {
-                        //     if (await bandModel.userExists(client, b.band_id, userId)) {
-                        //         sameBand = true;
-                        //     }
-                        // });
-                        // for (let b in bandsEntities) {
-                        //     if (await bandModel.userExists(client, b.band_id, userId)) {
-                        //         sameBand = true;
-                        //     }
-                        // }
                         if (sameBand) {
                             next();
                         } else {
@@ -54,7 +40,6 @@ module.exports.canGetAlcoholLevel = async (req, res, next) => {
                     console.log(error);
                     res.sendStatus(500);
                 } finally {
-                    console.log("RELEASE - canGetAlcoholLevel");
                     client.release();
                 }
             }
