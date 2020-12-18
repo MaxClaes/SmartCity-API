@@ -338,7 +338,6 @@ module.exports.getAllInvitations = async (req, res) => {
             res.json(invitations);
         } else {
             res.json([]);
-            // res.status(404).json({error: [error.BAND_INVITATIONS_NOT_FOUND]});
         }
     } catch (error) {
         console.log(error);
@@ -366,9 +365,9 @@ module.exports.responseInvitation = async (req, res) => {
         } else {
             await bandModel.deleteMember(client, bandId, req.session.id);
             //Si on veut garder une trace que l'utilisateur a refusé la demande on peut mettre la ligne suivante
-            //Cela implique des changements dans les conditions de suppression d'un groupe
-            //Il faudrait ajouter qu'on peut supprimer un groupe s'il est vide ou si tous les status restants sont à 'R'
             //await bandModel.changeStatus(client, bandId, req.session.id, constant.STATUS_REJECTED);
+            //Cela implique des changements dans les conditions de suppression d'un groupe
+            //Il faudrait ajouter qu'on peut supprimer un groupe s'il est vide ou si tous les status restants sont à REJECTED
             if (await bandModel.bandIsEmpty(client, bandId)) {
                 await bandModel.deleteBand(client, bandId);
             }
@@ -378,18 +377,6 @@ module.exports.responseInvitation = async (req, res) => {
     } catch (error) {
         client.query("ROLLBACK;");
         console.log(error);
-        res.sendStatus(500);
-    } finally {
-        client.release();
-    }
-}
-
-module.exports.bandExists = async (id) => {
-    const client = await pool.connect();
-
-    try {
-        return await bandModel.bandExists(client, id);
-    } catch (error){
         res.sendStatus(500);
     } finally {
         client.release();
