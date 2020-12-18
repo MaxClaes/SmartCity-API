@@ -1,4 +1,3 @@
-
 module.exports = {
     ACCESS_DENIED : {
         code : 201,
