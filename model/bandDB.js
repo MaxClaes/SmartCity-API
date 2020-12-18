@@ -18,7 +18,7 @@ module.exports.addMember = async (client, userId, bandId, invitationDate, status
 
 module.exports.getAllBands = async (client) => {
     return await client.query(`SELECT * FROM band;`);
-}
+};
 
 module.exports.getAllMembers = async (client, bandId) => {
     return await client.query(`
@@ -28,28 +28,28 @@ module.exports.getAllMembers = async (client, bandId) => {
         ORDER BY band_client.status ASC, client.firstname ASC;
         `, [bandId]
     );
-}
+};
 
 module.exports.deleteAllMemberOfBand = async (client, bandId) => {
     return await client.query(`
         DELETE FROM band_client WHERE band_id = $1;
         `, [bandId]
     );
-}
+};
 
 module.exports.deleteBand = async (client, bandId) => {
     return await client.query(`
         DELETE FROM band WHERE band_id = $1;
         `, [bandId]
     );
-}
+};
 
 module.exports.deleteMember = async (client, bandId, memberId) => {
     return await client.query(`
         DELETE from band_client WHERE band_id = $1 AND client_id = $2;
         `, [bandId, memberId]
     );
-}
+};
 
 module.exports.getBandById = async (client, bandId) => {
     return await client.query(`
@@ -58,7 +58,7 @@ module.exports.getBandById = async (client, bandId) => {
         FROM band_client INNER JOIN band on band_client.band_id = band.band_id WHERE band_client.band_id = $1;
         `, [bandId]
     );
-}
+};
 
 module.exports.getBandsByUserId = async (client, userId) => {
     return await client.query(`
@@ -67,7 +67,7 @@ module.exports.getBandsByUserId = async (client, userId) => {
         FROM band_client INNER JOIN band on band_client.band_id = band.band_id WHERE band_client.client_id = $1;
         `, [userId]
     );
-}
+};
 
 module.exports.bandExists = async (client, bandId) => {
     const {rows} = await client.query(
@@ -132,4 +132,4 @@ module.exports.changeStatus = async (client, bandId, userId, status) => {
 
 module.exports.getStatus = async (client, bandId, userId) => {
     return await client.query(`SELECT band_client.status FROM band_client WHERE client_id = $1 AND band_id = $2;`, [userId, bandId]);
-}
+};
