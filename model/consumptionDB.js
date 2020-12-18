@@ -21,17 +21,7 @@ module.exports.getAllConsumptionsByUserId = async (client, userId) => {
         ORDER BY consumption.date DESC;
         `, [userId]
     );
-}
-
-// module.exports.getAllConsumptionsByDate = async (client, userId, date) => {
-//     return await client.query(`
-//         SELECT consumption.consumption_id, consumption.date, drink.drink_id, drink.label, drink.prc_alcohol, drink.quantity
-//         FROM consumption INNER JOIN drink on consumption.drink_id = drink.drink_id
-//         WHERE consumption.client_id = $1 AND consumption.date = $2
-//         ORDER BY consumption.consumption_id DESC;
-//         `, [userId, date]
-//     );
-// }
+};
 
 module.exports.getAllConsumptionsAfterDate = async (client, userId, date) => {
     return await client.query(`
@@ -41,21 +31,21 @@ module.exports.getAllConsumptionsAfterDate = async (client, userId, date) => {
         ORDER BY consumption.consumption_id DESC;
         `, [userId, date]
     );
-}
+};
 
 module.exports.getConsumptionByConsumptionIdAndUserId = async (client, consumptionId, userId) => {
     return await client.query(`
         SELECT * FROM consumption WHERE consumption.consumption_id = $1 AND consumption.client_id = $2 
         `, [consumptionId, userId]
     );
-}
+};
 
 module.exports.deleteConsumption = async (client, consumptionId) => {
     return await client.query(`
         DELETE from consumption WHERE consumption_id = $1;
         `, [consumptionId]
     );
-}
+};
 
 module.exports.consumptionExists = async (client, id) => {
     const {rows} = await client.query(
@@ -71,4 +61,4 @@ module.exports.consumptionByDrinkIdExists = async (client, drinkId) => {
         [drinkId]
     );
     return rows[0].nbr > 0;
-}
+};
