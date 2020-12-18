@@ -15,10 +15,8 @@ module.exports = {
             .trim().not().isEmpty().withMessage("label is empty.")
             .trim().isString().withMessage("Label is not a string."),
         body("prcAlcohol")
-            .not().isString().withMessage("PrcAlcohol is not a number.")
             .isFloat({min : 0, max : 100}).withMessage("PrcAlcohol should be between 0 and 100"),
         body("quantity")
-            .not().isString().withMessage("Quantity is not a number.")
             .isFloat({min : 0}).withMessage("Quantity is less than 0")
     ],
     drinkIdValidation: [

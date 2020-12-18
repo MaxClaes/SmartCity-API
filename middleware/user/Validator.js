@@ -43,7 +43,7 @@ module.exports = {
         body("address.postalCode")
             .if(body("address").exists())
             .trim().not().isEmpty().withMessage("Postal code is empty.")
-            .not().isString().withMessage("PostalCode is not a number."),
+            .isInt().withMessage("PostalCode is not a number."),
         body("address.city")
             .if(body("address").exists())
             .trim().not().isEmpty().withMessage("City is empty.")

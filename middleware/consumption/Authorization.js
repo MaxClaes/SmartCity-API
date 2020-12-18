@@ -13,20 +13,40 @@ module.exports.canGetAlcoholLevel = async (req, res, next) => {
         if (req.session) {
             const userIdTexte = req.params.userId;
             const userId = parseInt(userIdTexte);
-            const client = await pool.connect();
 
             if (userId === req.session.id) {
                 next();
             } else {
+                let sameBand = false;
+                const client = await pool.connect();
+                console.log("CONNECTION - canGetAlcoholLevel");
+
                 try {
-                    const {rows: bandsEntities} = await bandModel.getBandsByUserId(client, userId);
+                    const {rows: bandsEntities} = await bandModel.getBandsByUserId(client, req.session.id);
 
                     if (bandsEntities[0] !== undefined) {
-                        await Promise.all(bandsEntities.map(async (b) => {
-                            if (await bandModel.userExists(client, b.band_id, userId)) {
-                                next();
+                        for (let i = 0 ; i < bandsEntities.length ; i++) {
+                            if (await bandModel.userExists(client, bandsEntities[i].band_id, userId)) {
+                                sameBand = true;
                             }
-                        }));
+                        }
+
+
+                        // bandsEntities.forEach(async b => {
+                        //     if (await bandModel.userExists(client, b.band_id, userId)) {
+                        //         sameBand = true;
+                        //     }
+                        // });
+                        // for (let b in bandsEntities) {
+                        //     if (await bandModel.userExists(client, b.band_id, userId)) {
+                        //         sameBand = true;
+                        //     }
+                        // }
+                        if (sameBand) {
+                            next();
+                        } else {
+                            res.sendStatus(404);
+                        }
                     } else {
                         res.status(404).json({error: [error.BAND_NOT_FOUND]});
                     }
@@ -34,6 +54,7 @@ module.exports.canGetAlcoholLevel = async (req, res, next) => {
                     console.log(error);
                     res.sendStatus(500);
                 } finally {
+                    console.log("RELEASE - canGetAlcoholLevel");
                     client.release();
                 }
             }

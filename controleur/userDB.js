@@ -244,11 +244,19 @@ module.exports.updateUser = async (req, res) => {
         try {
             client.query("BEGIN;");
             if (addressObj !== undefined) {
-                await addressModel.updateAddress(client, addressObj.country, addressObj.postalCode, addressObj.city, addressObj.street, addressObj.number, addressObj.id);
+                if (addressObj.id === null) {
+                    const {rows: addresses} = await addressModel.createAddress(client, addressObj.country, addressObj.postalCode, addressObj.city, addressObj.street, addressObj.number);
+                    addressId = addresses[0].address_id;
+                    await userModel.updateUserAddress(client, userId, addressId);
+                } else {
+                    await addressModel.updateAddress(client, addressObj.country, addressObj.postalCode, addressObj.city, addressObj.street, addressObj.number, addressObj.id);
+                }
             }
+
             if (userObj !== undefined) {
                 await userModel.updateUser(client, userObj.name, userObj.firstname, userObj.gender, userObj.height, userObj.weight, userObj.gsm, userId);
             }
+
             client.query("COMMIT;");
             res.sendStatus(204);
         } catch (error) {

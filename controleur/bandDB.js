@@ -18,12 +18,12 @@ module.exports.createBand = async (req, res) => {
         try {
             client.query("BEGIN;");
             const {rows: bands} = await bandModel.createBand(client, label, new Date());
-            const bandId = bands[0].id;
+            const bandId = bands[0].band_id;
 
             if (bandId !== undefined) {
                 await bandModel.addMember(client, req.session.id, bandId, null, constant.STATUS_ACCEPTED, constant.ROLE_ADMINISTRATOR, null)
                 client.query("COMMIT;");
-                res.sendStatus(201);
+                res.status(201).json({id: bandId});
             } else {
                 res.sendStatus(500);
             }
@@ -45,8 +45,12 @@ module.exports.addMember = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        await bandModel.addMember(client, userId, bandId, new Date(), constant.STATUS_WAITING, constant.ROLE_CLIENT, req.session.id);
-        res.sendStatus(201);
+        if (!await bandModel.userExists(client, bandId, userId)) {
+            await bandModel.addMember(client, userId, bandId, new Date(), constant.STATUS_WAITING, constant.ROLE_CLIENT, req.session.id);
+            res.sendStatus(201);
+        } else {
+            res.status(400).json({error: [error.USER_FOUND_IN_BAND]});
+        }
     } catch (error) {
         console.log(error);
         res.sendStatus(500);
@@ -98,71 +102,11 @@ module.exports.getAllMembers = async (req, res) => {
                     invitationDate: m.invitation_date,
                     status: m.status,
                     role: m.role,
-                    invitedBy: m.invited_by,
-                    alcoholLevel: {
-                        totalAlcoholLevel: 1,
-                        actualAlcoholLevel: 2,
-                        timeLeftBeforeAbsorption: 3
-                    }
+                    invitedBy: m.invited_by
                 });
             });
             res.json(members);
         }
-
-        // membersEntities.forEach(function(m) {
-        //     return utils.getAlcoholLevel(m.client_id).then(alcLevel => {
-        //         members.push({
-        //             id: m.client_id,
-        //             name: m.name,
-        //             firstname: m.firstname,
-        //             invitationDate: m.invitation_date,
-        //             status: m.status,
-        //             role: m.role,
-        //             invitedBy: m.invited_by,
-        //             alcoholLevel: alcoholLevel
-        //         })
-        //     });
-        // });
-            //
-            // Promise.all(membersEntities)
-
-            // membersEntities.forEach(function(m) {
-            //     let alcoholLevel = new Promise(() => utils.getAlcoholLevel(m.client_id));
-            //
-            //     members.push({
-            //         id: m.client_id,
-            //         name: m.name,
-            //         firstname: m.firstname,
-            //         invitationDate: m.invitation_date,
-            //         status: m.status,
-            //         role: m.role,
-            //         invitedBy: m.invited_by,
-            //         alcoholLevel: alcoholLevel
-            //     });
-            //     // let alcoholLevel = utils.getAlcoholLevel(m.client_id).then(alcoholLevel => {
-            //     //     members.push({
-            //     //         id: m.client_id,
-            //     //         name: m.name,
-            //     //         firstname: m.firstname,
-            //     //         invitationDate: m.invitation_date,
-            //     //         status: m.status,
-            //     //         role: m.role,
-            //     //         invitedBy: m.invited_by,
-            //     //         alcoholLevel: alcoholLevel
-            //     //     });
-            //     // });
-            // });
-
-            // utils.getAlcoholLevel(membersEntities[0].client_id).then(value => {
-            //     return value;
-            // })
-
-            // Promise.all(membersEntities.map((m) => utils.getAlcoholLevel(m)))
-            //     .then((data) => console.log(data));
-            // Promise.all(members).then(res.json(members));
-        // } else {
-        //     res.status(404).json({error: [error.MEMBER_NOT_FOUND]});
-        // }
     } catch (error) {
         console.log(error);
         res.sendStatus(500);
@@ -249,10 +193,10 @@ module.exports.leaveBand = async (req, res) => {
         } else {
             if (!await bandModel.administratorExistsInBand(client, bandId)) {
                 const {rows: users} = await bandModel.getFirstUserIdWithStatusAccepted(client, bandId);
-                const userIdWithStatusAccepted = users[0].id
 
-                if (userIdWithStatusAccepted !== undefined) {
+                if (users[0] !== undefined) {
                     //On lui assigne le rôle administrator
+                    const userIdWithStatusAccepted = users[0].id
                     await bandModel.changeRole(client, bandId, userIdWithStatusAccepted, constant.ROLE_ADMINISTRATOR);
                 }
                 //Si pas de user avec status accepted

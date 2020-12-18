@@ -22,7 +22,7 @@ module.exports.canModifyOrDeleteDrink = async (req, res, next) => {
                 const client = await pool.connect();
 
                 try {
-                    const {rows: drinks} = await drinkModel.getDrinkById(client, id);
+                    const {rows: drinks} = await drinkModel.getDrinkById(client, drinkId);
                     const drink = drinks[0];
 
                     if (drink !== undefined) {

@@ -43,7 +43,7 @@ module.exports.mustBeManagerOrCreator = (req, res, next) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-        return res.status(400).json({error: errors.array()});
+        res.status(400).json({error: errors.array()});
     } else {
         if (req.session) {
             const userIdTexte = req.params.userId;

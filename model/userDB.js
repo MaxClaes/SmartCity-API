@@ -28,7 +28,7 @@ module.exports.getAllUsers = async (client) => {
         client.email, client.registration_date, client.gender, client.height, client.weight, 
         client.gsm, client.role, address.address_id, address.country, address.postal_code, 
         address.city, address.street, address.number
-        FROM client INNER JOIN address ON client.address = address.address_id;`
+        FROM client LEFT JOIN address ON client.address = address.address_id;`
     );
 }
 
@@ -45,7 +45,7 @@ module.exports.getUser = async (client, id) => {
         client.email, client.registration_date, client.gender, client.height, client.weight, 
         client.gsm, client.role, address.address_id, address.country, address.postal_code, 
         address.city, address.street, address.number 
-        FROM client INNER JOIN address ON client.address = address.address_id WHERE client.client_id = $1;`, [id]
+        FROM client LEFT JOIN address ON client.address = address.address_id WHERE client.client_id = $1;`, [id]
     );
 }
 
@@ -85,6 +85,10 @@ module.exports.updateUser = async (client, name, firstname, gender, height, weig
     } else {
         throw new Error("No field to update");
     }
+};
+
+module.exports.updateUserAddress = async (client, userId, addressId) => {
+    return await client.query(`UPDATE client SET address = $1 WHERE client_id = $2;`, [addressId, userId]);
 };
 
 module.exports.changeRole = async (client, role, id) => {
