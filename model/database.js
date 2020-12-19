@@ -14,7 +14,7 @@ const connectionString = `postgresql://${username}:${dbPassword}@${dbHost}:${dbP
 const pool = new Pool({
     connectionString
 });
-//
+
 // const pool = new Pool({
 //     user: process.env.DB_USER,
 //     host: process.env.DB_HOST,
