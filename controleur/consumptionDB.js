@@ -311,10 +311,11 @@ module.exports.getAlcoholLevel = async (req, res) => {
 
                         alcoholLevelActual = alcoholLevelDrink * (minutesSinceConsumption / constant.ALCOHOL_TIME_MOY_HIGHEST_LEVEL);
 
-                        if (minutesLeftForEliminateDrink > 0) {
+                        if (minutesLeftForEliminateDrink > 0 && minutesSinceConsumption >= 0) {
                             if (alcoholLevelActual > alcoholLevelDrink) {
                                 looseAlcohol = true;
-                                drinksToEliminate.push(iDrink);
+                                // drinksToEliminate.push(iDrink);
+                                drinksToEliminate.push(consumption);
                                 totalAlcohol += alcoholLevelDrink;
                             } else {
                                 totalAlcohol += alcoholLevelActual;
@@ -326,8 +327,8 @@ module.exports.getAlcoholLevel = async (req, res) => {
                 });
 
                 if (looseAlcohol) {
-                    // minutesSinceLoosing = (new Date() / (1000 * 60)) - minutesFromLoosingAlcohol;
-                    minutesFromLoosingAlcohol = (new Date() - consumptionsEntities[drinksToEliminate[0]].date) / (1000 * 60) - constant.ALCOHOL_TIME_MOY_HIGHEST_LEVEL;
+                    // minutesFromLoosingAlcohol = (new Date() - consumptionsEntities[drinksToEliminate.length - 1].date) / (1000 * 60) - constant.ALCOHOL_TIME_MOY_HIGHEST_LEVEL;
+                    minutesFromLoosingAlcohol = (new Date() - drinksToEliminate[drinksToEliminate.length - 1].date) / (1000 * 60) - constant.ALCOHOL_TIME_MOY_HIGHEST_LEVEL;
                     totalAlcoholLost = minutesFromLoosingAlcohol * ((user.gender === constant.GENDER_MAN ? constant.ALCOHOL_MOY_ELIMINATION_SPEED_MAN : constant.ALCOHOL_MOY_ELIMINATION_SPEED_WOMAN) / 60);
                 }
 

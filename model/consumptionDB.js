@@ -28,7 +28,7 @@ module.exports.getAllConsumptionsAfterDate = async (client, userId, date) => {
         SELECT consumption.consumption_id, consumption.date, drink.drink_id, drink.label, drink.prc_alcohol, drink.quantity
         FROM consumption INNER JOIN drink on consumption.drink_id = drink.drink_id 
         WHERE consumption.client_id = $1 AND consumption.date > $2
-        ORDER BY consumption.consumption_id DESC;
+        ORDER BY consumption.date DESC;
         `, [userId, date]
     );
 };
