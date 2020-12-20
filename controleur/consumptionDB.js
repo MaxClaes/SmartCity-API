@@ -296,7 +296,14 @@ module.exports.getAlcoholLevel = async (req, res) => {
                 let minutesSinceConsumption = 0;
                 let alcoholLevelActual = 0;
                 let drinksToEliminate = [];
-                let iDrink = 0;
+
+                let timeLeftBeforeTotalAbsorption = 0;
+                let minutesLeftToHaveHighestLevelAlcohol = 0;
+                let totalAlcoholLevelDrink = 0;
+                let earnAlcohol = false;
+                let projectionMinutesFromLoosingAlcohol = 0;
+                let projectionTotalAlcoholLost = 0;
+                let projectionTotalAlcoholLevelDrink = 0;
 
                 consumptionsEntities.forEach(function (c) {
                     consumption = dto.consumptionDTO(c);
@@ -312,34 +319,70 @@ module.exports.getAlcoholLevel = async (req, res) => {
                         alcoholLevelActual = alcoholLevelDrink * (minutesSinceConsumption / constant.ALCOHOL_TIME_MOY_HIGHEST_LEVEL);
 
                         if (minutesLeftForEliminateDrink > 0 && minutesSinceConsumption >= 0) {
+                            totalAlcoholLevelDrink += alcoholLevelDrink;
+
                             if (alcoholLevelActual > alcoholLevelDrink) {
                                 looseAlcohol = true;
-                                // drinksToEliminate.push(iDrink);
                                 drinksToEliminate.push(consumption);
                                 totalAlcohol += alcoholLevelDrink;
                             } else {
+                                if (constant.ALCOHOL_TIME_MOY_HIGHEST_LEVEL - minutesSinceConsumption > minutesLeftToHaveHighestLevelAlcohol) {
+                                    minutesLeftToHaveHighestLevelAlcohol = constant.ALCOHOL_TIME_MOY_HIGHEST_LEVEL - minutesSinceConsumption;
+                                }
+                                earnAlcohol = true;
                                 totalAlcohol += alcoholLevelActual;
                             }
                         }
                     }
 
-                    iDrink++
                 });
 
                 if (looseAlcohol) {
-                    // minutesFromLoosingAlcohol = (new Date() - consumptionsEntities[drinksToEliminate.length - 1].date) / (1000 * 60) - constant.ALCOHOL_TIME_MOY_HIGHEST_LEVEL;
                     minutesFromLoosingAlcohol = (new Date() - drinksToEliminate[drinksToEliminate.length - 1].date) / (1000 * 60) - constant.ALCOHOL_TIME_MOY_HIGHEST_LEVEL;
                     totalAlcoholLost = minutesFromLoosingAlcohol * ((user.gender === constant.GENDER_MAN ? constant.ALCOHOL_MOY_ELIMINATION_SPEED_MAN : constant.ALCOHOL_MOY_ELIMINATION_SPEED_WOMAN) / 60);
                 }
-
                 alcoholLevelDrink = totalAlcohol - totalAlcoholLost;
+
+
+                if (earnAlcohol || looseAlcohol) {
+                    if (earnAlcohol && looseAlcohol) {
+                        projectionMinutesFromLoosingAlcohol = minutesFromLoosingAlcohol + minutesLeftToHaveHighestLevelAlcohol;
+                        projectionTotalAlcoholLost = projectionMinutesFromLoosingAlcohol * ((user.gender === constant.GENDER_MAN ? constant.ALCOHOL_MOY_ELIMINATION_SPEED_MAN : constant.ALCOHOL_MOY_ELIMINATION_SPEED_WOMAN) / 60);
+                        projectionTotalAlcoholLevelDrink = totalAlcoholLevelDrink - projectionTotalAlcoholLost;
+
+                        timeLeftBeforeTotalAbsorption = projectionTotalAlcoholLevelDrink / ((user.gender === constant.GENDER_MAN ? constant.ALCOHOL_MOY_ELIMINATION_SPEED_MAN : constant.ALCOHOL_MOY_ELIMINATION_SPEED_WOMAN) / 60);
+                        timeLeftBeforeTotalAbsorption = timeLeftBeforeTotalAbsorption < 0 ? 0 : timeLeftBeforeTotalAbsorption;
+                    } else if (earnAlcohol && !looseAlcohol) {
+                        projectionTotalAlcoholLevelDrink = totalAlcoholLevelDrink;
+                        timeLeftBeforeTotalAbsorption = (projectionTotalAlcoholLevelDrink / ((user.gender === constant.GENDER_MAN ? constant.ALCOHOL_MOY_ELIMINATION_SPEED_MAN : constant.ALCOHOL_MOY_ELIMINATION_SPEED_WOMAN) / 60));
+                    } else {
+                        projectionTotalAlcoholLevelDrink = alcoholLevelDrink;
+                        timeLeftBeforeTotalAbsorption = projectionTotalAlcoholLevelDrink / ((user.gender === constant.GENDER_MAN ? constant.ALCOHOL_MOY_ELIMINATION_SPEED_MAN : constant.ALCOHOL_MOY_ELIMINATION_SPEED_WOMAN) / 60);
+                    }
+                }
+
+                //Mise en forme
+                if (minutesLeftToHaveHighestLevelAlcohol > 0) {
+                    var minutesLeftToHaveHighestLevelAlcoholConvert = new Date(0);
+                    minutesLeftToHaveHighestLevelAlcoholConvert.setMinutes(Math.trunc(minutesLeftToHaveHighestLevelAlcohol), (minutesLeftToHaveHighestLevelAlcohol % 1) * 60);
+                }
+                if (timeLeftBeforeTotalAbsorption > 0) {
+                    var timeLeftBeforeTotalAbsorptionConvert = new Date(0);
+                    timeLeftBeforeTotalAbsorptionConvert.setMinutes(Math.trunc(timeLeftBeforeTotalAbsorption), (timeLeftBeforeTotalAbsorption % 1) * 60);
+                }
 
                 if (alcoholLevelDrink > 0) {
                     res.json({
                         totalAlcoholLevel: totalAlcohol,
                         actualAlcoholLevel: alcoholLevelDrink,
-                        timeLeftBeforeAbsorption: 0
-                        // timeLeftBeforeAbsorption: minutesMaxConvert.toISOString().substr(11, 8)
+                        // timeLeftBeforeAbsorption: minutesLeftToHaveHighestLevelAlcohol <= 0 ?
+                        //     "0 g/l in (" + minutesLeftToHaveHighestLevelAlcohol.toFixed(2) + " + " + timeLeftBeforeTotalAbsorption.toFixed(2) + ")"
+                        //     :
+                        //     projectionTotalAlcoholLevelDrink.toFixed(4) + " g/l in (" + minutesLeftToHaveHighestLevelAlcohol.toFixed(2) + " + " + timeLeftBeforeTotalAbsorption.toFixed(2) + ")"
+                        timeLeftBeforeAbsorption: minutesLeftToHaveHighestLevelAlcohol <= 0 ?
+                            "0 g/l in (" + minutesLeftToHaveHighestLevelAlcoholConvert.toISOString().substr(11, 8) + " + " + timeLeftBeforeTotalAbsorptionConvert.toISOString().substr(11, 8) + ")"
+                            :
+                            projectionTotalAlcoholLevelDrink.toFixed(4) + " g/l in (" + minutesLeftToHaveHighestLevelAlcoholConvert.toISOString().substr(11, 8) + " + " + timeLeftBeforeTotalAbsorptionConvert.toISOString().substr(11, 8) + ")"
                     });
                 } else {
                     res.json({
