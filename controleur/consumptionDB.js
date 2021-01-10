@@ -379,10 +379,10 @@ module.exports.getAlcoholLevel = async (req, res) => {
                         //     "0 g/l in (" + minutesLeftToHaveHighestLevelAlcohol.toFixed(2) + " + " + timeLeftBeforeTotalAbsorption.toFixed(2) + ")"
                         //     :
                         //     projectionTotalAlcoholLevelDrink.toFixed(4) + " g/l in (" + minutesLeftToHaveHighestLevelAlcohol.toFixed(2) + " + " + timeLeftBeforeTotalAbsorption.toFixed(2) + ")"
-                        timeLeftBeforeAbsorption: minutesLeftToHaveHighestLevelAlcohol <= 0 ?
-                            "0 g/l in (" + minutesLeftToHaveHighestLevelAlcoholConvert.toISOString().substr(11, 8) + " + " + timeLeftBeforeTotalAbsorptionConvert.toISOString().substr(11, 8) + ")"
-                            :
-                            projectionTotalAlcoholLevelDrink.toFixed(4) + " g/l in (" + minutesLeftToHaveHighestLevelAlcoholConvert.toISOString().substr(11, 8) + " + " + timeLeftBeforeTotalAbsorptionConvert.toISOString().substr(11, 8) + ")"
+                        // timeLeftBeforeAbsorption: minutesLeftToHaveHighestLevelAlcohol <= 0 ?
+                        //     "0 g/l in (" + minutesLeftToHaveHighestLevelAlcoholConvert.toISOString().substr(11, 8) + " + " + timeLeftBeforeTotalAbsorptionConvert.toISOString().substr(11, 8) + ")"
+                        //     :
+                        //     projectionTotalAlcoholLevelDrink.toFixed(4) + " g/l in (" + minutesLeftToHaveHighestLevelAlcoholConvert.toISOString().substr(11, 8) + " + " + timeLeftBeforeTotalAbsorptionConvert.toISOString().substr(11, 8) + ")"
                     });
                 } else {
                     res.json({
